@@ -1,0 +1,59 @@
+/**
+ * Modelo de usuario autenticado en SIATEC
+ */
+export interface User {
+  id: number;
+  email: string;
+  contribuyenteId?: number;
+  idContribuyente?: number;
+  nombre?: string;
+  apellidos?: string;
+  tipo?: 'fisica' | 'moral';
+  identityInfo?: {
+    id: number;
+    email: string;
+    [key: string]: any;
+  };
+}
+
+/**
+ * Credenciales para login
+ */
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+/**
+ * Respuesta del servidor de autenticación
+ */
+export interface AuthResponse {
+  token: string;
+  user?: User;
+  expiresIn?: number;
+  refreshToken?: string;
+}
+
+/**
+ * Datos para crear cuenta de contribuyente
+ */
+export interface CreateAccountData {
+  email: string;
+  password: string;
+  confirmPassword?: string;
+  nombre?: string;
+  apellidos?: string;
+  tipo?: 'fisica' | 'moral';
+  [key: string]: any;
+}
+
+/**
+ * Datos para actualizar cuenta de contribuyente
+ */
+export interface UpdateAccountData {
+  id?: number;
+  email?: string;
+  nombre?: string;
+  apellidos?: string;
+  [key: string]: any;
+}
