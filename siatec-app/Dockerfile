@@ -8,13 +8,10 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copiar package files
 COPY package*.json ./
 
-# Instalar dependencias (usando legacy-peer-deps por PrimeNG)
 RUN npm ci --legacy-peer-deps
 
-# Copiar código fuente
 COPY . .
 
 # Build de producción
