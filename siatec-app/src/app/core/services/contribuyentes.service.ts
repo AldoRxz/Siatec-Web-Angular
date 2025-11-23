@@ -94,7 +94,7 @@ export class ContribuyentesService extends BaseApiService {
   ): Observable<PaginatedResponse<ArchivoContribuyente>> {
     const url = this.buildUrl(this.baseUrl, 'Archivos', contribuyenteId);
     const params = { page: page.toString(), pageSize: pageSize.toString() };
-    return this.get<PaginatedResponse<ArchivoContribuyente>>(url, { params });
+    return this.getWithParams<PaginatedResponse<ArchivoContribuyente>>(url, params);
   }
 
   /**

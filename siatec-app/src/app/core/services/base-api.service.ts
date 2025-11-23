@@ -43,8 +43,17 @@ export class BaseApiService {
   /**
    * GET request
    */
-  protected get<T>(url: string, options?: any): Observable<T> {
-    return this.http.get<T>(url, options).pipe(
+  protected get<T>(url: string): Observable<T> {
+    return this.http.get<T>(url).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  /**
+   * GET request with params
+   */
+  protected getWithParams<T>(url: string, params: any): Observable<T> {
+    return this.http.get<T>(url, { params }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -52,8 +61,8 @@ export class BaseApiService {
   /**
    * POST request
    */
-  protected post<T>(url: string, body: any, options?: any): Observable<T> {
-    return this.http.post<T>(url, body, options).pipe(
+  protected post<T>(url: string, body: any): Observable<T> {
+    return this.http.post<T>(url, body).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -61,8 +70,8 @@ export class BaseApiService {
   /**
    * PUT request
    */
-  protected put<T>(url: string, body: any, options?: any): Observable<T> {
-    return this.http.put<T>(url, body, options).pipe(
+  protected put<T>(url: string, body: any): Observable<T> {
+    return this.http.put<T>(url, body).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -70,8 +79,8 @@ export class BaseApiService {
   /**
    * PATCH request
    */
-  protected patch<T>(url: string, body: any, options?: any): Observable<T> {
-    return this.http.patch<T>(url, body, options).pipe(
+  protected patch<T>(url: string, body: any): Observable<T> {
+    return this.http.patch<T>(url, body).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -79,8 +88,8 @@ export class BaseApiService {
   /**
    * DELETE request
    */
-  protected delete<T>(url: string, options?: any): Observable<T> {
-    return this.http.delete<T>(url, options).pipe(
+  protected delete<T>(url: string): Observable<T> {
+    return this.http.delete<T>(url).pipe(
       catchError(error => this.handleError(error))
     );
   }
