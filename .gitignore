@@ -1,18 +1,17 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
-# Compiled output
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # Build outputs
-/dist
-/tmp
-/out-tsc
-/bazel-out
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/
 
-# Node
-/node_modules
+# Node modules
+node_modules/
 npm-debug.log
 yarn-error.log
+package-lock.json
 
 # IDEs and editors
 .idea/
@@ -22,8 +21,7 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
-
-# Visual Studio Code
+*.sublime-project
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -44,21 +42,28 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.backup
 *.swp
 *.swo
 *~
 
+# Environment files
+.env
+.env.local
+.env.*.local
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Temporary files
+*.tmp
+*.temp
