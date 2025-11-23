@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  siatec-angular:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_DATE: ${BUILD_DATE:-$(date -u +'%Y-%m-%dT%H:%M:%SZ')}
+        VCS_REF: ${VCS_REF:-dev}
+    container_name: siatec-angular-app
+    ports:
+      - "4200:80"
+    environment:
+      # Modo de despliegue: docker-local | kubernetes | auto
+      DEPLOYMENT_MODE: docker-local
+      
+      # URLs de las APIs (para modo kubernetes)
+      AUTH_API_BASE_URL: http://auth-api-dev:8080/api/auth
+      CONTRIBUYENTES_API_BASE_URL: http://contribuyentes-api-dev:8080/api/contribuyentes
+      CONTRIBUCIONES_API_BASE_URL: http://contribuciones-api-dev:8080/api/contribuciones
+      TESORERIA_API_BASE_URL: http://tesoreria-api-dev:8080/api/tesoreria
+      NOTIFICACIONES_API_BASE_URL: http://notificaciones-api-dev:8080/api/notificaciones
+      
+      TZ: America/Mexico_City
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "com.siatec.app=angular-frontend"
+      - "com.siatec.environment=development"
