@@ -19,6 +19,7 @@
     contribucionesApiBaseUrl: 'http://localhost:5000/api/contribuciones',
     tesoreriaApiBaseUrl: 'http://localhost:5003/api/tesoreria',
     notificacionesApiBaseUrl: 'http://localhost:5005/api/notificaciones',
+    paccioliApiBaseUrl: 'http://192.168.1.113:8080',
 
     // Información del ambiente
     environment: 'development',
@@ -31,7 +32,8 @@
         'contribuyentes': this.contribuyentesApiBaseUrl,
         'contribuciones': this.contribucionesApiBaseUrl,
         'tesoreria': this.tesoreriaApiBaseUrl,
-        'notificaciones': this.notificacionesApiBaseUrl
+        'notificaciones': this.notificacionesApiBaseUrl,
+        'paccioli': this.paccioliApiBaseUrl
       };
       return serviceMap[service] || this.baseUrl;
     },
@@ -46,6 +48,7 @@
       console.log('Contribuciones API:', this.contribucionesApiBaseUrl);
       console.log('Tesorería API:', this.tesoreriaApiBaseUrl);
       console.log('Notificaciones API:', this.notificacionesApiBaseUrl);
+      console.log('Paccioli API:', this.paccioliApiBaseUrl);
       console.groupEnd();
     }
   };

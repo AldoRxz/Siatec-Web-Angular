@@ -7,6 +7,7 @@ export interface SiatecConfig {
   contribucionesApiBaseUrl: string;
   tesoreriaApiBaseUrl: string;
   notificacionesApiBaseUrl: string;
+  paccioliApiBaseUrl: string;
   environment: 'development' | 'staging' | 'production' | 'docker-local';
   baseUrl: string;
   getApiUrl: (service: string) => string;
