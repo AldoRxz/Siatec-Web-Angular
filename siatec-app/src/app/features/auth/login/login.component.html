@@ -1,0 +1,106 @@
+<div class="login-container min-h-screen flex items-center justify-center px-4 py-8">
+  <div class="login-wrapper w-full max-w-md">
+    <p-card>
+      <!-- Header -->
+      <ng-template pTemplate="header">
+        <div class="text-center pt-6 pb-4">
+          <div class="mb-3">
+            <i class="pi pi-shield text-6xl text-primary"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-primary mb-2">SIATEC</h1>
+          <h2 class="text-xl font-semibold text-700 mb-1">Inicio de sesión</h2>
+          <p class="text-sm text-600">Ingresa tus credenciales para continuar</p>
+        </div>
+      </ng-template>
+
+      <!-- Content -->
+      <ng-template pTemplate="content">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-4">
+          <!-- Error Message -->
+          @if (errorMessage) {
+            <p-message severity="error" [text]="errorMessage" styleClass="w-full" />
+          }
+
+          <!-- Email Field -->
+          <div class="flex flex-column gap-2">
+            <label for="email" class="font-medium text-900">Correo electrónico</label>
+            <input 
+              pInputText 
+              id="email" 
+              formControlName="email"
+              type="email"
+              placeholder="correo@dominio.com"
+              [class.ng-invalid]="emailControl?.invalid && emailControl?.touched"
+              [class.ng-dirty]="emailControl?.touched"
+            />
+            @if (emailControl?.invalid && emailControl?.touched) {
+              <small class="text-red-500">
+                @if (emailControl?.errors?.['required']) {
+                  El correo electrónico es requerido
+                }
+                @if (emailControl?.errors?.['email']) {
+                  Ingresa un correo electrónico válido
+                }
+              </small>
+            }
+          </div>
+
+          <!-- Password Field -->
+          <div class="flex flex-column gap-2">
+            <label for="password" class="font-medium text-900">Contraseña</label>
+            <p-password 
+              id="password"
+              formControlName="password"
+              [toggleMask]="true"
+              [feedback]="false"
+              placeholder="Tu contraseña"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              [class.ng-invalid]="passwordControl?.invalid && passwordControl?.touched"
+              [class.ng-dirty]="passwordControl?.touched"
+            />
+            @if (passwordControl?.invalid && passwordControl?.touched) {
+              <small class="text-red-500">
+                @if (passwordControl?.errors?.['required']) {
+                  La contraseña es requerida
+                }
+                @if (passwordControl?.errors?.['minlength']) {
+                  La contraseña debe tener al menos 6 caracteres
+                }
+              </small>
+            }
+          </div>
+
+          <!-- Submit Button -->
+          <p-button 
+            type="submit"
+            label="Iniciar sesión"
+            icon="pi pi-sign-in"
+            [loading]="loading"
+            [disabled]="loading"
+            styleClass="w-full"
+            severity="primary"
+          />
+        </form>
+      </ng-template>
+
+      <!-- Footer -->
+      <ng-template pTemplate="footer">
+        <div class="flex flex-column gap-3 pb-4">
+          <p-divider />
+          <div class="text-center text-sm text-600">
+            ¿No tienes una cuenta? 
+            <a routerLink="/register" class="text-primary font-semibold no-underline hover:underline ml-1">
+              Regístrate aquí
+            </a>
+          </div>
+          <div class="text-center text-sm">
+            <a routerLink="/forgot-password" class="text-primary no-underline hover:underline">
+              ¿Olvidaste tu contraseña?
+            </a>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</div>

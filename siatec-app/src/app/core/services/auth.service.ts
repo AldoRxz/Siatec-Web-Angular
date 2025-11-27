@@ -74,6 +74,13 @@ export class AuthService {
   }
 
   /**
+   * Alias para createAccount (para compatibilidad)
+   */
+  register(data: CreateAccountData): Observable<AuthResponse> {
+    return this.createAccount(data);
+  }
+
+  /**
    * Actualizar cuenta de contribuyente
    */
   updateAccount(data: UpdateAccountData): Observable<any> {
