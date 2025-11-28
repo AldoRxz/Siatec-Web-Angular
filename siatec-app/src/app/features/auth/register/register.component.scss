@@ -1,17 +1,18 @@
 .register-container {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eff6ff, #e2e8f0);
+  padding: 2rem 1rem;
 }
 
 .register-container::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.3) 0%, transparent 50%);
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.18), transparent 45%),
+    radial-gradient(circle at 80% 30%, rgba(14, 165, 233, 0.12), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(14, 165, 233, 0.12), transparent 45%);
   pointer-events: none;
 }
 
@@ -40,8 +41,8 @@
 
 .strength-bar-container {
   height: 8px;
-  background-color: #e5e7eb;
-  border-radius: 4px;
+  background-color: #e2e8f0;
+  border-radius: 999px;
   overflow: hidden;
 }
 
@@ -51,51 +52,84 @@
 }
 
 .strength-weak {
-  background-color: #ef4444;
+  background-color: #f87171;
 }
 
 .strength-medium {
-  background-color: #f59e0b;
+  background-color: #fbbf24;
 }
 
 .strength-strong {
-  background-color: #10b981;
+  background-color: #34d399;
 }
 
 :host ::ng-deep {
   .p-card {
     border-radius: 1rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(37, 99, 235, 0.1);
+    border: 1px solid #e2e8f0;
     background: rgba(255, 255, 255, 0.95);
-    
-    .p-card-body {
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 20px 60px rgba(37, 99, 235, 0.15);
+    }
+
+    .p-card-header {
+      background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+      border-bottom: 1px solid #e2e8f0;
       padding: 0;
     }
-    
-    .p-card-content {
-      padding: 1.5rem;
+
+    .p-card-body,
+    .p-card-content,
+    .p-card-footer {
+      padding: 0;
+      background: transparent;
     }
   }
 
-  .p-inputtext,
-  .p-password input,
-  .p-inputmask {
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
-    transition: all 0.2s;
+  .alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid transparent;
 
-    &:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    i {
+      font-size: 1rem;
     }
+  }
 
-    &.ng-invalid.ng-dirty {
-      border-color: #ef4444;
-      
-      &:focus {
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-      }
+  .alert-error {
+    background: #fee2e2;
+    border-color: #fecaca;
+    color: #b91c1c;
+  }
+
+  .alert-success {
+    background: #dcfce7;
+    border-color: #bbf7d0;
+    color: #15803d;
+  }
+
+  .field-error {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: #dc2626;
+  }
+
+  .p-divider {
+    margin: 0;
+
+    &.p-divider-horizontal:before {
+      border-top-color: #e2e8f0;
     }
   }
 
@@ -103,27 +137,34 @@
     border-radius: 0.5rem;
     padding: 0.75rem 1.5rem;
     font-weight: 600;
-    transition: all 0.2s;
+    letter-spacing: 0.025em;
+    transition: all 0.2s ease;
+    background: #2563eb;
+    border: none;
+    font-size: 0.95rem;
 
     &:not(:disabled):hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      background: #1e40af;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
 
     &:not(:disabled):active {
       transform: translateY(0);
+      background: #1e3a8a;
     }
-  }
 
-  .p-message {
-    border-radius: 0.5rem;
-    margin: 0;
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #94a3b8;
+    }
   }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.5rem;
   }
 
   .col-12 {
@@ -134,5 +175,113 @@
     .md\:col-6 {
       grid-column: span 6;
     }
+  }
+
+  p-floatlabel {
+    position: relative;
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  p-floatlabel > label {
+    position: absolute;
+    left: 1.25rem;
+    top: 1.25rem;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.95rem;
+    pointer-events: none;
+    transition: all 0.18s ease;
+    background: transparent;
+  }
+
+  p-floatlabel.with-icon > label {
+    left: 3.2rem;
+  }
+
+  p-floatlabel input,
+  p-floatlabel .p-password input {
+    width: 100%;
+    border: 1px solid #d4dbe8;
+    border-radius: 1rem;
+    padding: 1.1rem 1.2rem 0.55rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
+    background: #fdfefe;
+    caret-color: #2563eb;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  p-floatlabel input::placeholder,
+  p-floatlabel .p-password input::placeholder {
+    color: transparent;
+  }
+
+  p-floatlabel input:-webkit-autofill,
+  p-floatlabel .p-password input:-webkit-autofill {
+    -webkit-text-fill-color: #0f172a;
+    transition: background-color 9999s ease-out;
+  }
+
+  p-floatlabel input.ng-invalid.ng-touched,
+  p-floatlabel .p-password input.ng-invalid.ng-touched {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+  }
+
+  p-floatlabel:focus-within input,
+  p-floatlabel:focus-within .p-password input {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  p-floatlabel:focus-within > label,
+  p-floatlabel > input:not(:placeholder-shown) + label,
+  p-floatlabel:has(.p-password input:not(:placeholder-shown)) > label,
+  p-floatlabel:has(.p-password input:-webkit-autofill) > label,
+  p-floatlabel:has(.p-password.p-inputwrapper-filled) > label {
+    top: -0.55rem;
+    font-size: 0.8rem;
+    color: #1d4ed8;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 0 0.5rem;
+    box-shadow: 0 0 0 1px #e2e8f0;
+  }
+
+  p-floatlabel.with-icon:focus-within > label,
+  p-floatlabel.with-icon > input:not(:placeholder-shown) + label,
+  p-floatlabel.with-icon:has(.p-password input:not(:placeholder-shown)) > label,
+  p-floatlabel.with-icon:has(.p-password input:-webkit-autofill) > label,
+  p-floatlabel.with-icon:has(.p-password.p-inputwrapper-filled) > label {
+    left: 1.25rem;
+  }
+
+  p-iconfield {
+    width: 100%;
+    position: relative;
+
+    .p-inputicon {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .p-inputtext,
+    .p-password input {
+      padding-left: 3.05rem;
+    }
+  }
+
+  p-iconfield:focus-within .p-inputicon {
+    color: #2563eb;
   }
 }

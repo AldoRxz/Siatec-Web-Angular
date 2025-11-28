@@ -5,8 +5,10 @@ import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { DividerModule } from 'primeng/divider';
 import { MessageModule } from 'primeng/message';
 import { InputMaskModule } from 'primeng/inputmask';
@@ -36,8 +38,10 @@ export function passwordMatchValidator(): ValidatorFn {
     RouterLink,
     CardModule,
     InputTextModule,
-    PasswordModule,
     ButtonModule,
+    FloatLabelModule,
+    IconFieldModule,
+    InputIconModule,
     DividerModule,
     MessageModule,
     InputMaskModule
