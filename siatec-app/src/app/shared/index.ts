@@ -5,3 +5,4 @@
 export * from './components/loading-spinner/loading-spinner.component';
 // export * from './components/page-header/page-header.component';
 export * from './components/confirmation-dialog/confirmation-dialog.component';
+export * from './components/notification-dialog/notification-dialog.component';
