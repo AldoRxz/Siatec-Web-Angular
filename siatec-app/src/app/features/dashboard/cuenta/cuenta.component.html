@@ -1,0 +1,73 @@
+<p-toast></p-toast>
+
+<section class="cuenta-page">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="header">
+        <div>
+          <p class="eyebrow">Mi cuenta</p>
+          <h2>Actualiza tu información</h2>
+        </div>
+      </div>
+    </ng-template>
+
+    <form class="form" [formGroup]="accountForm" (ngSubmit)="submit()">
+      <section>
+        <h3>Identidad</h3>
+        <div class="form-grid">
+          <label>
+            <span>Nombres *</span>
+            <input pInputText type="text" formControlName="nombres" />
+            <small class="error" *ngIf="accountForm.controls.nombres.invalid && accountForm.controls.nombres.touched">
+              Ingresa tu nombre.
+            </small>
+          </label>
+          <label>
+            <span>Primer apellido</span>
+            <input pInputText type="text" formControlName="primerApellido" />
+          </label>
+          <label>
+            <span>Segundo apellido</span>
+            <input pInputText type="text" formControlName="segundoApellido" />
+          </label>
+          <label>
+            <span>Correo electrónico *</span>
+            <input pInputText type="email" formControlName="email" />
+            <small class="error" *ngIf="accountForm.controls.email.invalid && accountForm.controls.email.touched">
+              Ingresa un correo válido.
+            </small>
+          </label>
+          <label>
+            <span>Teléfono</span>
+            <input pInputText type="tel" maxlength="15" formControlName="telefono" />
+          </label>
+        </div>
+      </section>
+
+      <p-divider></p-divider>
+
+      <section>
+        <h3>Seguridad</h3>
+        <div class="form-grid">
+          <label>
+            <span>Contraseña actual</span>
+            <input pInputText type="password" formControlName="oldPassword" placeholder="Necesaria si deseas cambiarla" />
+          </label>
+          <label>
+            <span>Nueva contraseña</span>
+            <input pInputText type="password" formControlName="newPassword" />
+            <small class="hint">Mínimo 8 caracteres.</small>
+          </label>
+          <label>
+            <span>Confirmar nueva contraseña</span>
+            <input pInputText type="password" formControlName="confirmPassword" />
+          </label>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button pButton type="submit" label="Guardar cambios" icon="pi pi-save" [loading]="loading()"></button>
+      </div>
+    </form>
+  </p-card>
+</section>

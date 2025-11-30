@@ -1,0 +1,125 @@
+<p-toast></p-toast>
+
+<section class="operaciones-page">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="header">
+        <div>
+          <p class="eyebrow">Determinaciones</p>
+          <h2>Operaciones del contribuyente</h2>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-container *ngIf="!loading(); else loadingTpl">
+      <ng-container *ngIf="hasOperaciones(); else emptyTpl">
+        <p-table [value]="operaciones()" responsiveLayout="stack" [breakpoint]="'960px'" [rowTrackBy]="trackByDeterminacion">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Contribución</th>
+              <th>Periodo</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                <strong>{{ row.contribucionInstance?.contribucionNombre || 'Contribución' }}</strong>
+              </td>
+              <td>{{ row.periodo || 'Sin periodo' }}</td>
+              <td>{{ formatCurrency(row.monto) }}</td>
+              <td>
+                <p-tag [value]="row.estado || 'Pendiente'" [severity]="estadoTag(row.estado)"></p-tag>
+              </td>
+              <td class="text-right">
+                <button pButton type="button" label="Determinar" icon="pi pi-calculator" (click)="abrirDeterminacion(row)"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-container>
+    </ng-container>
+  </p-card>
+
+  <ng-container *ngIf="resultado() as res">
+    <p-card class="resultado-card">
+      <ng-template pTemplate="header">
+        <div class="header">
+          <div>
+            <p class="eyebrow">Resultado</p>
+            <h2>Determinación generada</h2>
+          </div>
+        </div>
+      </ng-template>
+      <div class="monto">{{ formatCurrency(res.calculo.detalleCalculo?.montoFinal) }}</div>
+      <div class="resumen">
+        <div>
+          <span>Base gravable</span>
+          <strong>{{ formatCurrency(res.calculo.detalleCalculo?.baseGravable?.valor) }}</strong>
+        </div>
+        <div>
+          <span>Deducciones</span>
+          <strong>{{ formatCurrency(res.calculo.detalleCalculo?.totalDeducciones) }}</strong>
+        </div>
+        <div>
+          <span>Periodo</span>
+          <strong>{{ res.calculo.periodo }}</strong>
+        </div>
+      </div>
+    </p-card>
+  </ng-container>
+</section>
+
+<p-dialog
+  header="Formulario dinámico"
+  [visible]="modalVisible()"
+  modal
+  [style]="{ width: '35rem' }"
+  (onHide)="cerrarModal()"
+>
+  <form class="dynamic-form" [formGroup]="form()" (ngSubmit)="enviarCalculo()">
+    <div class="fields" *ngIf="campos().length; else emptyFields">
+      <label *ngFor="let campo of campos()">
+        <span>{{ campo.label }}</span>
+        <ng-container [ngSwitch]="campo.type">
+          <input *ngSwitchCase="'number'" pInputText type="number" [formControlName]="campo.name" />
+          <p-select
+            *ngSwitchCase="'select'"
+            [options]="campo.options"
+            optionLabel="label"
+            optionValue="value"
+            [formControlName]="campo.name"
+            placeholder="Selecciona una opción"
+          ></p-select>
+          <input *ngSwitchDefault pInputText type="text" [formControlName]="campo.name" />
+        </ng-container>
+        <small class="error" *ngIf="form().controls[campo.name]?.invalid && form().controls[campo.name]?.touched">Campo requerido</small>
+      </label>
+    </div>
+
+    <ng-template #emptyFields>
+      <p class="empty-fields">No hay campos configurados para esta contribución.</p>
+    </ng-template>
+
+    <div class="dialog-actions">
+      <button pButton type="button" label="Cancelar" severity="secondary" (click)="cerrarModal()"></button>
+      <button pButton type="submit" label="Calcular" icon="pi pi-play" [loading]="calculating()" [disabled]="!campos().length"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<ng-template #loadingTpl>
+  <div class="loading-state">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Cargando determinaciones…</p>
+  </div>
+</ng-template>
+
+<ng-template #emptyTpl>
+  <div class="empty-state">
+    <i class="pi pi-chart-bar"></i>
+    <p>No encontramos determinaciones registradas.</p>
+  </div>
+</ng-template>

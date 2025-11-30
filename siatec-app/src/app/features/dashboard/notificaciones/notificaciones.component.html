@@ -1,0 +1,36 @@
+<p-card class="notificaciones-card">
+  <ng-template pTemplate="header">
+    <div class="header">
+      <div>
+        <p class="eyebrow">Historial</p>
+        <h2>Notificaciones del sistema</h2>
+      </div>
+      <p-tag [value]="unreadCount() + ' sin leer'" severity="warn" *ngIf="unreadCount() > 0"></p-tag>
+    </div>
+  </ng-template>
+
+  <div class="toolbar">
+    <button pButton type="button" label="Marcar todas como leídas" icon="pi pi-check" (click)="marcarLeidas()" [disabled]="!unreadCount()"></button>
+  </div>
+
+  <ng-container *ngIf="hasNotifications(); else emptyTpl">
+    <div class="notifications">
+      <article class="notification" *ngFor="let item of notifications(); trackBy: trackById">
+        <div class="tag">
+          <p-tag [value]="severityFor(item.mensaje) === 'success' ? 'Éxito' : severityFor(item.mensaje) === 'warn' ? 'Aviso' : 'Info'" [severity]="severityFor(item.mensaje)"></p-tag>
+        </div>
+        <div class="body">
+          <p class="mensaje">{{ item.mensaje }}</p>
+          <small>{{ item.fecha | date: 'medium' }}</small>
+        </div>
+      </article>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyTpl>
+    <div class="empty-state">
+      <i class="pi pi-bell"></i>
+      <p>No tienes notificaciones registradas aún.</p>
+    </div>
+  </ng-template>
+</p-card>

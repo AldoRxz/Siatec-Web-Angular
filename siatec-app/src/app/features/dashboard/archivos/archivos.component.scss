@@ -1,0 +1,241 @@
+.archivos-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  .eyebrow {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    margin: 0;
+  }
+
+  h2 {
+    margin: 0;
+    color: #0f172a;
+  }
+
+  .badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    background: #e0ecff;
+    color: #1d4ed8;
+  }
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: end;
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    label {
+      font-size: 0.85rem;
+      color: #475569;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+}
+
+.inline-alert {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: #fff8eb;
+  color: #92400e;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.docs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead {
+    background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    color: #fff;
+  }
+
+  th,
+  td {
+    padding: 0.9rem 0.75rem;
+    font-size: 0.92rem;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+}
+
+.doc-name {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+
+  .icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: #eff6ff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+    font-size: 1.2rem;
+  }
+
+  .badges {
+    margin-top: 0.2rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+}
+
+.file-meta {
+  display: flex;
+  flex-direction: column;
+
+  small {
+    color: #94a3b8;
+  }
+}
+
+.toggle-extra {
+  margin-top: 0.35rem;
+  border: none;
+  background: none;
+  color: #2563eb;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.actions-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  justify-content: flex-end;
+
+  .p-button-text {
+    padding: 0;
+  }
+}
+
+.upload-wrapper {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.25rem;
+}
+
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.extra-row {
+  background: #f8fafc;
+
+  .extra-files {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .extra-file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+}
+
+.loading-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  gap: 0.75rem;
+  color: #475569;
+
+  i {
+    font-size: 2rem;
+    color: #94a3b8;
+  }
+}
+
+:host ::ng-deep .p-progress-spinner.sm {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.rename-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  label {
+    font-weight: 600;
+  }
+
+  .error {
+    color: #dc2626;
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-table th,
+  .docs-table td {
+    font-size: 0.85rem;
+  }
+}

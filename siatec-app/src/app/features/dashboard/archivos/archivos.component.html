@@ -1,0 +1,234 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<section class="archivos-page">
+  <p-card class="filters-card">
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Documentos del contribuyente</p>
+          <h2>Catálogo asignado</h2>
+        </div>
+        <span class="badge">{{ filteredDocuments().length }} requisitos visibles</span>
+      </div>
+    </ng-template>
+
+    <form class="filters-grid" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      <div class="form-field">
+        <label>Tipo de documento</label>
+        <p-select
+          formControlName="tipo"
+          [options]="tipoOptions()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Todos"
+          showClear
+        ></p-select>
+      </div>
+      <div class="form-field">
+        <label>Nombre de archivo</label>
+        <input
+          pInputText
+          type="text"
+          formControlName="nombre"
+          placeholder="Buscar por nombre..."
+        />
+      </div>
+      <div class="actions">
+        <button pButton type="submit" icon="pi pi-search" label="Buscar"></button>
+        <button pButton type="button" icon="pi pi-undo" label="Limpiar" severity="secondary" (click)="resetFilters()"></button>
+      </div>
+    </form>
+
+    <div *ngIf="errorMessage()" class="inline-alert">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  </p-card>
+
+  <p-card class="catalog-card">
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Catálogo dinámico</p>
+          <h2>Gestiona tus archivos</h2>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-container *ngIf="!loading(); else loadingTpl">
+      <ng-container *ngIf="filteredDocuments().length; else emptyTpl">
+        <div class="table-wrapper">
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Documento</th>
+                <th>Archivo</th>
+                <th>Tamaño</th>
+                <th>Estado</th>
+                <th class="text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let doc of filteredDocuments(); let index = index; trackBy: trackDoc">
+                <tr>
+                  <td>{{ index + 1 }}</td>
+                  <td>
+                    <div class="doc-name">
+                      <span class="icon"><i [class]="doc.icono"></i></span>
+                      <div>
+                        <strong>{{ doc.nombre }}</strong>
+                        <div class="badges">
+                          <p-tag value="Obligatorio" severity="warn" *ngIf="doc.requerido"></p-tag>
+                          <p-tag value="Opcional" severity="info" *ngIf="!doc.requerido"></p-tag>
+                          <p-tag
+                            [value]="doc.multiple ? 'Múltiple' : 'Único'"
+                            [severity]="doc.multiple ? 'info' : 'secondary'"
+                          ></p-tag>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="doc.archivos.length; else pendingTpl">
+                      <div class="file-meta">
+                        <strong>{{ doc.archivos[0].nombre }}</strong>
+                        <small *ngIf="doc.archivos[0].fechaSubida">{{ doc.archivos[0].fechaSubida | date: 'short' }}</small>
+                      </div>
+                      <button
+                        type="button"
+                        class="toggle-extra"
+                        *ngIf="doc.archivos.length > 1"
+                        (click)="toggleExpanded(doc)"
+                      >
+                        {{ isExpanded(doc) ? 'Ocultar' : '+' + (doc.archivos.length - 1) + ' más' }}
+                      </button>
+                    </ng-container>
+                  </td>
+                  <td>{{ doc.archivos[0]?.tamanoBytes ? formatBytes(doc.archivos[0]?.tamanoBytes) : '-' }}</td>
+                  <td>
+                    <ng-container *ngIf="documentStatus(doc) as status">
+                      <p-tag [value]="status.label" [severity]="status.severity"></p-tag>
+                    </ng-container>
+                  </td>
+                  <td class="text-right">
+                    <div class="actions-row">
+                      <ng-container *ngIf="doc.archivos.length; else disabledActions">
+                        <button
+                          pButton
+                          type="button"
+                          icon="pi pi-eye"
+                          class="p-button-text"
+                          (click)="viewFile(doc, doc.archivos[0])"
+                        ></button>
+                        <button
+                          pButton
+                          type="button"
+                          icon="pi pi-download"
+                          class="p-button-text"
+                          (click)="downloadFile(doc, doc.archivos[0])"
+                        ></button>
+                        <button
+                          pButton
+                          type="button"
+                          icon="pi pi-pencil"
+                          class="p-button-text"
+                          (click)="openRenameDialog(doc, doc.archivos[0])"
+                        ></button>
+                        <button
+                          pButton
+                          type="button"
+                          icon="pi pi-trash"
+                          severity="danger"
+                          class="p-button-text"
+                          (click)="confirmDelete(doc, doc.archivos[0])"
+                        ></button>
+                      </ng-container>
+                      <ng-template #disabledActions>
+                        <span class="text-muted">Sin archivo</span>
+                      </ng-template>
+                      <div class="upload-wrapper">
+                        <input
+                          #fileInput
+                          type="file"
+                          class="hidden-input"
+                          (change)="onUploadSelected(doc, $event)"
+                          [attr.multiple]="doc.multiple ? '' : null"
+                          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                        />
+                        <button
+                          pButton
+                          type="button"
+                          icon="pi pi-upload"
+                          class="p-button-sm"
+                          (click)="fileInput.click()"
+                        ></button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="doc.archivos.length > 1 && isExpanded(doc)" class="extra-row">
+                  <td colspan="6">
+                    <div class="extra-files">
+                      <div class="extra-file" *ngFor="let file of doc.archivos.slice(1)">
+                        <div>
+                          <strong>{{ file.nombre }}</strong>
+                          <small *ngIf="file.fechaSubida">{{ file.fechaSubida | date: 'short' }}</small>
+                        </div>
+                        <div class="actions-row">
+                          <button pButton type="button" icon="pi pi-eye" class="p-button-text" (click)="viewFile(doc, file)"></button>
+                          <button pButton type="button" icon="pi pi-download" class="p-button-text" (click)="downloadFile(doc, file)"></button>
+                          <button pButton type="button" icon="pi pi-pencil" class="p-button-text" (click)="openRenameDialog(doc, file)"></button>
+                          <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-danger" (click)="confirmDelete(doc, file)"></button>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #loadingTpl>
+      <div class="loading-state">
+        <p-progressSpinner styleClass="sm"></p-progressSpinner>
+        <p>Cargando documentos asignados…</p>
+      </div>
+    </ng-template>
+
+    <ng-template #emptyTpl>
+      <div class="empty-state">
+        <i class="pi pi-folder-open"></i>
+        <p>No hay documentos configurados con los filtros actuales.</p>
+      </div>
+    </ng-template>
+
+    <ng-template #pendingTpl>
+      <span class="text-muted">Pendiente de carga</span>
+    </ng-template>
+  </p-card>
+</section>
+
+<p-dialog
+  [visible]="renameVisible()"
+  modal
+  header="Renombrar archivo"
+  [style]="{ width: '30rem' }"
+  (onHide)="closeRenameDialog()"
+>
+  <form class="rename-form" [formGroup]="renameForm" (ngSubmit)="submitRename()">
+    <label for="nuevoNombre">Nuevo nombre</label>
+    <input id="nuevoNombre" pInputText type="text" formControlName="nombre" />
+    <small class="error" *ngIf="renameForm.controls.nombre.invalid && renameForm.controls.nombre.touched">
+      Ingresa un nombre válido.
+    </small>
+    <div class="dialog-actions">
+      <button pButton type="button" label="Cancelar" severity="secondary" (click)="closeRenameDialog()"></button>
+      <button pButton type="submit" label="Guardar" [disabled]="renameForm.invalid"></button>
+    </div>
+  </form>
+</p-dialog>

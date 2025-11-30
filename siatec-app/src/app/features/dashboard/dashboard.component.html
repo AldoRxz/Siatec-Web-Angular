@@ -1,0 +1,133 @@
+<div class="dashboard-shell">
+  <app-portal-header
+    [title]="'SIATEC'"
+    [subtitle]="'Portal Tributario'"
+    [userName]="userName"
+    [userEmail]="userEmail"
+    [notifications]="unreadNotifications()"
+    badgeSeverity="warn"
+    (profile)="handleProfile()"
+    (settings)="handleSettings()"
+    (logout)="handleLogout()"
+    (notificationsClick)="handleNotificationsClick()"
+  ></app-portal-header>
+
+  <div class="dashboard-body">
+    <app-sidebar-nav class="sidebar" [items]="navItems"></app-sidebar-nav>
+
+    <section class="dashboard-main">
+      <div class="hero" id="overviewPanel">
+        <div class="hero-text">
+          <p class="eyebrow">Bienvenido de vuelta</p>
+          <h2>Tu panel general</h2>
+          <p>Mantén al día tus contribuciones, documentos y citas desde un mismo lugar.</p>
+        </div>
+        <div class="hero-meta">
+          <span class="label">Documentos asignados</span>
+          <p class="value">{{ documentSummary().total }}</p>
+          <small *ngIf="documentSummary().lastUpdated">Actualizado {{ documentSummary().lastUpdated | date: 'shortTime' }}</small>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <app-metric-card
+          *ngFor="let card of metricCards"
+          [label]="card.label"
+          [value]="card.value"
+          [description]="card.description"
+          [icon]="card.icon"
+          [severity]="card.severity"
+          [actionLabel]="card.actionLabel"
+          [hint]="card.hint || ''"
+          (action)="onMetricAction(card)"
+        ></app-metric-card>
+      </div>
+
+      <div class="content-grid" id="activityPanel">
+        <p-card class="panel" header="Actividad reciente">
+          <div class="activity-list">
+            <div class="activity-item" *ngFor="let item of recentActivity; trackBy: trackActivity">
+              <div class="icon" [ngClass]="item.severity">
+                <i [ngClass]="item.icon"></i>
+              </div>
+              <div>
+                <p class="title">{{ item.label }}</p>
+                <p class="detail">{{ item.detail }}</p>
+              </div>
+              <span class="timestamp">{{ item.timestamp }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="panel" header="Acciones rápidas" id="actionsPanel">
+          <div class="actions">
+            <button
+              pButton
+              type="button"
+              *ngFor="let action of quickActions"
+              class="action-btn"
+              [icon]="action.icon"
+              [label]="action.label"
+              (click)="onQuickAction(action.route, action.anchor)"
+            ></button>
+          </div>
+          <p-divider></p-divider>
+          <p class="hint">Tip: puedes guardar borradores mientras completas tu inscripción.</p>
+        </p-card>
+      </div>
+
+      <div class="content-grid" id="tasksPanel">
+        <p-card class="panel" header="Tareas y seguimiento">
+          <p-timeline [value]="timeline" layout="vertical">
+            <ng-template pTemplate="marker" let-item>
+              <span class="timeline-marker" [ngClass]="item.severity"></span>
+            </ng-template>
+            <ng-template pTemplate="content" let-item>
+              <div class="timeline-content">
+                <h5>{{ item.status }}</h5>
+                <p>{{ item.detail }}</p>
+                <small>{{ item.date }}</small>
+              </div>
+            </ng-template>
+          </p-timeline>
+        </p-card>
+
+        <p-card class="panel" header="Alertas importantes" id="alertsPanel">
+          <div class="alerts">
+            <div class="alert" *ngFor="let alert of alerts">
+              <div class="alert-header">
+                <p-tag [value]="alert.tag || 'Aviso'" [severity]="alert.severity"></p-tag>
+                <strong>{{ alert.title }}</strong>
+              </div>
+              <p>{{ alert.detail }}</p>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <p-card
+        class="panel"
+        id="inscriptionPanel"
+        header="Estado de inscripción"
+        *ngIf="inscriptionState as insc"
+      >
+        <div class="inscription">
+          <div>
+            <p class="label">RFC</p>
+            <p class="value">{{ insc.rfc || 'No disponible' }}</p>
+          </div>
+          <div>
+            <p class="label">Estado actual</p>
+            <p-tag [value]="insc.status || 'Procesando'" [severity]="'warn'"></p-tag>
+          </div>
+          <div>
+            <p class="label">Actualizado</p>
+            <p>{{ insc.timestamp | date: 'medium' }}</p>
+          </div>
+        </div>
+        <p-divider></p-divider>
+        <p class="hint">Seguimos revisando tu solicitud. Recibirás una notificación cuando cambiemos el estado.</p>
+      </p-card>
+    </section>
+  </div>
+</div>
