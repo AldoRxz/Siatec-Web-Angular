@@ -1,0 +1,145 @@
+<div class="forgot-shell min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-slate-100 p-4">
+  <div class="w-full max-w-5xl">
+    <p-card class="shadow-xl overflow-hidden">
+      <ng-template pTemplate="header">
+        <div class="grid layout-header">
+          <div class="hero">
+            <div class="badge">
+              <i class="pi pi-key"></i>
+            </div>
+            <p class="eyebrow">Recuperar acceso</p>
+            <h2>¿Olvidaste tu contraseña?</h2>
+            <p class="lead">Ingresa tus datos de contacto y te enviaremos un enlace seguro para restablecerla.</p>
+          </div>
+          <div class="helper" *ngIf="helperTopics.length">
+            <div class="helper-card" *ngFor="let topic of helperTopics">
+              <i class="pi" [ngClass]="topic.icon"></i>
+              <div>
+                <p class="title">{{ topic.title }}</p>
+                <p class="detail">{{ topic.detail }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="content">
+        <div class="grid content-grid">
+          <div class="form-area">
+            <form [formGroup]="recoveryForm" (ngSubmit)="onSubmit()" class="space-y-7">
+              <div>
+                <p-floatlabel class="with-icon">
+                  <p-iconfield iconPosition="left" class="w-full">
+                    <p-inputicon class="pi pi-envelope"></p-inputicon>
+                    <input
+                      pInputText
+                      id="email"
+                      type="email"
+                      formControlName="email"
+                      autocomplete="email"
+                      placeholder=" "
+                      class="w-full"
+                    />
+                  </p-iconfield>
+                  <label for="email">Correo registrado *</label>
+                </p-floatlabel>
+                @if (emailControl?.invalid && emailControl?.touched) {
+                  <small class="field-error">
+                    {{ emailControl?.errors?.['required'] ? 'El correo es obligatorio' : 'Ingresa un correo válido' }}
+                  </small>
+                }
+              </div>
+
+              <div>
+                <p-floatlabel class="with-icon">
+                  <p-iconfield iconPosition="left" class="w-full">
+                    <p-inputicon class="pi pi-id-card"></p-inputicon>
+                    <input
+                      pInputText
+                      id="identifier"
+                      formControlName="identifier"
+                      autocomplete="username"
+                      placeholder=" "
+                      class="w-full"
+                    />
+                  </p-iconfield>
+                  <label for="identifier">Usuario o RFC (opcional)</label>
+                </p-floatlabel>
+                @if (identifierControl?.errors?.['minlength'] && identifierControl?.touched) {
+                  <small class="field-error">Debe tener al menos 6 caracteres</small>
+                }
+                <p class="hint">Ayuda a validar tu identidad y agiliza la verificación.</p>
+              </div>
+
+              <div>
+                <p class="section-label">¿Cómo quieres recibir el enlace?</p>
+                <div class="preference-chips">
+                  <button
+                    type="button"
+                    pButton
+                    label="Correo electrónico"
+                    class="chip"
+                    [ngClass]="{ active: recoveryForm.value.contactPreference === 'email' }"
+                    (click)="recoveryForm.patchValue({ contactPreference: 'email' })"
+                  ></button>
+                  <button
+                    type="button"
+                    pButton
+                    label="Mensaje SMS"
+                    class="chip"
+                    [ngClass]="{ active: recoveryForm.value.contactPreference === 'sms' }"
+                    (click)="recoveryForm.patchValue({ contactPreference: 'sms' })"
+                  ></button>
+                </div>
+                <small class="hint">El SMS se envía al número que registraste para notificaciones.</small>
+              </div>
+
+              @if (responseMessage) {
+                <p-message
+                  [severity]="responseMessage.includes('error') ? 'warn' : 'info'"
+                  [text]="responseMessage"
+                  class="w-full"
+                ></p-message>
+              }
+
+              <button
+                pButton
+                type="submit"
+                label="Enviar instrucciones"
+                icon="pi pi-send"
+                class="w-full py-3"
+                [disabled]="recoveryForm.invalid || loading"
+                [loading]="loading"
+              ></button>
+
+              <div class="text-center">
+                <span class="text-slate-600 text-sm">¿La recordaste? </span>
+                <a routerLink="/login" class="text-blue-600 font-semibold text-sm hover:underline">Regresa al inicio de sesión</a>
+              </div>
+            </form>
+          </div>
+          <div class="status-panel">
+            <div class="status-card">
+              <p class="eyebrow">Tiempo estimado</p>
+              <h3>Menos de 2 minutos</h3>
+              <p>Te enviaremos un enlace temporal válido por 15 minutos. Puedes solicitar otro después.</p>
+              <ul>
+                <li><i class="pi pi-bell"></i> Recibirás alertas en cuanto detectemos actividad sospechosa.</li>
+                <li><i class="pi pi-lock"></i> Al crear la nueva contraseña, activaremos el doble factor opcional.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <div class="px-6 pb-8">
+          <p-divider></p-divider>
+          <div class="text-center text-sm text-slate-500">
+            ¿Necesitas ayuda adicional? Llámanos al 800-SIATEC o escribe a soporte@siatec.gob
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</div>

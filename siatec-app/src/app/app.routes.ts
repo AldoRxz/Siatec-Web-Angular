@@ -17,6 +17,11 @@ export const routes: Routes = [
     title: 'Registro - SIATEC'
   },
   {
+    path: 'forgot',
+    loadComponent: () => import('./features/auth/forgot/forgot.component').then(m => m.ForgotComponent),
+    title: 'Recuperar contraseña - SIATEC'
+  },
+  {
     path: '**',
     redirectTo: '/login'
   }

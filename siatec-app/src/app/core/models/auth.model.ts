@@ -57,3 +57,17 @@ export interface UpdateAccountData {
   apellidos?: string;
   [key: string]: any;
 }
+
+/**
+ * Solicitud de recuperación de contraseña
+ */
+export interface PasswordRecoveryRequest {
+  email: string;
+  identifier?: string;
+  contactPreference?: 'email' | 'sms';
+}
+
+export interface PasswordRecoveryResponse {
+  message?: string;
+  ticketId?: string;
+}

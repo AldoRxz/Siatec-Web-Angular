@@ -9,7 +9,9 @@ import {
   LoginCredentials, 
   AuthResponse, 
   CreateAccountData, 
-  UpdateAccountData 
+  UpdateAccountData,
+  PasswordRecoveryRequest,
+  PasswordRecoveryResponse
 } from '../models/auth.model';
 
 /**
@@ -87,6 +89,23 @@ export class AuthService {
     const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente`;
 
     return this.http.put(url, data).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
+
+  /**
+   * Solicitud de recuperación de contraseña
+   */
+  requestPasswordRecovery(payload: PasswordRecoveryRequest): Observable<PasswordRecoveryResponse> {
+    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/password/recovery`;
+    const body = {
+      email: payload.email,
+      identifier: payload.identifier,
+      channel: payload.contactPreference || 'email'
+    };
+
+    return this.http.post<PasswordRecoveryResponse>(url, body).pipe(
+      map(response => response || { message: 'Solicitud recibida' }),
       catchError(error => this.handleAuthError(error))
     );
   }
