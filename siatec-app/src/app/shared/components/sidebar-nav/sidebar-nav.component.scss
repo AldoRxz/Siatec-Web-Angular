@@ -1,0 +1,37 @@
+.sidebar-nav {
+  width: 280px;
+  min-width: 260px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  padding: 1rem;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+  height: fit-content;
+}
+
+.sidebar-header {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+:host ::ng-deep .sidebar-panel .p-panelmenu-header > a {
+  border-radius: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+:host ::ng-deep .sidebar-panel .p-menuitem-link {
+  border-radius: 0.65rem;
+  margin: 0.1rem 0;
+}
+
+@media (max-width: 960px) {
+  .sidebar-nav {
+    width: 100%;
+    min-width: auto;
+  }
+}

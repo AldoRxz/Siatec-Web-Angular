@@ -1,0 +1,91 @@
+.portal-header {
+  background: linear-gradient(120deg, #0f172a, #1d4ed8);
+  border: none;
+  border-radius: 1rem;
+  padding: 0.35rem 0.5rem;
+  color: #fff;
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .brand-mark {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .brand-tag {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .notification-button {
+    position: relative;
+    color: #fff;
+  }
+
+  .user-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(15, 23, 42, 0.35);
+    color: #fff;
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.1;
+    }
+
+    .user-email {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.75rem;
+    }
+  }
+}
+
+:host ::ng-deep .portal-header .notification-button .p-badge {
+  position: absolute;
+  right: 0.1rem;
+  top: 0.1rem;
+}
+
+@media (max-width: 768px) {
+  .portal-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+
+    .header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .user-button {
+      flex: 1;
+      justify-content: space-between;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<p-toolbar class="portal-header">
+  <div class="brand">
+    <div class="brand-mark">{{ title }}</div>
+    <span class="brand-tag">{{ subtitle }}</span>
+  </div>
+
+  <div class="header-actions">
+    <button
+      pButton
+      type="button"
+      class="p-button-rounded p-button-text notification-button"
+      icon="pi pi-bell"
+      (click)="onNotificationsClick()"
+    >
+      <p-badge *ngIf="notifications > 0" [value]="notifications" [severity]="badgeSeverity"></p-badge>
+    </button>
+
+    <p-menu #userMenu [popup]="true" [model]="internalMenu"></p-menu>
+    <button type="button" class="user-button" pButton (click)="userMenu.toggle($event)">
+      <p-avatar [label]="initials" shape="circle" size="large"></p-avatar>
+      <div class="user-meta">
+        <span class="user-name">{{ userName }}</span>
+        <small class="user-email">{{ userEmail }}</small>
+      </div>
+      <i class="pi pi-chevron-down"></i>
+    </button>
+  </div>
+</p-toolbar>
