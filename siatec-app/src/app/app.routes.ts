@@ -26,8 +26,18 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+        redirectTo: 'panel',
+        pathMatch: 'full'
+      },
+      {
+        path: 'panel',
+        loadComponent: () => import('./features/dashboard/panel/panel.component').then(m => m.PanelComponent),
         title: 'Panel principal - SIATEC'
+      },
+      {
+        path: 'resumen',
+        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+        title: 'Resumen extendido - SIATEC'
       },
       {
         path: 'archivos',
@@ -48,6 +58,11 @@ export const routes: Routes = [
         path: 'operaciones',
         loadComponent: () => import('./features/dashboard/operaciones/operaciones.component').then(m => m.OperacionesComponent),
         title: 'Operaciones - SIATEC'
+      },
+      {
+        path: 'inscripcion',
+        loadComponent: () => import('./features/dashboard/inscripcion/inscripcion.component').then(m => m.InscripcionComponent),
+        title: 'Solicitud de inscripción - SIATEC'
       }
     ]
   },
