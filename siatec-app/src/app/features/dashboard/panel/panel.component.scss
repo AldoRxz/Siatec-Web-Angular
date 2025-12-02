@@ -1,42 +1,74 @@
+// ============================================
+// Dashboard Panel Component
+// ============================================
+// Main dashboard view with hero, cards, and widgets
+
+// Design tokens
+$panel-bg: rgba(255, 255, 255, 0.95);
+$panel-border: rgba(226, 232, 240, 0.8);
+$panel-shadow: 0 40px 80px rgba(15, 23, 42, 0.12);
+$panel-gap: 2rem;
+$panel-padding: 2rem;
+$panel-radius: 1.75rem;
+$panel-text: #0f172a;
+
+$hero-bg-start: #0f172a;
+$hero-bg-end: #2563eb;
+$hero-padding: 2.5rem;
+$hero-radius: 1.25rem;
+
+$card-bg: #ffffff;
+$card-border: #e2e8f0;
+$card-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+$card-padding: 1.75rem;
+$card-radius: 1.25rem;
+$card-gap: 1.25rem;
 
 .panel-page {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 1.75rem;
-  box-shadow: 0 40px 80px rgba(15, 23, 42, 0.12);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  color: #0f172a;
+  gap: $panel-gap;
+  padding: 2rem $panel-padding $panel-padding;
+  background: rgba(248, 250, 252, 0.6);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  color: $panel-text;
 }
 
+// Hero section at top of panel
 .panel-hero {
   display: flex;
-  gap: 2rem;
-  padding: 2rem;
-  border-radius: 1.5rem;
-  background: linear-gradient(135deg, #0f172a, #1d4ed8);
+  gap: $panel-gap;
+  padding: $hero-padding;
+  border-radius: $hero-radius;
+  background: linear-gradient(135deg, $hero-bg-start, $hero-bg-end);
   color: #fff;
   justify-content: space-between;
   flex-wrap: wrap;
 
   h2 {
-    font-size: 2rem;
+    font-size: 1.65rem;
+    font-weight: 700;
     margin-bottom: 0.5rem;
+    line-height: 1.2;
   }
 
   p {
     margin: 0;
     max-width: 32rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    opacity: 0.95;
   }
 
   .eyebrow {
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: 0.75rem;
-    margin-bottom: 0.5rem;
-    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.18em;
+    font-size: 0.7rem;
+    margin-bottom: 0.6rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 600;
   }
 
   .hero-actions {
@@ -44,23 +76,29 @@
     gap: 0.75rem;
     flex-wrap: wrap;
     margin-top: 1rem;
+
+    ::ng-deep .p-button {
+      font-size: 0.9rem;
+      padding: 0.65rem 1.25rem;
+    }
   }
 
   .hero-card {
-    min-width: 220px;
-    padding: 1.5rem;
-    background: rgba(15, 23, 42, 0.8);
-    border-radius: 1.25rem;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    min-width: 240px;
+    padding: 1.75rem;
+    background: rgba(15, 23, 42, 0.85);
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 
     .label {
       text-transform: uppercase;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       opacity: 0.7;
     }
 
     .value {
-      font-size: 2.5rem;
+      font-size: 2.25rem;
       font-weight: 700;
       margin: 0.5rem 0;
     }
@@ -79,15 +117,22 @@
   gap: 1.5rem;
 }
 
+// Dashboard summary card
 .panel-card {
-  background: #fff;
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-  background: rgba(255, 255, 255, 0.95);
+  background: $card-bg;
+  border-radius: $card-radius;
+  padding: $card-padding;
+  box-shadow: $card-shadow;
   flex-direction: column;
-  gap: 1.25rem;
-  border: 1px solid #e2e8f0;
+  gap: $card-gap;
+  border: 1px solid $card-border;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+    border-color: #cbd5e1;
+  }
 
   .card-head {
     display: flex;
@@ -96,26 +141,31 @@
   }
 
   .card-icon {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 1.2rem;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     color: #0f172a;
     background: #f1f5f9;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover .card-icon {
+    transform: scale(1.05);
   }
 
   .label {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     color: #64748b;
     margin: 0;
   }
 
   .value {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     margin: 0;
     color: #0f172a;
@@ -154,10 +204,15 @@
 
 .panel-block {
   background: #fff;
-  border-radius: 1.5rem;
-  padding: 1.5rem;
+  border-radius: 1.25rem;
+  padding: 1.75rem;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+  }
 
   header {
     display: flex;
@@ -170,7 +225,7 @@
       align-items: center;
       gap: 0.5rem;
       margin: 0;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #0f172a;
     }
 
