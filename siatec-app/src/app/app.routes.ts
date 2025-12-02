@@ -23,6 +23,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
+    loadComponent: () => import('./features/dashboard/layout/dashboard-shell.component').then(m => m.DashboardShellComponent),
     children: [
       {
         path: '',

@@ -15,7 +15,7 @@
       <p-badge *ngIf="notifications > 0" [value]="notifications" [severity]="badgeSeverity"></p-badge>
     </button>
 
-    <p-menu #userMenu [popup]="true" [model]="internalMenu"></p-menu>
+    <p-menu #userMenu [popup]="true" [model]="internalMenu" styleClass="portal-header-menu"></p-menu>
     <button type="button" class="user-button" pButton (click)="userMenu.toggle($event)">
       <p-avatar [label]="initials" shape="circle" size="large"></p-avatar>
       <div class="user-meta">

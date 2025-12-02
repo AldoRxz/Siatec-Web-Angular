@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { AuthService, ContribuyentesService } from '../../../core/services';
+import { AuthService } from '../../../core/services';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
-import { take } from 'rxjs/operators';
+import { DashboardDocumentsService } from '../services/dashboard-documents.service';
 
 interface PanelCard {
   key: 'cuenta' | 'citas' | 'operaciones' | 'archivos';
@@ -43,9 +43,8 @@ interface InscripcionState {
 export class PanelComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
-  private readonly contribuyentesService = inject(ContribuyentesService);
   private readonly notificationsService = inject(DashboardNotificationsService);
-
+  private readonly documentsService = inject(DashboardDocumentsService);
   readonly cards = signal<PanelCard[]>([
     {
       key: 'cuenta',
@@ -129,11 +128,16 @@ export class PanelComponent implements OnInit {
 
   readonly inscripcionState = signal<InscripcionState | null>(null);
   readonly notificationsCount = this.notificationsService.unreadCount;
+  readonly documentSummary = this.documentsService.summary;
 
-  readonly documentSummary = signal<{ total: number; updatedAt?: Date }>({ total: 0 });
+  private readonly documentCardEffect = computed(() => {
+    const summary = this.documentSummary();
+    this.updateCardValue('archivos', `${summary.total} asignados`);
+    return summary.total;
+  });
 
   ngOnInit(): void {
-    this.loadDocumentCount();
+    this.documentsService.load();
     this.loadInscripcionState();
   }
 
@@ -176,28 +180,6 @@ export class PanelComponent implements OnInit {
     return 'warn';
   }
 
-  private loadDocumentCount(): void {
-    const contribuyenteId = this.authService.getContribuyenteId();
-    if (!contribuyenteId) {
-      return;
-    }
-
-    this.contribuyentesService
-      .getArchivosContribuyente(contribuyenteId, 1, 1)
-      .pipe(take(1))
-      .subscribe({
-        next: (response) => {
-          const total = response?.totalItems ?? response?.items?.length ?? 0;
-          this.documentSummary.set({ total, updatedAt: new Date() });
-          this.updateCardValue('archivos', `${total} asignados`);
-        },
-        error: () => {
-          this.documentSummary.set({ total: 0 });
-          this.updateCardValue('archivos', '0 asignados');
-        }
-      });
-  }
-
   private updateCardValue(key: PanelCard['key'], value: string): void {
     this.cards.update((items) => items.map((item) => (item.key === key ? { ...item, value } : item)));
   }
@@ -238,4 +220,5 @@ export class PanelComponent implements OnInit {
     const impuestos = Array.isArray(payload?.impuestos) ? payload.impuestos.length : 0;
     return `${regimenes} régimen(es) · ${impuestos} impuesto(s)`;
   }
+
 }

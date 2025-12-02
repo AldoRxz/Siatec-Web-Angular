@@ -1,0 +1,39 @@
+<div class="shell">
+  <header class="shell-header">
+    <app-portal-header
+      title="SIATEC"
+      subtitle="Portal Tributario"
+      [userName]="userName"
+      [userEmail]="userEmail"
+      [notifications]="notificationsCount()"
+      badgeSeverity="danger"
+      (profile)="onProfile()"
+      (settings)="onSettings()"
+      (logout)="onLogout()"
+      (notificationsClick)="onNotificationsClick()"
+    ></app-portal-header>
+  </header>
+
+  <div class="shell-body">
+    <div class="shell-sidebar">
+      <app-sidebar-nav
+        title="Panel de Control"
+        [items]="navItems()"
+        [activeKey]="activeKey()"
+        (select)="onSidebarSelect($event)"
+      ></app-sidebar-nav>
+    </div>
+
+    <main class="shell-main">
+      <section class="shell-main-content">
+        <div class="shell-main-surface">
+          <router-outlet></router-outlet>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="shell-footer">
+    <span>&copy; {{ footerYear }} SIATEC. Todos los derechos reservados.</span>
+  </footer>
+</div>
