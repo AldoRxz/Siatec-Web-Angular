@@ -1,105 +1,112 @@
 <section class="panel-page">
-  <header class="panel-hero">
-    <div>
-      <p class="eyebrow">Panel principal</p>
-      <h2>Hola, {{ userName }}</h2>
-      <p>Consulta el mismo resumen que existía en el portal anterior: tarjetas, actividad reciente y estado de tu solicitud.</p>
-      <div class="hero-actions">
-        <button pButton type="button" label="Ver archivos" icon="pi pi-folder" (click)="navigate('/dashboard/archivos')"></button>
-        <button pButton type="button" label="Solicitud de inscripción" icon="pi pi-shield" severity="secondary" (click)="navigate('/dashboard/inscripcion')"></button>
-      </div>
-    </div>
-    <div class="hero-card">
-      <p class="label">Notificaciones</p>
-      <p class="value">{{ notificationsCount() }}</p>
-      <small *ngIf="documentSummary().updatedAt">Documentos asignados: {{ documentSummary().total }}</small>
-      <button pButton type="button" label="Ver bandeja" icon="pi pi-bell" (click)="navigate('/dashboard/notificaciones')"></button>
-    </div>
-  </header>
-
-  <div class="panel-cards">
-    <article class="panel-card" *ngFor="let card of cards()" [ngClass]="'accent-' + card.accent">
-      <div class="card-head">
-        <div class="card-icon">
-          <i [ngClass]="card.icon"></i>
-        </div>
-        <div>
-          <p class="label">{{ card.title }}</p>
-          <p class="value">{{ card.value }}</p>
-        </div>
-      </div>
-      <button pButton type="button" [label]="card.action" class="card-action" (click)="navigate(card.route)"></button>
-    </article>
-  </div>
-
-  <div class="panel-grid">
-    <section class="panel-block">
-      <header>
-        <h3><i class="pi pi-clock"></i> Actividad reciente</h3>
-        <span class="hint">Ejemplos sincronizados del panel original</span>
-      </header>
-      <div class="activity-list">
-        <article *ngFor="let item of activity" class="activity-item">
-          <div class="bubble" [ngClass]="item.accent">
-            <i [ngClass]="item.icon"></i>
-          </div>
+        <header class="panel-hero">
           <div>
-            <p class="title">{{ item.title }}</p>
-            <p class="detail">{{ item.detail }}</p>
+            <p class="eyebrow">Panel principal</p>
+            <h2>Hola, {{ userName }}</h2>
+            <p>Consulta el mismo resumen que existía en el portal anterior: tarjetas, actividad reciente y estado de tu solicitud.</p>
+            <div class="hero-actions">
+              <button pButton type="button" label="Ver archivos" icon="pi pi-folder" (click)="navigate('/dashboard/archivos')"></button>
+              <button
+                pButton
+                type="button"
+                label="Solicitud de inscripción"
+                icon="pi pi-shield"
+                severity="secondary"
+                (click)="navigate('/dashboard/inscripcion')"
+              ></button>
+            </div>
           </div>
-        </article>
-      </div>
-    </section>
+          <div class="hero-card">
+            <p class="label">Notificaciones</p>
+            <p class="value">{{ notificationsCount() }}</p>
+            <small *ngIf="documentSummary().updatedAt">Documentos asignados: {{ documentSummary().total }}</small>
+            <button pButton type="button" label="Ver bandeja" icon="pi pi-bell" (click)="navigate('/dashboard/notificaciones')"></button>
+          </div>
+        </header>
 
-    <section class="panel-block">
-      <header>
-        <h3><i class="pi pi-hourglass"></i> Solicitud de inscripción</h3>
-        <span class="hint">LocalStorage: inscripcionProcesando</span>
-      </header>
-      <ng-container *ngIf="inscripcionState(); else inscripcionCta">
-        <div class="inscripcion-state">
-          <div>
-            <p class="label">RFC</p>
-            <strong>{{ inscripcionState()?.rfc || 'Sin registro' }}</strong>
-          </div>
-          <div>
-            <p-tag [value]="inscripcionState()?.status || 'Procesando'" [severity]="getInscripcionSeverity()"></p-tag>
-            <small>{{ inscripcionState()?.timestamp | date: 'medium' }}</small>
-          </div>
+        <div class="panel-cards">
+          <article class="panel-card" *ngFor="let card of cards()" [ngClass]="'accent-' + card.accent">
+            <div class="card-head">
+              <div class="card-icon">
+                <i [ngClass]="card.icon"></i>
+              </div>
+              <div>
+                <p class="label">{{ card.title }}</p>
+                <p class="value">{{ card.value }}</p>
+              </div>
+            </div>
+            <button pButton type="button" [label]="card.action" class="card-action" (click)="navigate(card.route)"></button>
+          </article>
         </div>
-        <div class="inscripcion-summary">
-          <strong>{{ getPersonaResumen() }}</strong>
-          <p>{{ getResumenDetalle() }}</p>
-        </div>
-        <div class="inscripcion-actions">
-          <button pButton type="button" label="Continuar" icon="pi pi-pen-to-square" (click)="navigate('/dashboard/inscripcion')"></button>
-          <button pButton type="button" label="Limpiar estado" icon="pi pi-times" severity="secondary" (click)="clearInscripcionState()"></button>
-        </div>
-      </ng-container>
-      <ng-template #inscripcionCta>
-        <div class="inscripcion-empty">
-          <p>Inicia la solicitud para el Registro Estatal de Contribuyentes y rastrea aquí su avance.</p>
-          <button pButton type="button" label="Comenzar" icon="pi pi-shield" (click)="navigate('/dashboard/inscripcion')"></button>
-        </div>
-      </ng-template>
-    </section>
-  </div>
 
-  <section class="panel-block quick">
-    <header>
-      <h3><i class="pi pi-bolt"></i> Acciones rápidas</h3>
-      <span class="hint">Los mismos atajos del dashboard legacy</span>
-    </header>
-    <div class="quick-grid">
-      <button type="button" *ngFor="let action of quickActions" class="quick-action" (click)="navigate(action.route)">
-        <div class="icon">
-          <i [ngClass]="action.icon"></i>
+        <div class="panel-grid">
+          <section class="panel-block">
+            <header>
+              <h3><i class="pi pi-clock"></i> Actividad reciente</h3>
+              <span class="hint">Ejemplos sincronizados del panel original</span>
+            </header>
+            <div class="activity-list">
+              <article *ngFor="let item of activity" class="activity-item">
+                <div class="bubble" [ngClass]="item.accent">
+                  <i [ngClass]="item.icon"></i>
+                </div>
+                <div>
+                  <p class="title">{{ item.title }}</p>
+                  <p class="detail">{{ item.detail }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel-block">
+            <header>
+              <h3><i class="pi pi-hourglass"></i> Solicitud de inscripción</h3>
+              <span class="hint">LocalStorage: inscripcionProcesando</span>
+            </header>
+            <ng-container *ngIf="inscripcionState(); else inscripcionCta">
+              <div class="inscripcion-state">
+                <div>
+                  <p class="label">RFC</p>
+                  <strong>{{ inscripcionState()?.rfc || 'Sin registro' }}</strong>
+                </div>
+                <div>
+                  <p-tag [value]="inscripcionState()?.status || 'Procesando'" [severity]="getInscripcionSeverity()"></p-tag>
+                  <small>{{ inscripcionState()?.timestamp | date: 'medium' }}</small>
+                </div>
+              </div>
+              <div class="inscripcion-summary">
+                <strong>{{ getPersonaResumen() }}</strong>
+                <p>{{ getResumenDetalle() }}</p>
+              </div>
+              <div class="inscripcion-actions">
+                <button pButton type="button" label="Continuar" icon="pi pi-pen-to-square" (click)="navigate('/dashboard/inscripcion')"></button>
+                <button pButton type="button" label="Limpiar estado" icon="pi pi-times" severity="secondary" (click)="clearInscripcionState()"></button>
+              </div>
+            </ng-container>
+            <ng-template #inscripcionCta>
+              <div class="inscripcion-empty">
+                <p>Inicia la solicitud para el Registro Estatal de Contribuyentes y rastrea aquí su avance.</p>
+                <button pButton type="button" label="Comenzar" icon="pi pi-shield" (click)="navigate('/dashboard/inscripcion')"></button>
+              </div>
+            </ng-template>
+          </section>
         </div>
-        <div>
-          <p class="label">{{ action.label }}</p>
-          <p class="detail">{{ action.description }}</p>
-        </div>
-      </button>
-    </div>
-  </section>
+
+        <section class="panel-block quick">
+          <header>
+            <h3><i class="pi pi-bolt"></i> Acciones rápidas</h3>
+            <span class="hint">Los mismos atajos del dashboard legacy</span>
+          </header>
+          <div class="quick-grid">
+            <button type="button" *ngFor="let action of quickActions" class="quick-action" (click)="navigate(action.route)">
+              <div class="icon">
+                <i [ngClass]="action.icon"></i>
+              </div>
+              <div>
+                <p class="label">{{ action.label }}</p>
+                <p class="detail">{{ action.description }}</p>
+              </div>
+            </button>
+          </div>
+        </section>
 </section>

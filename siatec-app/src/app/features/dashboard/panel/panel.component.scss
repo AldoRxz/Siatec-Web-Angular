@@ -1,9 +1,14 @@
+
 .panel-page {
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding: 2rem;
-  background: var(--surface-ground, #f8fafc);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1.75rem;
+  box-shadow: 0 40px 80px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  color: #0f172a;
 }
 
 .panel-hero {
@@ -79,7 +84,7 @@
   border-radius: 1.5rem;
   padding: 1.5rem;
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-  display: flex;
+  background: rgba(255, 255, 255, 0.95);
   flex-direction: column;
   gap: 1.25rem;
   border: 1px solid #e2e8f0;
@@ -321,11 +326,36 @@
 }
 
 @media (max-width: 768px) {
+  .panel-content {
+    padding: 0 1rem 2rem;
+  }
+
+  .panel-body {
+    flex-direction: column;
+    margin: 0;
+    padding-top: 0;
+  }
+
+  .panel-sidebar {
+    width: 100%;
+    height: auto;
+  }
+
   .panel-page {
     padding: 1.5rem;
   }
 
   .panel-hero {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .panel-content {
+    padding: 0 0.75rem 1.5rem;
+  }
+
+  .panel-page {
+    padding: 1rem;
   }
 }
