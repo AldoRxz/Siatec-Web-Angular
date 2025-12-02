@@ -1,3 +1,24 @@
+// ============================================
+// Sidebar Navigation Component
+// ============================================
+// Left-side navigation menu with links and badges
+
+// Design tokens
+$nav-link-bg: rgba(255, 255, 255, 0.8);
+$nav-link-bg-hover: rgba(59, 130, 246, 0.1);
+$nav-link-bg-active: linear-gradient(135deg, #1e40af, #1d4ed8);
+$nav-link-border-hover: rgba(59, 130, 246, 0.25);
+$nav-link-text: #0f172a;
+$nav-link-text-active: #fff;
+$nav-icon-bg: #eff6ff;
+$nav-icon-bg-hover: #dbeafe;
+$nav-icon-color: #1d4ed8;
+$nav-link-padding-y: 0.6rem;
+$nav-link-padding-x: 0.85rem;
+$nav-link-gap: 0.65rem;
+$nav-link-radius: 0.6rem;
+$nav-icon-size: 2.2rem;
+
 :host {
   display: block;
   height: 100%;
@@ -14,32 +35,37 @@
 }
 
 .sidebar-header {
-  font-size: 0.78rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: #94a3b8;
-  margin-bottom: 1rem;
+  letter-spacing: 0.18em;
+  color: #64748b;
+  margin-bottom: 0.85rem;
   font-weight: 700;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(148, 163, 184, 0.15);
 }
 
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.5rem;
 }
 
+// Individual navigation link
 .sidebar-link {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0.9rem;
-  border-radius: 0.35rem;
+  gap: $nav-link-gap;
+  padding: $nav-link-padding-y $nav-link-padding-x;
+  border-radius: $nav-link-radius;
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.65);
-  color: #0f172a;
+  background: $nav-link-bg;
+  color: $nav-link-text;
   font-weight: 600;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
   position: relative;
+  cursor: pointer;
 }
 
 .sidebar-link .label {
@@ -47,16 +73,19 @@
   text-align: left;
 }
 
+// Icon container within link
 .sidebar-link .icon-wrapper {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.35rem;
-  background: #edf2ff;
+  width: $nav-icon-size;
+  height: $nav-icon-size;
+  border-radius: $nav-link-radius;
+  background: $nav-icon-bg;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1d4ed8;
+  color: $nav-icon-color;
+  font-size: 0.95rem;
   position: relative;
+  transition: all 0.2s ease;
 }
 
 .sidebar-link .indicator {
@@ -84,9 +113,9 @@
 .sidebar-link .badge {
   background: #e0f2fe;
   color: #0369a1;
-  padding: 0.1rem 0.6rem;
+  padding: 0.08rem 0.5rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 700;
 }
 
@@ -101,21 +130,30 @@
   color: #b91c1c;
 }
 
+// Hover state
 .sidebar-link:hover {
-  border-color: rgba(59, 130, 246, 0.35);
-  background: rgba(59, 130, 246, 0.12);
-  transform: translateX(6px);
+  border-color: $nav-link-border-hover;
+  background: $nav-link-bg-hover;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.15);
 }
 
+.sidebar-link:hover .icon-wrapper {
+  background: $nav-icon-bg-hover;
+  transform: scale(1.05);
+}
+
+// Active/selected state
 .sidebar-link.active {
-  background: linear-gradient(135deg, #1d4ed8, #0f172a);
-  color: #fff;
-  border-color: rgba(15, 76, 129, 0.6);
+  background: $nav-link-bg-active;
+  color: $nav-link-text-active;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
 }
 
 .sidebar-link.active .icon-wrapper {
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  color: $nav-link-text-active;
 }
 
 .sidebar-link.active .badge {
