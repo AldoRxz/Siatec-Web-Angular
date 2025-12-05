@@ -113,23 +113,32 @@ $card-gap: 1.25rem;
 
 .panel-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // Dashboard summary card
 .panel-card {
   background: $card-bg;
   border-radius: $card-radius;
-  padding: $card-padding;
+  padding: 1.5rem;
   box-shadow: $card-shadow;
+  display: flex;
   flex-direction: column;
-  gap: $card-gap;
+  gap: 1rem;
   border: 1px solid $card-border;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
     border-color: #cbd5e1;
   }
@@ -138,62 +147,107 @@ $card-gap: 1.25rem;
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex: 1;
   }
 
   .card-icon {
-    width: 3.75rem;
-    height: 3.75rem;
+    width: 3.5rem;
+    height: 3.5rem;
     border-radius: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
     color: #0f172a;
     background: #f1f5f9;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   &:hover .card-icon {
     transform: scale(1.05);
   }
 
+  .card-info {
+    flex: 1;
+    min-width: 0;
+  }
+
   .label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 500;
     color: #64748b;
-    margin: 0;
+    margin: 0 0 0.25rem;
   }
 
   .value {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
     margin: 0;
     color: #0f172a;
+    line-height: 1.2;
   }
 
-  .card-action ::ng-deep .p-button-label {
-    font-weight: 600;
+  .card-action {
+    width: 100%;
+
+    ::ng-deep .p-button {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 0.6rem;
+    }
   }
 }
 
-.panel-card.accent-blue .card-icon {
-  background: #dbeafe;
-  color: #1d4ed8;
+.panel-card.accent-blue {
+  .card-icon {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+  }
+
+  &:hover .card-icon {
+    background: linear-gradient(135deg, #bfdbfe, #93c5fd);
+  }
 }
 
-.panel-card.accent-purple .card-icon {
-  background: #ede9fe;
-  color: #7c3aed;
+.panel-card.accent-purple {
+  .card-icon {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: #6d28d9;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+  }
+
+  &:hover .card-icon {
+    background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
+  }
 }
 
-.panel-card.accent-emerald .card-icon {
-  background: #d1fae5;
-  color: #059669;
+.panel-card.accent-emerald {
+  .card-icon {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #047857;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+  }
+
+  &:hover .card-icon {
+    background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+  }
 }
 
-.panel-card.accent-amber .card-icon {
-  background: #fef3c7;
-  color: #d97706;
+.panel-card.accent-amber {
+  .card-icon {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #b45309;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
+  }
+
+  &:hover .card-icon {
+    background: linear-gradient(135deg, #fde68a, #fcd34d);
+  }
 }
 
 .panel-grid {
