@@ -68,6 +68,12 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'dashboard-spartan',
+    loadComponent: () =>
+      import('./features/dashboard-spartan/dashboard-spartan.component').then((m) => m.DashboardSpartanComponent),
+    title: 'Dashboard Spartan - SIATEC'
+  },
+  {
     path: '**',
     redirectTo: '/dashboard'
   }
