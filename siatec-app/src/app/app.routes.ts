@@ -74,6 +74,12 @@ export const routes: Routes = [
     title: 'Dashboard Spartan - SIATEC'
   },
   {
+    path: 'dashboard-taiga',
+    loadComponent: () =>
+      import('./features/dashboard-taiga/dashboard-taiga.component').then((m) => m.DashboardTaigaComponent),
+    title: 'Dashboard Taiga - SIATEC'
+  },
+  {
     path: '**',
     redirectTo: '/dashboard'
   }
