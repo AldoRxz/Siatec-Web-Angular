@@ -1,0 +1,242 @@
+<tui-root class="taiga-dashboard">
+  <section class="taiga-header">
+    <div class="header-bar">
+      <div class="brand-block">
+        <span class="brand-title">SIATEC</span>
+        <tui-badge appearance="secondary" size="s">Portal tributario</tui-badge>
+      </div>
+      <div class="header-actions">
+        <button tuiButton appearance="flat" size="m" (click)="goTo('/dashboard/notificaciones')">
+          Notificaciones
+          <tui-badge appearance="danger" size="s">{{ unreadNotifications() }}</tui-badge>
+        </button>
+        <button tuiButton appearance="secondary" size="m" (click)="goTo('/dashboard/archivos')">Ver archivos</button>
+        <button tuiButton appearance="primary" size="m" (click)="goTo('/dashboard/inscripcion')">
+          Solicitud de inscripción
+        </button>
+        <div class="header-user">
+          <div class="user-copy">
+            <p class="user-name">{{ userName }}</p>
+            <small>{{ userEmail }}</small>
+          </div>
+          <tui-avatar size="l">{{ userInitials }}</tui-avatar>
+        </div>
+      </div>
+    </div>
+    <div class="notification-pill">
+      <p>Notificaciones</p>
+      <strong>{{ unreadNotifications() }}</strong>
+      <ng-container *ngIf="unreadNotifications() === 0; else pendingAlerts">
+        <small>Sin pendientes críticos</small>
+      </ng-container>
+    </div>
+    <ng-template #pendingAlerts>
+      <small>{{ unreadNotifications() }} pendientes por revisar</small>
+    </ng-template>
+    <div class="hero-card" tuiCardLarge>
+      <div class="hero-content">
+        <p class="hero-label">Panel principal</p>
+        <h1>Hola, {{ userName }}</h1>
+        <p class="hero-description">
+          Consulta el mismo resumen que existía en el portal anterior: tarjetas, actividad reciente y estado de tu
+          solicitud.
+        </p>
+        <div class="hero-buttons">
+          <button tuiButton appearance="primary" size="m" (click)="goTo('/dashboard/archivos')">Ver archivos</button>
+          <button tuiButton appearance="flat" size="m" (click)="goTo('/dashboard/inscripcion')">
+            Solicitud de inscripción
+          </button>
+        </div>
+      </div>
+      <div class="hero-status" tuiCardMedium>
+        <p class="hero-status-label">Notificaciones</p>
+        <p class="hero-status-value">{{ unreadNotifications() }}</p>
+        <button tuiButton appearance="secondary" size="s" (click)="goTo('/dashboard/notificaciones')">
+          Ver bandeja
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="taiga-shell">
+    <aside class="taiga-sidebar">
+      <p class="sidebar-title">Panel de control</p>
+      <div class="sidebar-list">
+        <button
+          tuiButton
+          appearance="flat"
+          size="m"
+          class="sidebar-item"
+          *ngFor="let link of sidebarSections[0].links"
+          (click)="goTo(link.route)"
+        >
+          <span>{{ link.label }}</span>
+          <tui-badge *ngIf="link.badge" appearance="secondary" size="s">{{ link.badge }}</tui-badge>
+        </button>
+      </div>
+      <div class="sidebar-list muted">
+        <button
+          tuiButton
+          appearance="flat"
+          size="m"
+          class="sidebar-item"
+          *ngFor="let section of sidebarSections | slice:1"
+          (click)="goTo(section.links[0].route)"
+        >
+          <span>{{ section.title }}</span>
+        </button>
+      </div>
+    </aside>
+
+    <tui-scrollbar class="taiga-main">
+      <section class="summary-grid">
+        <article
+          class="summary-card"
+          tuiCardLarge
+          *ngFor="let card of summaryCards"
+          (click)="goTo(card.route)"
+          [attr.data-accent]="card.appearance"
+        >
+          <div class="summary-top">
+            <div class="summary-icon" aria-hidden="true"></div>
+            <span class="summary-chip">{{ card.badge }}</span>
+          </div>
+          <p class="summary-label">{{ card.title }}</p>
+          <p class="summary-value">{{ card.value }}</p>
+          <p class="summary-detail">{{ card.detail }}</p>
+          <div class="summary-progress">
+            <span>{{ card.trend }}</span>
+            <div class="summary-progress-bar">
+              <div class="summary-progress-fill" [style.width.%]="card.progress"></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="insight-grid">
+        <article
+          class="insight-card"
+          *ngFor="let insight of insightTiles"
+          [attr.data-tone]="insight.tone"
+          (click)="goTo(insight.route)"
+        >
+          <p class="insight-label">{{ insight.label }}</p>
+          <h3>{{ insight.title }}</h3>
+          <p>{{ insight.helper }}</p>
+          <span class="insight-link">Ver detalle</span>
+        </article>
+      </section>
+
+      <section class="taiga-columns">
+        <div tuiCardMedium class="panel">
+          <header class="panel-head">
+            <div>
+              <p class="panel-label">Actividad reciente</p>
+              <h2>Estatus sincronizados</h2>
+            </div>
+            <button tuiButton appearance="flat" size="s" (click)="goTo('/dashboard/notificaciones')">
+              Ver historial
+            </button>
+          </header>
+          <div class="activity-list">
+            <article class="activity-item" *ngFor="let task of taskBoard">
+              <div class="activity-body">
+                <p class="activity-title">{{ task.title }}</p>
+                <p class="activity-detail">{{ task.detail }}</p>
+                <div class="activity-progress">
+                  <div class="activity-progress-track">
+                    <div class="activity-progress-fill" [style.width.%]="task.progress"></div>
+                  </div>
+                  <span>{{ task.progress }}%</span>
+                </div>
+              </div>
+              <tui-badge appearance="primary" size="s">{{ task.status }}</tui-badge>
+            </article>
+          </div>
+        </div>
+
+        <div tuiCardMedium class="panel">
+          <header class="panel-head">
+            <div>
+              <p class="panel-label">Solicitud de inscripción</p>
+              <h2>Seguimiento por etapas</h2>
+            </div>
+            <button tuiButton appearance="secondary" size="s" (click)="goTo('/dashboard/inscripcion')">
+              Continuar
+            </button>
+          </header>
+          <div class="timeline">
+            <article class="timeline-item" *ngFor="let item of timeline" [attr.data-state]="item.appearance">
+              <div class="timeline-pin" aria-hidden="true"></div>
+              <div class="timeline-body">
+                <p class="timeline-title">{{ item.title }}</p>
+                <p class="timeline-date">{{ item.date }}</p>
+              </div>
+              <tui-badge [appearance]="item.appearance" size="s">{{ item.state }}</tui-badge>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="taiga-columns">
+        <div tuiCardMedium class="panel">
+          <header class="panel-head">
+            <div>
+              <p class="panel-label">Documentos críticos</p>
+              <h2>Centro de archivos</h2>
+            </div>
+            <button tuiButton appearance="flat" size="s" (click)="goTo('/dashboard/archivos')">Abrir repositorio</button>
+          </header>
+          <div class="document-list">
+            <article class="document" *ngFor="let doc of documentCenter">
+              <div class="document-icon" aria-hidden="true"></div>
+              <div class="document-body">
+                <p class="document-title">{{ doc.title }}</p>
+                <p class="document-detail">{{ doc.detail }}</p>
+                <small>{{ doc.updated }}</small>
+              </div>
+              <tui-badge [appearance]="doc.accent" size="s">{{ doc.status }}</tui-badge>
+            </article>
+          </div>
+        </div>
+
+        <div tuiCardMedium class="panel support-panel">
+          <header class="panel-head">
+            <div>
+              <p class="panel-label">Acompañamiento</p>
+              <h2>Soporte prioritario</h2>
+            </div>
+          </header>
+          <div class="support-content">
+            <p>
+              Inicia la solicitud para el Registro Estatal de Contribuyentes y rastrea aquí su avance. Nuestro equipo
+              responde en menos de 4 horas.
+            </p>
+            <ul class="support-list">
+              <li>
+                <span>Respuesta promedio</span>
+                <strong>03:45 h</strong>
+              </li>
+              <li>
+                <span>Casos abiertos</span>
+                <strong>12 activos</strong>
+              </li>
+              <li>
+                <span>Ejecutivo asignado</span>
+                <strong>Unidad digital</strong>
+              </li>
+            </ul>
+            <div class="support-actions">
+              <button tuiButton appearance="primary" size="m" (click)="goTo('/dashboard/notificaciones')">
+                Abrir mesa de ayuda
+              </button>
+              <button tuiButton appearance="flat" size="m" (click)="goTo('/dashboard/operaciones')">
+                Programar cita
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </tui-scrollbar>
+  </div>
+</tui-root>
