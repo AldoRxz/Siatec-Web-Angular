@@ -1,0 +1,145 @@
+<div class="components-dashboard">
+  <aside class="components-dashboard__sidebar">
+    <div class="sidebar__header">
+      <div class="sidebar__avatar">{{ userInitials }}</div>
+      <div class="sidebar__identity">
+        <p class="sidebar__name">{{ userName }}</p>
+        <p class="sidebar__email">{{ userEmail }}</p>
+      </div>
+    </div>
+
+    <ng-container *ngFor="let section of sidebar">
+      <p class="sidebar__section-title">{{ section.title }}</p>
+      <ul class="sidebar__menu">
+        <li
+          *ngFor="let item of section.items"
+          class="sidebar__menu-item"
+          (click)="goTo(item.route)"
+        >
+          <span>{{ item.label }}</span>
+          <span class="sidebar__chevron">→</span>
+        </li>
+      </ul>
+    </ng-container>
+
+    <div class="sidebar__footer">
+      <p class="sidebar__footer-title">Soporte express</p>
+      <p class="sidebar__footer-text">
+        Cambia entre los dashboards sin perder contexto.
+      </p>
+      <button type="button" class="sidebar__footer-action" (click)="goTo('/dashboard/panel')">
+        Abrir dashboard clásico
+      </button>
+    </div>
+  </aside>
+
+  <main class="components-dashboard__content">
+    <header class="dashboard-hero">
+      <div>
+        <p class="dashboard-hero__welcome">Panel de componentes · vista aislada</p>
+        <h1 class="dashboard-hero__title">
+          Controla tus trámites y expedientes sin afectar otros dashboards
+        </h1>
+        <p class="dashboard-hero__subtitle">
+          Esta vista replica el estilo municipal con datos de prueba para validar componentes Angular.
+        </p>
+      </div>
+      <div class="dashboard-hero__actions">
+        <button type="button" class="btn btn--secondary" (click)="goTo('/dashboard-taiga')">
+          Ver dashboard Taiga
+        </button>
+        <button type="button" class="btn btn--primary" (click)="goTo('/dashboard/panel')">
+          Ir al panel oficial
+        </button>
+      </div>
+    </header>
+
+    <section class="stats-grid">
+      <article
+        *ngFor="let card of statsCards"
+        class="stat-card"
+        (click)="goTo(card.route)"
+      >
+        <div class="stat-card__chip stat-card__chip--{{ card.appearance }}">
+          {{ card.chip }}
+        </div>
+        <p class="stat-card__label">{{ card.label }}</p>
+        <p class="stat-card__value">{{ card.value }}</p>
+        <p class="stat-card__description">{{ card.description }}</p>
+      </article>
+    </section>
+
+    <div class="dashboard-grid">
+      <section class="panel panel--tasks">
+        <div class="panel__header">
+          <div>
+            <p class="panel__eyebrow">Seguimiento</p>
+            <h2 class="panel__title">Tareas activas</h2>
+          </div>
+          <button type="button" class="link" (click)="goTo('/dashboard/operaciones')">
+            Ver más
+          </button>
+        </div>
+        <ul class="tasks-list">
+          <li *ngFor="let task of tasks" class="task-item" (click)="goTo(task.route)">
+            <div class="task-item__info">
+              <p class="task-item__title">{{ task.title }}</p>
+              <p class="task-item__detail">{{ task.detail }}</p>
+            </div>
+            <div class="task-item__progress">
+              <div class="task-item__progress-bar" [style.width.%]="task.progress"></div>
+            </div>
+            <p class="task-item__hint">{{ task.progress }}% completado</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel panel--timeline">
+        <div class="panel__header">
+          <div>
+            <p class="panel__eyebrow">Expediente SIATEC</p>
+            <h2 class="panel__title">Línea de tiempo</h2>
+          </div>
+          <button type="button" class="link" (click)="goTo('/dashboard/notificaciones')">
+            Historial
+          </button>
+        </div>
+        <ul class="timeline">
+          <li *ngFor="let item of timeline" class="timeline__item timeline__item--{{ item.appearance }}">
+            <div>
+              <p class="timeline__title">{{ item.title }}</p>
+              <p class="timeline__detail">{{ item.detail }}</p>
+            </div>
+            <p class="timeline__timestamp">{{ item.timestamp }}</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel panel--documents">
+        <div class="panel__header">
+          <div>
+            <p class="panel__eyebrow">Repositorio</p>
+            <h2 class="panel__title">Documentos</h2>
+          </div>
+          <button type="button" class="link" (click)="goTo('/dashboard/archivos')">
+            Ver archivos
+          </button>
+        </div>
+        <ul class="documents">
+          <li *ngFor="let document of documents" class="documents__item">
+            <div>
+              <p class="documents__title">{{ document.title }}</p>
+              <p class="documents__detail">{{ document.detail }}</p>
+            </div>
+            <div class="documents__status">
+              <span class="documents__badge documents__badge--{{ document.appearance }}">
+                {{ document.status }}
+              </span>
+              <p class="documents__hint">{{ document.hint }}</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</div>
