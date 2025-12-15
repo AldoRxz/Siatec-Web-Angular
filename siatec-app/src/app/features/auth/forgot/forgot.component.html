@@ -75,6 +75,7 @@
                 <p class="section-label">¿Cómo quieres recibir el enlace?</p>
                 <div class="preference-chips">
                   <button
+                    id="forgot-email-method-btn"
                     type="button"
                     pButton
                     label="Correo electrónico"
@@ -83,6 +84,7 @@
                     (click)="recoveryForm.patchValue({ contactPreference: 'email' })"
                   ></button>
                   <button
+                    id="forgot-sms-method-btn"
                     type="button"
                     pButton
                     label="Mensaje SMS"
@@ -103,6 +105,7 @@
               }
 
               <button
+                id="forgot-submit-btn"
                 pButton
                 type="submit"
                 label="Enviar instrucciones"
