@@ -8,11 +8,13 @@ import { SidebarNavComponent, SidebarMenuItem } from '../../../shared/components
 import { AuthService } from '../../../core/services';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
 import { DashboardDocumentsService } from '../services/dashboard-documents.service';
+import { DrawerModule } from 'primeng/drawer';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-dashboard-shell',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, PortalHeaderComponent, SidebarNavComponent],
+  imports: [CommonModule, RouterOutlet, PortalHeaderComponent, SidebarNavComponent, DrawerModule, ButtonModule],
   templateUrl: './dashboard-shell.component.html',
   styleUrl: './dashboard-shell.component.scss'
 })
@@ -28,6 +30,7 @@ export class DashboardShellComponent implements OnInit {
   readonly notificationsCount = this.notificationsService.unreadCount;
   readonly documentSummary = this.documentsService.summary;
   readonly footerYear = new Date().getFullYear();
+  mobileSidebarVisible = false;
 
   private readonly navBadgesEffect = effect(() => {
     const docs = this.documentSummary().total ?? 0;
@@ -50,7 +53,10 @@ export class DashboardShellComponent implements OnInit {
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((event) => this.syncActiveKeyWithRoute(event.urlAfterRedirects ?? event.url));
+      .subscribe((event) => {
+        this.syncActiveKeyWithRoute(event.urlAfterRedirects ?? event.url);
+        this.closeMobileSidebar();
+      });
   }
 
   get userName(): string {
@@ -73,6 +79,7 @@ export class DashboardShellComponent implements OnInit {
     if (key) {
       this.activeKey.set(key);
     }
+    this.closeMobileSidebar();
   }
 
   onProfile(): void {
@@ -165,5 +172,17 @@ export class DashboardShellComponent implements OnInit {
 
   private patchNavItem(id: string, changes: Partial<SidebarMenuItem>): void {
     this.navItems.update((items) => items.map((item) => (item.key === id ? { ...item, ...changes } : item)));
+  }
+
+  openMobileSidebar(): void {
+    this.mobileSidebarVisible = true;
+  }
+
+  closeMobileSidebar(): void {
+    this.mobileSidebarVisible = false;
+  }
+
+  toggleMobileSidebar(): void {
+    this.mobileSidebarVisible = !this.mobileSidebarVisible;
   }
 }

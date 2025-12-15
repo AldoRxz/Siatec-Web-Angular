@@ -1,6 +1,6 @@
 <div class="forgot-shell min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-slate-100 p-4">
   <div class="w-full max-w-5xl">
-    <p-card class="shadow-xl overflow-hidden">
+    <p-card class="shadow-xl overflow-hidden auth-card">
       <ng-template pTemplate="header">
         <div class="grid layout-header">
           <div class="hero">
@@ -26,7 +26,7 @@
       <ng-template pTemplate="content">
         <div class="grid content-grid">
           <div class="form-area">
-            <form [formGroup]="recoveryForm" (ngSubmit)="onSubmit()" class="space-y-7">
+            <form [formGroup]="recoveryForm" (ngSubmit)="onSubmit()" class="space-y-7 auth-form">
               <div>
                 <p-floatlabel class="with-icon">
                   <p-iconfield iconPosition="left" class="w-full">

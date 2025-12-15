@@ -1,6 +1,6 @@
 <div class="register-container min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-slate-100 p-4">
   <div class="register-wrapper w-full max-w-5xl">
-    <p-card class="shadow-xl">
+    <p-card class="shadow-xl auth-card">
       <!-- Header -->
       <ng-template pTemplate="header">
         <div class="text-center pt-10 pb-6 px-6">
@@ -15,7 +15,7 @@
 
       <!-- Content -->
       <ng-template pTemplate="content">
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="px-6 pb-6 pt-2 space-y-8">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="px-6 pb-6 pt-2 space-y-8 auth-form">
           <!-- Messages -->
           @if (errorMessage) {
             <div class="alert alert-error">

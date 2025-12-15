@@ -1,6 +1,6 @@
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-slate-100 p-4">
   <div class="w-full max-w-md">
-    <p-card class="shadow-xl">
+    <p-card class="shadow-xl auth-card">
       <!-- Header -->
       <ng-template pTemplate="header">
         <div class="text-center pt-10 pb-6 px-6">
@@ -15,7 +15,7 @@
 
     <!-- Content -->
     <ng-template pTemplate="content">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6 px-6 pb-2 pt-2">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6 px-6 pb-2 pt-2 auth-form">
         <!-- Email Field -->
         <div>
           <p-floatlabel class="with-icon">

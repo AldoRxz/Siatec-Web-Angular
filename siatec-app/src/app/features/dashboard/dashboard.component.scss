@@ -23,6 +23,10 @@
   gap: 1.5rem;
 }
 
+.dashboard-main > * {
+  scroll-margin-top: 5.5rem;
+}
+
 .hero {
   background: #0f172a;
   color: #fff;
@@ -261,6 +265,38 @@
   }
 }
 
+@media (max-width: 768px) {
+  .dashboard-shell {
+    padding: 1rem;
+  }
+
+  .dashboard-body {
+    gap: 1rem;
+  }
+
+  .hero {
+    padding: 1.25rem;
+    border-radius: 1rem;
+  }
+
+  .hero-text h2 {
+    font-size: 1.6rem;
+  }
+
+  .hero-meta .value {
+    font-size: 2rem;
+  }
+
+  .panel {
+    border-radius: 1rem;
+  }
+
+  .metric-grid,
+  .content-grid {
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 600px) {
   .dashboard-shell {
     padding: 1rem;
@@ -268,5 +304,13 @@
 
   .content-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hero-text h2 {
+    font-size: 1.4rem;
+  }
+
+  .hero-meta .value {
+    font-size: 1.6rem;
   }
 }

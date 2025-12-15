@@ -285,3 +285,30 @@
     color: #2563eb;
   }
 }
+
+  .auth-form {
+    width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    :host ::ng-deep .auth-card .p-card-header {
+      padding: 1.25rem 1.25rem 0;
+      text-align: center;
+    }
+
+    :host ::ng-deep .auth-card .p-card-body,
+    :host ::ng-deep .auth-card .p-card-content,
+    :host ::ng-deep .auth-card .p-card-footer {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+
+    .grid {
+      gap: 1rem;
+    }
+
+    .auth-form {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }

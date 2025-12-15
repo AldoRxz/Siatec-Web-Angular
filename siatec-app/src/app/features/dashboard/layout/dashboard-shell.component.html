@@ -14,14 +14,33 @@
     ></app-portal-header>
   </header>
 
+  <div class="shell-mobile-toggle">
+    <button
+      type="button"
+      pButton
+      class="shell-mobile-toggle-btn"
+      icon="pi pi-bars"
+      label="Menú"
+      aria-label="Abrir menú principal"
+      (click)="openMobileSidebar()"
+    ></button>
+  </div>
+
+  <p-drawer
+    [(visible)]="mobileSidebarVisible"
+    position="left"
+    [modal]="true"
+    [dismissible]="true"
+    [blockScroll]="true"
+    styleClass="shell-mobile-drawer"
+    ariaCloseLabel="Cerrar menú"
+  >
+    <ng-container *ngTemplateOutlet="sidebarNav"></ng-container>
+  </p-drawer>
+
   <div class="shell-body">
     <div class="shell-sidebar">
-      <app-sidebar-nav
-        title="Panel de Control"
-        [items]="navItems()"
-        [activeKey]="activeKey()"
-        (select)="onSidebarSelect($event)"
-      ></app-sidebar-nav>
+      <ng-container *ngTemplateOutlet="sidebarNav"></ng-container>
     </div>
 
     <main class="shell-main">
@@ -36,4 +55,13 @@
   <footer class="shell-footer">
     <span>&copy; {{ footerYear }} SIATEC. Todos los derechos reservados.</span>
   </footer>
+
+  <ng-template #sidebarNav>
+    <app-sidebar-nav
+      title="Panel de Control"
+      [items]="navItems()"
+      [activeKey]="activeKey()"
+      (select)="onSidebarSelect($event)"
+    ></app-sidebar-nav>
+  </ng-template>
 </div>
