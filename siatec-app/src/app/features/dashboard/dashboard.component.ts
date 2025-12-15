@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
+import { SkeletonModule } from 'primeng/skeleton';
 import { MenuItem } from 'primeng/api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, ContribuyentesService } from '../../core/services';
@@ -72,6 +73,7 @@ interface InscriptionState {
     DividerModule,
     TagModule,
     TimelineModule,
+    SkeletonModule,
     PortalHeaderComponent,
     SidebarNavComponent,
     MetricCardComponent
@@ -222,6 +224,8 @@ export class DashboardComponent {
   navItems: MenuItem[] = [];
   inscriptionState: InscriptionState | null = null;
   readonly unreadNotifications = this.notificationsService.unreadCount;
+  readonly isDashboardLoading = signal(true);
+  readonly metricSkeletonPlaceholders = Array.from({ length: 4 });
 
   constructor() {
     this.loadNavItems();
@@ -364,8 +368,10 @@ export class DashboardComponent {
   }
 
   private fetchDocumentSummary(): void {
+    this.setDashboardLoading(true);
     const contribuyenteId = this.authService.getContribuyenteId();
     if (!contribuyenteId) {
+      this.setDashboardLoading(false);
       return;
     }
 
@@ -377,11 +383,17 @@ export class DashboardComponent {
           const total = response?.totalItems ?? response?.items?.length ?? 0;
           this.documentSummary.set({ total, lastUpdated: new Date() });
           this.metricCards[3].value = `${total} documentos`;
+          this.setDashboardLoading(false);
         },
         error: () => {
           this.documentSummary.set({ total: 0 });
           this.metricCards[3].value = '0 documentos';
+          this.setDashboardLoading(false);
         }
       });
+  }
+
+  private setDashboardLoading(state: boolean): void {
+    this.isDashboardLoading.set(state);
   }
 }

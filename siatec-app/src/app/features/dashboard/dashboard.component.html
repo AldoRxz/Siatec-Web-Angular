@@ -16,31 +16,57 @@
     <app-sidebar-nav class="sidebar" [items]="navItems"></app-sidebar-nav>
 
     <section class="dashboard-main">
-      <div class="hero" id="overviewPanel">
-        <div class="hero-text">
-          <p class="eyebrow">Bienvenido de vuelta</p>
-          <h2>Tu panel general</h2>
-          <p>Mantén al día tus contribuciones, documentos y citas desde un mismo lugar.</p>
+      @if (isDashboardLoading()) {
+        <div class="hero hero--loading" aria-busy="true">
+          <div class="hero-text">
+            <p-skeleton width="8rem" height="0.9rem" class="mb-3"></p-skeleton>
+            <p-skeleton width="60%" height="2.2rem" class="mb-2"></p-skeleton>
+            <p-skeleton width="90%" height="1rem"></p-skeleton>
+          </div>
+          <div class="hero-meta">
+            <p-skeleton width="7rem" height="0.8rem" class="mb-2"></p-skeleton>
+            <p-skeleton width="4rem" height="2.5rem" class="mb-2"></p-skeleton>
+            <p-skeleton width="9rem" height="0.8rem"></p-skeleton>
+          </div>
         </div>
-        <div class="hero-meta">
-          <span class="label">Documentos asignados</span>
-          <p class="value">{{ documentSummary().total }}</p>
-          <small *ngIf="documentSummary().lastUpdated">Actualizado {{ documentSummary().lastUpdated | date: 'shortTime' }}</small>
+      } @else {
+        <div class="hero" id="overviewPanel">
+          <div class="hero-text">
+            <p class="eyebrow">Bienvenido de vuelta</p>
+            <h2>Tu panel general</h2>
+            <p>Mantén al día tus contribuciones, documentos y citas desde un mismo lugar.</p>
+          </div>
+          <div class="hero-meta">
+            <span class="label">Documentos asignados</span>
+            <p class="value">{{ documentSummary().total }}</p>
+            <small *ngIf="documentSummary().lastUpdated">Actualizado {{ documentSummary().lastUpdated | date: 'shortTime' }}</small>
+          </div>
         </div>
-      </div>
+      }
 
-      <div class="metric-grid">
-        <app-metric-card
-          *ngFor="let card of metricCards"
-          [label]="card.label"
-          [value]="card.value"
-          [description]="card.description"
-          [icon]="card.icon"
-          [severity]="card.severity"
-          [actionLabel]="card.actionLabel"
-          [hint]="card.hint || ''"
-          (action)="onMetricAction(card)"
-        ></app-metric-card>
+      <div class="metric-grid" aria-live="polite">
+        @if (isDashboardLoading()) {
+          <ng-container *ngFor="let _ of metricSkeletonPlaceholders; index as idx">
+            <div class="metric-card-skeleton" [attr.aria-label]="'Tarjeta en carga ' + (idx + 1)" aria-busy="true">
+              <p-skeleton width="35%" height="0.85rem" class="mb-3"></p-skeleton>
+              <p-skeleton width="55%" height="1.9rem" class="mb-2"></p-skeleton>
+              <p-skeleton width="80%" height="0.9rem" class="mb-2"></p-skeleton>
+              <p-skeleton width="45%" height="1.4rem"></p-skeleton>
+            </div>
+          </ng-container>
+        } @else {
+          <app-metric-card
+            *ngFor="let card of metricCards"
+            [label]="card.label"
+            [value]="card.value"
+            [description]="card.description"
+            [icon]="card.icon"
+            [severity]="card.severity"
+            [actionLabel]="card.actionLabel"
+            [hint]="card.hint || ''"
+            (action)="onMetricAction(card)"
+          ></app-metric-card>
+        }
       </div>
 
       <div class="content-grid" id="activityPanel">
