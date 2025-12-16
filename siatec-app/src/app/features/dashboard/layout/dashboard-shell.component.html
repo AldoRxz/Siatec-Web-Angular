@@ -1,5 +1,5 @@
 <div class="shell">
-  <header class="shell-header">
+  <header class="shell-header shell-header--flush">
     <app-portal-header
       title="SIATEC"
       subtitle="Portal Tributario"
@@ -7,24 +7,14 @@
       [userEmail]="userEmail"
       [notifications]="notificationsCount()"
       badgeSeverity="danger"
+      [showMenuButton]="true"
       (profile)="onProfile()"
       (settings)="onSettings()"
       (logout)="onLogout()"
       (notificationsClick)="onNotificationsClick()"
+      (menuToggle)="toggleMobileSidebar()"
     ></app-portal-header>
   </header>
-
-  <div class="shell-mobile-toggle">
-    <button
-      type="button"
-      pButton
-      class="shell-mobile-toggle-btn"
-      icon="pi pi-bars"
-      label="Menú"
-      aria-label="Abrir menú principal"
-      (click)="openMobileSidebar()"
-    ></button>
-  </div>
 
   <p-drawer
     [(visible)]="mobileSidebarVisible"

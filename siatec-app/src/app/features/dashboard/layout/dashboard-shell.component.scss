@@ -23,20 +23,6 @@ $content-max-width: 1400px;
   overflow: hidden;
 }
 
-.shell-mobile-toggle {
-  display: none;
-  padding: 0 1.5rem;
-  margin-top: 0.75rem;
-}
-
-.shell-mobile-toggle-btn {
-  width: 100%;
-  justify-content: center;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  gap: 0.5rem;
-}
-
 .shell-header {
   position: sticky;
   top: 0;
@@ -44,6 +30,11 @@ $content-max-width: 1400px;
   padding: 0;
   z-index: 100;
   background: inherit;
+}
+
+.shell-header--flush {
+  margin: 0 -1.5rem;
+  padding: 0 0 0;
 }
 
 // Container for sidebar + main content
@@ -129,16 +120,146 @@ $content-max-width: 1400px;
   z-index: 100;
 }
 
-:host ::ng-deep .shell-mobile-drawer {
-  width: min(88vw, 340px);
-  background: #f8fafc;
-  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35);
-  border-top-right-radius: 1.25rem;
-  border-bottom-right-radius: 1.25rem;
+// ========================================
+// Mobile Drawer - Base PrimeNG Overrides
+// ========================================
+
+::ng-deep .shell-mobile-drawer.p-drawer {
+  background: linear-gradient(175deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%) !important;
+  border: none !important;
+  color: #f8fafc !important;
+  box-shadow: 
+    0 0 0 1px rgba(59, 130, 246, 0.2),
+    0 25px 80px rgba(2, 6, 23, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  border-top-right-radius: 1.5rem !important;
+  border-bottom-right-radius: 1.5rem !important;
+  width: min(85vw, 320px) !important;
 }
 
-:host ::ng-deep .shell-mobile-drawer .p-drawer-content {
-  padding: 1.5rem;
+::ng-deep .shell-mobile-drawer .p-drawer-header {
+  background: transparent !important;
+  padding: 1.25rem 1.25rem 0.5rem !important;
+  border-bottom: none !important;
+}
+
+::ng-deep .shell-mobile-drawer .p-drawer-content {
+  padding: 0.75rem 1rem 2rem !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  background: transparent !important;
+}
+
+::ng-deep .shell-mobile-drawer .p-drawer-close {
+  color: #fff !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.2s ease !important;
+  font-size: 1.1rem !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(1.05);
+  }
+}
+
+::ng-deep .shell-mobile-drawer app-sidebar-nav {
+  flex: 1;
+  width: 100%;
+}
+
+// ========================================
+// Mobile Drawer - Override sidebar styles
+// ========================================
+
+::ng-deep .shell-mobile-drawer .sidebar-nav {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-header {
+  color: rgba(255, 255, 255, 0.6) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-menu {
+  gap: 0.5rem;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-link {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #f1f5f9 !important;
+  border-radius: 0.85rem !important;
+  padding: 0.75rem 1rem !important;
+  backdrop-filter: blur(8px);
+  transition: all 0.25s ease !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  transform: translateX(4px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-link.active {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  box-shadow: 
+    0 8px 25px rgba(37, 99, 235, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-link .icon-wrapper {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #60a5fa !important;
+  border-radius: 0.65rem !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-link:hover .icon-wrapper {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #93c5fd !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-link.active .icon-wrapper {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-link .label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #f1f5f9 !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-link.active .label {
+  font-weight: 600;
+  color: #fff !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-divider {
+  background: rgba(255, 255, 255, 0.1) !important;
+  margin: 1rem 0 !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-badge {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+::ng-deep .shell-mobile-drawer .sidebar-badge.warn {
+  background: rgba(239, 68, 68, 0.3) !important;
+  color: #fca5a5 !important;
 }
 
 @media (max-width: 960px) {
@@ -153,6 +274,10 @@ $content-max-width: 1400px;
     overflow: visible;
   }
 
+  .shell-header--flush {
+    margin: 0;
+  }
+
   .shell-sidebar {
     display: none;
   }
@@ -160,10 +285,6 @@ $content-max-width: 1400px;
   .shell-main {
     padding: 1.5rem 0 0;
     overflow: visible;
-  }
-
-  .shell-mobile-toggle {
-    display: block;
   }
 
   .shell-main-content {
@@ -185,5 +306,9 @@ $content-max-width: 1400px;
 @media (max-width: 600px) {
   .shell-body {
     padding: 0 1rem 1.5rem;
+  }
+
+  .shell-header--flush {
+    margin: 0;
   }
 }

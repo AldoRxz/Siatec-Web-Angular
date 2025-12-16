@@ -1,28 +1,37 @@
 <p-toolbar class="portal-header">
-  <div class="brand">
+  <!-- Left: Menu + Brand -->
+  <div class="header-left">
+    <button
+      pButton
+      type="button"
+      class="menu-toggle-button"
+      (click)="onMenuToggle()"
+      aria-label="Abrir menú principal"
+    >
+      <i class="pi pi-bars"></i>
+      <span class="menu-toggle-label">Menú</span>
+    </button>
     <div class="brand-mark">{{ title }}</div>
     <span class="brand-tag">{{ subtitle }}</span>
   </div>
 
-  <div class="header-actions">
+  <!-- Right: Actions -->
+  <div class="header-right">
     <button
       pButton
       type="button"
-      class="p-button-rounded p-button-text notification-button"
-      icon="pi pi-bell"
+      class="notification-button"
       (click)="onNotificationsClick()"
     >
+      <i class="pi pi-bell"></i>
       <p-badge *ngIf="notifications > 0" [value]="notifications" [severity]="badgeSeverity"></p-badge>
     </button>
 
     <p-menu #userMenu [popup]="true" [model]="internalMenu" styleClass="portal-header-menu"></p-menu>
     <button type="button" class="user-button" pButton (click)="userMenu.toggle($event)">
-      <p-avatar [label]="initials" shape="circle" size="large"></p-avatar>
-      <div class="user-meta">
-        <span class="user-name">{{ userName }}</span>
-        <small class="user-email">{{ userEmail }}</small>
-      </div>
-      <i class="pi pi-chevron-down"></i>
+      <p-avatar [label]="initials" shape="circle" class="user-avatar"></p-avatar>
+      <span class="user-name">{{ userName }}</span>
+      <i class="pi pi-chevron-down chevron"></i>
     </button>
   </div>
 </p-toolbar>

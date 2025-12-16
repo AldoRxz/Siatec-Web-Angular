@@ -142,3 +142,27 @@ a {
   }
 }
 
+/* ========================================
+   Mobile Drawer Global Overrides
+   ======================================== */
+.shell-mobile-drawer.p-drawer {
+  background: linear-gradient(175deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%) !important;
+  border: none !important;
+  color: #f8fafc !important;
+}
+
+.shell-mobile-drawer .p-drawer-header,
+.shell-mobile-drawer .p-drawer-content {
+  background: transparent !important;
+}
+
+.shell-mobile-drawer .p-drawer-close-button {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 50% !important;
+}
+
+.shell-mobile-drawer .p-drawer-close-button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+

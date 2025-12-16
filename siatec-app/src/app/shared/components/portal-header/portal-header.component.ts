@@ -23,11 +23,13 @@ export class PortalHeaderComponent implements OnChanges {
   @Input() notifications = 0;
   @Input() badgeSeverity: 'info' | 'success' | 'warn' | 'danger' = 'info';
   @Input() menuItems: MenuItem[] | null = null;
+  @Input() showMenuButton = false;
 
   @Output() profile = new EventEmitter<void>();
   @Output() settings = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
   @Output() notificationsClick = new EventEmitter<void>();
+  @Output() menuToggle = new EventEmitter<void>();
 
   internalMenu: MenuItem[] = [];
 
@@ -48,6 +50,10 @@ export class PortalHeaderComponent implements OnChanges {
 
   onNotificationsClick(): void {
     this.notificationsClick.emit();
+  }
+
+  onMenuToggle(): void {
+    this.menuToggle.emit();
   }
 
   private buildMenu(): void {
