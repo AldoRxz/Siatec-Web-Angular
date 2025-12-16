@@ -166,3 +166,211 @@ a {
   background: rgba(255, 255, 255, 0.2) !important;
 }
 
+/* ========================================
+   User Menu (TieredMenu v20) Global Overrides
+   Sizes matched to sidebar-nav component
+   ======================================== */
+
+/* Root container */
+.p-tieredmenu.portal-user-menu {
+  min-width: 220px !important;
+  max-width: 260px !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  box-shadow: 
+    0 10px 40px -10px rgba(0, 0, 0, 0.15),
+    0 20px 50px -15px rgba(37, 99, 235, 0.1) !important;
+  padding: 0.5rem !important;
+  overflow: hidden !important;
+  backdrop-filter: none !important;
+  /* Position: small gap below trigger */
+  margin-top: 0.35rem !important;
+}
+
+/* Root list */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-root-list {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+}
+
+/* Menu item */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  list-style: none !important;
+  margin: 0 !important;
+}
+
+/* Item content - THE KEY ELEMENT */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-radius: 0.6rem !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Reset ALL states to white */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item.p-focus > .p-tieredmenu-item-content,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item.p-highlight > .p-tieredmenu-item-content,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:focus > .p-tieredmenu-item-content,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content:focus,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content:active,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content[data-p-focused="true"],
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content[data-p-highlight="true"] {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Item link - MATCHED TO SIDEBAR: padding 0.6rem 0.85rem, gap 0.65rem */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-link {
+  padding: 0.6rem 0.85rem !important;
+  gap: 0.65rem !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.4 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  text-decoration: none !important;
+  border-radius: 0.6rem !important;
+  cursor: pointer !important;
+}
+
+/* Item icon - MATCHED TO SIDEBAR: 0.95rem */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-icon {
+  font-size: 0.95rem !important;
+  color: #1d4ed8 !important;
+  width: 1.25rem !important;
+  min-width: 1.25rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Item label/text - MATCHED TO SIDEBAR: 0.85rem */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-label {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.4 !important;
+}
+
+/* ===== HOVER STATE - Light Blue (like sidebar) ===== */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content:hover,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:hover > .p-tieredmenu-item-content,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:not(.p-disabled):hover > .p-tieredmenu-item-content {
+  background: rgba(59, 130, 246, 0.1) !important;
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content:hover .p-tieredmenu-item-icon,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:hover > .p-tieredmenu-item-content .p-tieredmenu-item-icon {
+  color: #1e40af !important;
+}
+
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content:hover .p-tieredmenu-item-label,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:hover > .p-tieredmenu-item-content .p-tieredmenu-item-label,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item-content:hover .p-tieredmenu-item-link,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:hover > .p-tieredmenu-item-content .p-tieredmenu-item-link {
+  color: #1e40af !important;
+}
+
+/* ===== SEPARATOR ===== */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-separator,
+.p-tieredmenu.portal-user-menu hr,
+.p-tieredmenu.portal-user-menu [data-pc-section="separator"] {
+  margin: 0.35rem 0.5rem !important;
+  border: none !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.25) !important;
+  background: transparent !important;
+  height: 0 !important;
+  padding: 0 !important;
+}
+
+/* ===== LOGOUT ITEM - Red Hover ===== */
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:last-child > .p-tieredmenu-item-content:hover,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:last-child:hover > .p-tieredmenu-item-content {
+  background: rgba(239, 68, 68, 0.1) !important;
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:last-child > .p-tieredmenu-item-content:hover .p-tieredmenu-item-icon,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:last-child:hover > .p-tieredmenu-item-content .p-tieredmenu-item-icon {
+  color: #dc2626 !important;
+}
+
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:last-child > .p-tieredmenu-item-content:hover .p-tieredmenu-item-label,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:last-child:hover > .p-tieredmenu-item-content .p-tieredmenu-item-label,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:last-child > .p-tieredmenu-item-content:hover .p-tieredmenu-item-link,
+.p-tieredmenu.portal-user-menu .p-tieredmenu-item:last-child:hover > .p-tieredmenu-item-content .p-tieredmenu-item-link {
+  color: #dc2626 !important;
+}
+
+/* Hide any badges */
+.p-tieredmenu.portal-user-menu .p-badge,
+.p-tieredmenu.portal-user-menu .p-tag {
+  display: none !important;
+}
+
+/* ===== FALLBACK for old class names ===== */
+.p-tieredmenu.portal-user-menu .p-menuitem {
+  background: #ffffff !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem-content {
+  background: #ffffff !important;
+  border-radius: 0.6rem !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem-link {
+  padding: 0.6rem 0.85rem !important;
+  gap: 0.65rem !important;
+  color: #0f172a !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  background: transparent !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem-icon {
+  font-size: 0.95rem !important;
+  color: #1d4ed8 !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem-text {
+  color: #0f172a !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem-content:hover {
+  background: rgba(59, 130, 246, 0.1) !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem-content:hover .p-menuitem-icon {
+  color: #1e40af !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem-content:hover .p-menuitem-text,
+.p-tieredmenu.portal-user-menu .p-menuitem-content:hover .p-menuitem-link {
+  color: #1e40af !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem.p-focus > .p-menuitem-content,
+.p-tieredmenu.portal-user-menu .p-menuitem:focus > .p-menuitem-content {
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem:last-child .p-menuitem-content:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+.p-tieredmenu.portal-user-menu .p-menuitem:last-child .p-menuitem-content:hover .p-menuitem-icon,
+.p-tieredmenu.portal-user-menu .p-menuitem:last-child .p-menuitem-content:hover .p-menuitem-text,
+.p-tieredmenu.portal-user-menu .p-menuitem:last-child .p-menuitem-content:hover .p-menuitem-link {
+  color: #dc2626 !important;
+}

@@ -11,7 +11,7 @@
       <i class="pi pi-bars"></i>
       <span class="menu-toggle-label">Menú</span>
     </button>
-    <div class="brand-mark">{{ title }}</div>
+    <span class="brand-mark">{{ title }}</span>
     <span class="brand-tag">{{ subtitle }}</span>
   </div>
 
@@ -22,16 +22,19 @@
       type="button"
       class="notification-button"
       (click)="onNotificationsClick()"
+      aria-label="Notificaciones"
     >
       <i class="pi pi-bell"></i>
       <p-badge *ngIf="notifications > 0" [value]="notifications" [severity]="badgeSeverity"></p-badge>
     </button>
 
-    <p-menu #userMenu [popup]="true" [model]="internalMenu" styleClass="portal-header-menu"></p-menu>
-    <button type="button" class="user-button" pButton (click)="userMenu.toggle($event)">
-      <p-avatar [label]="initials" shape="circle" class="user-avatar"></p-avatar>
-      <span class="user-name">{{ userName }}</span>
-      <i class="pi pi-chevron-down chevron"></i>
-    </button>
+    <div class="user-menu-container">
+      <button type="button" class="user-button" pButton (click)="userMenu.toggle($event)" aria-label="Menú de usuario">
+        <p-avatar [label]="initials" shape="circle" class="user-avatar"></p-avatar>
+        <span class="user-name">{{ userName }}</span>
+        <i class="pi pi-chevron-down chevron"></i>
+      </button>
+      <p-tieredMenu #userMenu [popup]="true" [model]="internalMenu" styleClass="portal-user-menu" [appendTo]="'body'"></p-tieredMenu>
+    </div>
   </div>
 </p-toolbar>

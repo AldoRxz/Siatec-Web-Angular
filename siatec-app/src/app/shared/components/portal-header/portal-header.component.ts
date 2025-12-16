@@ -5,13 +5,13 @@ import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { MenuItem } from 'primeng/api';
-import { MenuModule } from 'primeng/menu';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-portal-header',
   standalone: true,
-  imports: [CommonModule, ToolbarModule, ButtonModule, AvatarModule, BadgeModule, MenuModule, RippleModule],
+  imports: [CommonModule, ToolbarModule, ButtonModule, AvatarModule, BadgeModule, TieredMenuModule, RippleModule],
   templateUrl: './portal-header.component.html',
   styleUrl: './portal-header.component.scss'
 })
