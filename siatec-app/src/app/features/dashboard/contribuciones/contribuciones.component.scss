@@ -1,0 +1,576 @@
+// ============================================
+// Operaciones/Contribuciones Page Styles
+// ============================================
+// Matching dashboard styling
+
+// Design Tokens
+$primary-color: #2563eb;
+$primary-dark: #1e40af;
+$primary-light: #3b82f6;
+$primary-bg: #eff6ff;
+$text-dark: #0f172a;
+$text-medium: #475569;
+$text-light: #64748b;
+$text-muted: #94a3b8;
+$border-color: #d4dbe8;
+$border-light: #e2e8f0;
+$card-bg: rgba(255, 255, 255, 0.95);
+$card-shadow: 0 10px 40px rgba(37, 99, 235, 0.1);
+
+// Status colors
+$success-color: #16a34a;
+$success-bg: #dcfce7;
+$warn-color: #ea580c;
+$warn-bg: #ffedd5;
+$danger-color: #dc2626;
+$danger-bg: #fee2e2;
+
+.operaciones-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// ========================================
+// Page Header
+// ========================================
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  border-radius: 1rem;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.875rem;
+    font-size: 1.5rem;
+    backdrop-filter: blur(8px);
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  &__subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+}
+
+.records-badge {
+  font-weight: 600;
+}
+
+// ========================================
+// Card Styling
+// ========================================
+:host ::ng-deep .operaciones-card {
+  border-radius: 1rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $border-light;
+  background: $card-bg;
+  overflow: hidden;
+
+  .p-card-body {
+    padding: 0;
+  }
+
+  .p-card-content {
+    padding: 1.5rem;
+  }
+}
+
+// ========================================
+// Toolbar
+// ========================================
+.card-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid $border-light;
+  margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+}
+
+.toolbar-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $text-medium;
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  i {
+    color: $primary-color;
+  }
+}
+
+// ========================================
+// Table Styling
+// ========================================
+:host ::ng-deep .operaciones-table {
+  .p-datatable-table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .p-datatable-thead > tr > th {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid $border-light;
+    padding: 0.875rem 1rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $text-light;
+  }
+
+  .p-datatable-tbody > tr {
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(37, 99, 235, 0.04);
+    }
+
+    > td {
+      border: none;
+      border-bottom: 1px solid $border-light;
+      padding: 1rem;
+      vertical-align: middle;
+    }
+
+    &:last-child > td {
+      border-bottom: none;
+    }
+  }
+}
+
+// Table Cells
+.contribucion-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.contribucion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: $primary-bg;
+  border-radius: 0.625rem;
+  color: $primary-color;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.contribucion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+
+  strong {
+    font-size: 0.9rem;
+    color: $text-dark;
+  }
+
+  small {
+    font-size: 0.75rem;
+    color: $text-muted;
+  }
+}
+
+.periodo-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  color: $text-medium;
+
+  i {
+    font-size: 0.8rem;
+    color: $text-muted;
+  }
+}
+
+.monto-cell {
+  .monto-value {
+    font-weight: 700;
+    font-size: 1rem;
+    color: $text-dark;
+  }
+}
+
+// ========================================
+// Resultado Card
+// ========================================
+:host ::ng-deep .resultado-card {
+  border-radius: 1rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $border-light;
+  background: $card-bg;
+  overflow: hidden;
+
+  .p-card-body {
+    padding: 0;
+  }
+
+  .p-card-content {
+    padding: 1.5rem;
+  }
+}
+
+.resultado-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, $success-color 0%, darken($success-color, 10%) 100%);
+  color: #fff;
+  margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.875rem;
+    font-size: 1.5rem;
+    backdrop-filter: blur(8px);
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  &__monto {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+}
+
+.resultado-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.resultado-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid $border-light;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.625rem;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+
+    &--blue {
+      background: $primary-bg;
+      color: $primary-color;
+    }
+
+    &--orange {
+      background: $warn-bg;
+      color: $warn-color;
+    }
+
+    &--purple {
+      background: #f3e8ff;
+      color: #7c3aed;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__label {
+    display: block;
+    font-size: 0.75rem;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+
+  &__value {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $text-dark;
+  }
+}
+
+// ========================================
+// Dialog Styling
+// ========================================
+:host ::ng-deep .determinacion-dialog {
+  .p-dialog-header {
+    background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+    color: #fff;
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.25rem 1.5rem;
+
+    .p-dialog-title {
+      font-weight: 700;
+    }
+  }
+
+  .p-dialog-content {
+    padding: 1.5rem;
+  }
+
+  .p-dialog-header-close {
+    color: #fff;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+  }
+}
+
+.dynamic-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: $text-dark;
+  }
+
+  input, :host ::ng-deep .p-select {
+    width: 100%;
+  }
+}
+
+.field-error {
+  color: $danger-color;
+  font-size: 0.75rem;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid $border-light;
+  margin-top: 0.5rem;
+}
+
+.empty-fields {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  color: $text-muted;
+
+  i {
+    font-size: 2rem;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+// ========================================
+// Empty & Loading States
+// ========================================
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    height: 5rem;
+    background: linear-gradient(135deg, $primary-bg 0%, #dbeafe 100%);
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+
+    i {
+      font-size: 2.5rem;
+      color: $primary-color;
+    }
+  }
+
+  &__title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $text-dark;
+  }
+
+  &__text {
+    margin: 0;
+    font-size: 0.95rem;
+    color: $text-light;
+    max-width: 320px;
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+
+  p {
+    margin: 0;
+    color: $text-muted;
+    font-size: 0.9rem;
+  }
+}
+
+// ========================================
+// Responsive
+// ========================================
+@media (max-width: 768px) {
+  .page-header {
+    flex-wrap: wrap;
+    padding: 1.25rem 1.5rem;
+
+    &__icon {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.25rem;
+    }
+
+    &__title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .records-badge {
+    margin-left: auto;
+  }
+
+  .card-toolbar {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .resultado-header {
+    flex-direction: column;
+    text-align: center;
+
+    &__monto {
+      font-size: 1.75rem;
+    }
+  }
+
+  .resultado-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .operaciones-page {
+    padding: 0;
+  }
+
+  .page-header {
+    border-radius: 0.75rem;
+    margin: 0 -0.5rem;
+  }
+
+  :host ::ng-deep .operaciones-card,
+  :host ::ng-deep .resultado-card {
+    border-radius: 0.75rem;
+    margin: 0 -0.5rem;
+  }
+
+  .contribucion-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .empty-state {
+    padding: 3rem 1.5rem;
+
+    &__icon {
+      width: 4rem;
+      height: 4rem;
+
+      i {
+        font-size: 2rem;
+      }
+    }
+  }
+}

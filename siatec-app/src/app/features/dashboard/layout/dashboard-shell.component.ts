@@ -125,18 +125,18 @@ export class DashboardShellComponent implements OnInit {
         command: () => this.navigate('/dashboard/panel', 'panel')
       },
       {
-        key: 'operaciones',
+        key: 'contribuciones',
         label: 'Contribuciones',
         icon: 'pi pi-file-edit',
         indicator: 'warning',
-        command: () => this.navigate('/dashboard/operaciones', 'operaciones')
+        command: () => this.navigate('/dashboard/contribuciones', 'contribuciones')
       },
       {
         key: 'citas',
         label: 'Agendar citas',
         icon: 'pi pi-calendar',
         indicator: 'success',
-        command: () => this.navigate('/dashboard/operaciones', 'citas')
+        command: () => this.navigate('/dashboard/contribuciones', 'citas')
       },
       {
         key: 'archivos',

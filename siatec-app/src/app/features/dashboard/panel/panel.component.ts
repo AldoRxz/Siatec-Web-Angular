@@ -8,7 +8,7 @@ import { DashboardNotificationsService } from '../services/dashboard-notificatio
 import { DashboardDocumentsService } from '../services/dashboard-documents.service';
 
 interface PanelCard {
-  key: 'cuenta' | 'citas' | 'operaciones' | 'archivos';
+  key: 'cuenta' | 'citas' | 'contribuciones' | 'archivos';
   icon: string;
   title: string;
   value: string;
@@ -61,16 +61,16 @@ export class PanelComponent implements OnInit {
       title: 'Citas',
       value: '2 próximas',
       action: 'Agendar',
-      route: '/dashboard/operaciones',
+      route: '/dashboard/contribuciones',
       accent: 'purple'
     },
     {
-      key: 'operaciones',
+      key: 'contribuciones',
       icon: 'pi pi-file-edit',
       title: 'Determinaciones',
       value: '3 pendientes',
       action: 'Revisar',
-      route: '/dashboard/operaciones',
+      route: '/dashboard/contribuciones',
       accent: 'emerald'
     },
     {
@@ -122,7 +122,7 @@ export class PanelComponent implements OnInit {
       label: 'Explorar contribuciones',
       description: 'Calcula determinaciones',
       icon: 'pi pi-calculator',
-      route: '/dashboard/operaciones'
+      route: '/dashboard/contribuciones'
     }
   ];
 

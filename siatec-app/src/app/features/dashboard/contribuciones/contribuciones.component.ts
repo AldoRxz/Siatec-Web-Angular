@@ -32,7 +32,7 @@ interface DynamicField {
 }
 
 @Component({
-  selector: 'app-dashboard-operaciones',
+  selector: 'app-dashboard-contribuciones',
   standalone: true,
   imports: [
     CommonModule,
@@ -48,10 +48,10 @@ interface DynamicField {
     ProgressSpinnerModule
   ],
   providers: [MessageService],
-  templateUrl: './operaciones.component.html',
-  styleUrl: './operaciones.component.scss'
+  templateUrl: './contribuciones.component.html',
+  styleUrl: './contribuciones.component.scss'
 })
-export class OperacionesComponent implements OnInit {
+export class ContribucionesComponent implements OnInit {
   private readonly contribucionesService = inject(ContribucionesService);
   private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);

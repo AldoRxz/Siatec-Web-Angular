@@ -56,9 +56,9 @@ export const routes: Routes = [
         title: 'Notificaciones - SIATEC'
       },
       {
-        path: 'operaciones',
-        loadComponent: () => import('./features/dashboard/operaciones/operaciones.component').then(m => m.OperacionesComponent),
-        title: 'Operaciones - SIATEC'
+        path: 'contribuciones',
+        loadComponent: () => import('./features/dashboard/contribuciones/contribuciones.component').then(m => m.ContribucionesComponent),
+        title: 'Contribuciones - SIATEC'
       },
       {
         path: 'inscripcion',
