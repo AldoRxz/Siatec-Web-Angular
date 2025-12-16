@@ -52,10 +52,13 @@ export interface CreateAccountData {
  */
 export interface UpdateAccountData {
   id?: number;
-  email?: string;
-  nombre?: string;
-  apellidos?: string;
-  [key: string]: any;
+  email: string;
+  nombres: string;
+  primerApellido?: string;
+  segundoApellido?: string;
+  telefono?: string;
+  oldPassword?: string;
+  newPassword?: string;
 }
 
 /**

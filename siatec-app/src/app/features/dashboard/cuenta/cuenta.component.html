@@ -1,73 +1,261 @@
-<p-toast></p-toast>
+<p-toast position="top-right"></p-toast>
 
 <section class="cuenta-page">
-  <p-card>
-    <ng-template pTemplate="header">
-      <div class="header">
-        <div>
-          <p class="eyebrow">Mi cuenta</p>
-          <h2>Actualiza tu información</h2>
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="page-header__icon">
+      <i class="pi pi-user"></i>
+    </div>
+    <div class="page-header__content">
+      <h1 class="page-header__title">Mi Cuenta</h1>
+      <p class="page-header__subtitle">Administra tu información personal y configuración de seguridad</p>
+    </div>
+  </header>
+
+  <!-- Loading Skeleton -->
+  @if (initialLoading()) {
+    <div class="cuenta-skeleton">
+      <p-card>
+        <div class="skeleton-form">
+          <p-skeleton width="100%" height="3.5rem"></p-skeleton>
+          <p-skeleton width="100%" height="3.5rem"></p-skeleton>
+          <p-skeleton width="100%" height="3.5rem"></p-skeleton>
+          <p-skeleton width="100%" height="3.5rem"></p-skeleton>
         </div>
-      </div>
-    </ng-template>
+      </p-card>
+    </div>
+  } @else {
+    <!-- Main Form Card -->
+    <p-card styleClass="cuenta-card">
+      <form class="cuenta-form" [formGroup]="accountForm" (ngSubmit)="submit()">
+        <!-- Personal Information Section -->
+        <section class="form-section">
+          <div class="form-section__header">
+            <i class="pi pi-id-card form-section__icon"></i>
+            <div>
+              <h3 class="form-section__title">Información Personal</h3>
+              <p class="form-section__description">Datos básicos de tu cuenta</p>
+            </div>
+          </div>
 
-    <form class="form" [formGroup]="accountForm" (ngSubmit)="submit()">
-      <section>
-        <h3>Identidad</h3>
-        <div class="form-grid">
-          <label>
-            <span>Nombres *</span>
-            <input pInputText type="text" formControlName="nombres" />
-            <small class="error" *ngIf="accountForm.controls.nombres.invalid && accountForm.controls.nombres.touched">
-              Ingresa tu nombre.
-            </small>
-          </label>
-          <label>
-            <span>Primer apellido</span>
-            <input pInputText type="text" formControlName="primerApellido" />
-          </label>
-          <label>
-            <span>Segundo apellido</span>
-            <input pInputText type="text" formControlName="segundoApellido" />
-          </label>
-          <label>
-            <span>Correo electrónico *</span>
-            <input pInputText type="email" formControlName="email" />
-            <small class="error" *ngIf="accountForm.controls.email.invalid && accountForm.controls.email.touched">
-              Ingresa un correo válido.
-            </small>
-          </label>
-          <label>
-            <span>Teléfono</span>
-            <input pInputText type="tel" maxlength="15" formControlName="telefono" />
-          </label>
-        </div>
-      </section>
+          <div class="form-grid">
+            <!-- Nombres -->
+            <div class="form-field" [class.form-field--error]="hasError('nombres')">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-user"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-nombres"
+                    type="text"
+                    formControlName="nombres"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-nombres"
+                  />
+                </p-iconfield>
+                <label for="cuenta-nombres">Nombres *</label>
+              </p-floatlabel>
+              @if (hasError('nombres')) {
+                <small class="form-field__error">{{ getErrorMessage('nombres') }}</small>
+              }
+            </div>
 
-      <p-divider></p-divider>
+            <!-- Primer Apellido -->
+            <div class="form-field">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-id-card"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-primer-apellido"
+                    type="text"
+                    formControlName="primerApellido"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-primer-apellido"
+                  />
+                </p-iconfield>
+                <label for="cuenta-primer-apellido">Primer Apellido</label>
+              </p-floatlabel>
+            </div>
 
-      <section>
-        <h3>Seguridad</h3>
-        <div class="form-grid">
-          <label>
-            <span>Contraseña actual</span>
-            <input pInputText type="password" formControlName="oldPassword" placeholder="Necesaria si deseas cambiarla" />
-          </label>
-          <label>
-            <span>Nueva contraseña</span>
-            <input pInputText type="password" formControlName="newPassword" />
-            <small class="hint">Mínimo 8 caracteres.</small>
-          </label>
-          <label>
-            <span>Confirmar nueva contraseña</span>
-            <input pInputText type="password" formControlName="confirmPassword" />
-          </label>
-        </div>
-      </section>
+            <!-- Segundo Apellido -->
+            <div class="form-field">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-id-card"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-segundo-apellido"
+                    type="text"
+                    formControlName="segundoApellido"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-segundo-apellido"
+                  />
+                </p-iconfield>
+                <label for="cuenta-segundo-apellido">Segundo Apellido</label>
+              </p-floatlabel>
+            </div>
 
-      <div class="form-actions">
-        <button pButton type="submit" label="Guardar cambios" icon="pi pi-save" [loading]="loading()"></button>
-      </div>
-    </form>
-  </p-card>
+            <!-- Email -->
+            <div class="form-field" [class.form-field--error]="hasError('email')">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-envelope"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-email"
+                    type="email"
+                    formControlName="email"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-email"
+                  />
+                </p-iconfield>
+                <label for="cuenta-email">Correo Electrónico *</label>
+              </p-floatlabel>
+              @if (hasError('email')) {
+                <small class="form-field__error">{{ getErrorMessage('email') }}</small>
+              }
+            </div>
+
+            <!-- Teléfono -->
+            <div class="form-field" [class.form-field--error]="hasError('telefono')">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-phone"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-telefono"
+                    type="tel"
+                    maxlength="15"
+                    formControlName="telefono"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-telefono"
+                  />
+                </p-iconfield>
+                <label for="cuenta-telefono">Teléfono</label>
+              </p-floatlabel>
+              @if (hasError('telefono')) {
+                <small class="form-field__error">{{ getErrorMessage('telefono') }}</small>
+              }
+            </div>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <!-- Security Section -->
+        <section class="form-section">
+          <div class="form-section__header">
+            <i class="pi pi-shield form-section__icon form-section__icon--security"></i>
+            <div>
+              <h3 class="form-section__title">Seguridad</h3>
+              <p class="form-section__description">Cambia tu contraseña de acceso</p>
+            </div>
+          </div>
+
+          <p-message
+            severity="info"
+            styleClass="security-info"
+            [closable]="false"
+          >
+            <ng-template pTemplate="content">
+              <span class="security-info__text">
+                <i class="pi pi-info-circle"></i>
+                Completa estos campos solo si deseas cambiar tu contraseña actual.
+              </span>
+            </ng-template>
+          </p-message>
+
+          <div class="form-grid form-grid--security">
+            <!-- Current Password -->
+            <div class="form-field">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-lock"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-old-password"
+                    type="password"
+                    formControlName="oldPassword"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-old-password"
+                  />
+                </p-iconfield>
+                <label for="cuenta-old-password">Contraseña Actual</label>
+              </p-floatlabel>
+              <small class="form-field__hint">Requerida para cambiar contraseña</small>
+            </div>
+
+            <!-- New Password -->
+            <div class="form-field" [class.form-field--error]="hasError('newPassword')">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-key"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-new-password"
+                    type="password"
+                    formControlName="newPassword"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-new-password"
+                  />
+                </p-iconfield>
+                <label for="cuenta-new-password">Nueva Contraseña</label>
+              </p-floatlabel>
+              @if (hasError('newPassword')) {
+                <small class="form-field__error">{{ getErrorMessage('newPassword') }}</small>
+              } @else {
+                <small class="form-field__hint">Mínimo 8 caracteres</small>
+              }
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-field" [class.form-field--error]="hasError('confirmPassword')">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-check-circle"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-confirm-password"
+                    type="password"
+                    formControlName="confirmPassword"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-confirm-password"
+                  />
+                </p-iconfield>
+                <label for="cuenta-confirm-password">Confirmar Contraseña</label>
+              </p-floatlabel>
+              @if (hasError('confirmPassword')) {
+                <small class="form-field__error">{{ getErrorMessage('confirmPassword') }}</small>
+              }
+            </div>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <!-- Form Actions -->
+        <footer class="form-actions">
+          <button
+            pButton
+            type="submit"
+            label="Guardar Cambios"
+            icon="pi pi-check"
+            [loading]="loading()"
+            [disabled]="loading()"
+            class="submit-btn"
+            data-testid="cuenta-submit"
+          ></button>
+        </footer>
+      </form>
+    </p-card>
+  }
 </section>
