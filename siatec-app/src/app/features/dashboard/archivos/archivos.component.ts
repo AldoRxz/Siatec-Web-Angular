@@ -140,6 +140,14 @@ export class ArchivosComponent implements OnInit {
     this.filters.set({ tipo: '', nombre: '' });
   }
 
+  getUploadedCount(): number {
+    return this.documentsSignal().filter(doc => doc.archivos.length > 0).length;
+  }
+
+  clearError(): void {
+    this.errorMessage.set(null);
+  }
+
   isExpanded(doc: DocumentoCatalogo): boolean {
     return this.expandedDocs().has(doc.tipoId);
   }
