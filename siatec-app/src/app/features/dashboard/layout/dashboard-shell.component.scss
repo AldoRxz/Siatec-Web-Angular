@@ -265,17 +265,23 @@ $content-max-width: 1400px;
 @media (max-width: 960px) {
   .shell {
     padding: 0;
-    overflow: auto;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .shell-body {
     flex-direction: column;
-    padding: 0 1.25rem 2rem;
+    flex: 1 0 auto;
+    padding: 0 1.25rem;
     overflow: visible;
+    min-height: 0;
   }
 
   .shell-header--flush {
     margin: 0;
+    position: relative;
   }
 
   .shell-sidebar {
@@ -283,8 +289,11 @@ $content-max-width: 1400px;
   }
 
   .shell-main {
+    flex: 1 0 auto;
     padding: 1.5rem 0 0;
     overflow: visible;
+    margin-right: 0;
+    padding-right: 0;
   }
 
   .shell-main-content {
@@ -296,19 +305,28 @@ $content-max-width: 1400px;
     padding: 1.5rem;
     border-radius: 1rem;
     margin: 1.5rem 0;
+    min-height: auto;
   }
 
   .shell-footer {
+    position: relative;
+    flex-shrink: 0;
+    margin-top: auto;
     box-shadow: none;
   }
 }
 
 @media (max-width: 600px) {
   .shell-body {
-    padding: 0 1rem 1.5rem;
+    padding: 0 1rem;
   }
 
   .shell-header--flush {
     margin: 0;
+  }
+
+  .shell-main-surface {
+    padding: 1rem;
+    margin: 1rem 0;
   }
 }
