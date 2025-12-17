@@ -143,16 +143,14 @@
         
         <div class="form-row">
           <div class="form-group">
-            <p-floatlabel class="with-icon">
-              <p-iconfield iconPosition="left" class="w-full">
-                <p-inputicon class="pi pi-user"></p-inputicon>
+            <p-floatlabel variant="on">
+              <p-iconfield iconPosition="left">
+                <p-inputicon class="pi pi-user" />
                 <input 
                   pInputText 
                   id="nombre" 
                   formControlName="nombre"
-                  type="text"
-                  class="w-full"
-                  placeholder=" "
+                  autocomplete="off"
                 />
               </p-iconfield>
               <label for="nombre">Nombre completo</label>
@@ -163,16 +161,14 @@
           </div>
 
           <div class="form-group">
-            <p-floatlabel class="with-icon">
-              <p-iconfield iconPosition="left" class="w-full">
-                <p-inputicon class="pi pi-id-card"></p-inputicon>
+            <p-floatlabel variant="on">
+              <p-iconfield iconPosition="left">
+                <p-inputicon class="pi pi-id-card" />
                 <input 
                   pInputText 
                   id="rfc" 
                   formControlName="rfc"
-                  type="text"
-                  class="w-full"
-                  placeholder=" "
+                  autocomplete="off"
                   maxlength="13"
                   style="text-transform: uppercase"
                 />
@@ -185,7 +181,7 @@
                 {{ tipoPersona() === 'PF' ? 'Persona Física' : 'Persona Moral' }}
               </small>
             }
-            @if (citaForm.get('rfc')?.invalid && citaForm.get('rfc')?.touched) {
+            @if (citaForm.get('rfc')?.invalid && citaForm.get('rfc')?.touched && !tipoPersona()) {
               <small class="error-hint">El RFC es requerido (12 o 13 caracteres)</small>
             }
           </div>
