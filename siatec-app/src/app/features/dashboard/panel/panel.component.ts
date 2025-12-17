@@ -61,7 +61,7 @@ export class PanelComponent implements OnInit {
       title: 'Citas',
       value: '2 próximas',
       action: 'Agendar',
-      route: '/dashboard/contribuciones',
+      route: '/dashboard/citas',
       accent: 'purple'
     },
     {

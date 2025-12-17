@@ -136,7 +136,7 @@ export class DashboardShellComponent implements OnInit {
         label: 'Agendar citas',
         icon: 'pi pi-calendar',
         indicator: 'success',
-        command: () => this.navigate('/dashboard/contribuciones', 'citas')
+        command: () => this.navigate('/dashboard/citas', 'citas')
       },
       {
         key: 'archivos',

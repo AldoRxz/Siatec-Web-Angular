@@ -61,6 +61,11 @@ export const routes: Routes = [
         title: 'Contribuciones - SIATEC'
       },
       {
+        path: 'citas',
+        loadComponent: () => import('./features/dashboard/citas/citas.component').then(m => m.CitasComponent),
+        title: 'Citas - SIATEC'
+      },
+      {
         path: 'inscripcion',
         loadComponent: () => import('./features/dashboard/inscripcion/inscripcion.component').then(m => m.InscripcionComponent),
         title: 'Solicitud de inscripción - SIATEC'
