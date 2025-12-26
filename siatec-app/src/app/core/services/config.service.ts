@@ -15,6 +15,7 @@ export class ConfigService {
     tesoreriaApiBaseUrl: 'http://localhost:5003/api/tesoreria',
     notificacionesApiBaseUrl: 'http://localhost:5005/api/notificaciones',
     paccioliApiBaseUrl: 'http://192.168.1.113:8080',
+    cajaApiBaseUrl: 'http://localhost:5089/api/v1/ordenes-pago',
     environment: 'development' as const,
     baseUrl: 'http://localhost'
   };
@@ -41,7 +42,7 @@ export class ConfigService {
   /**
    * Obtiene la URL base de una API específica
    */
-  getApiUrl(service: 'auth' | 'contribuyentes' | 'contribuciones' | 'tesoreria' | 'notificaciones' | 'paccioli'): string {
+  getApiUrl(service: 'auth' | 'contribuyentes' | 'contribuciones' | 'tesoreria' | 'notificaciones' | 'paccioli' | 'caja'): string {
     const config = this.getConfig();
     
     const serviceMap: Record<string, string> = {
@@ -50,7 +51,8 @@ export class ConfigService {
       contribuciones: config.contribucionesApiBaseUrl,
       tesoreria: config.tesoreriaApiBaseUrl,
       notificaciones: config.notificacionesApiBaseUrl,
-      paccioli: config.paccioliApiBaseUrl
+      paccioli: config.paccioliApiBaseUrl,
+      caja: config.cajaApiBaseUrl
     };
 
     return serviceMap[service] || config.baseUrl;
@@ -92,6 +94,7 @@ export class ConfigService {
       console.log('Tesorería API:', config.tesoreriaApiBaseUrl);
       console.log('Notificaciones API:', config.notificacionesApiBaseUrl);
       console.log('Paccioli API:', config.paccioliApiBaseUrl);
+      console.log('Caja API:', config.cajaApiBaseUrl);
       console.groupEnd();
     }
   }

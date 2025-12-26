@@ -20,6 +20,7 @@
     tesoreriaApiBaseUrl: 'http://localhost:5003/api/tesoreria',
     notificacionesApiBaseUrl: 'http://localhost:5005/api/notificaciones',
     paccioliApiBaseUrl: 'http://192.168.1.113:8080',
+    cajaApiBaseUrl: 'http://localhost:5089/api/v1/ordenes-pago',
 
     // Información del ambiente
     environment: 'development',
@@ -33,7 +34,8 @@
         'contribuciones': this.contribucionesApiBaseUrl,
         'tesoreria': this.tesoreriaApiBaseUrl,
         'notificaciones': this.notificacionesApiBaseUrl,
-        'paccioli': this.paccioliApiBaseUrl
+        'paccioli': this.paccioliApiBaseUrl,
+        'caja': this.cajaApiBaseUrl
       };
       return serviceMap[service] || this.baseUrl;
     },
@@ -49,6 +51,7 @@
       console.log('Tesorería API:', this.tesoreriaApiBaseUrl);
       console.log('Notificaciones API:', this.notificacionesApiBaseUrl);
       console.log('Paccioli API:', this.paccioliApiBaseUrl);
+      console.log('Caja API:', this.cajaApiBaseUrl);
       console.groupEnd();
     }
   };
@@ -60,6 +63,7 @@
     contribucionesApi: window.__SIATEC_CONFIG.contribucionesApiBaseUrl,
     tesoreriaApi: window.__SIATEC_CONFIG.tesoreriaApiBaseUrl,
     notificacionesApi: window.__SIATEC_CONFIG.notificacionesApiBaseUrl,
+    cajaApi: window.__SIATEC_CONFIG.cajaApiBaseUrl,
     environment: window.__SIATEC_CONFIG.environment
   };
 

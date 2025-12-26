@@ -74,12 +74,22 @@
               </td>
               <td class="text-center">
                 <button 
+                  *ngIf="!tieneMonto(row)"
                   pButton 
                   type="button" 
                   label="Determinar" 
                   icon="pi pi-calculator" 
                   class="p-button-sm"
                   (click)="abrirDeterminacion(row)">
+                </button>
+                <button 
+                  *ngIf="tieneMonto(row)"
+                  pButton 
+                  type="button" 
+                  label="Pagar" 
+                  icon="pi pi-credit-card" 
+                  class="p-button-sm p-button-success"
+                  (click)="iniciarPago(row)">
                 </button>
               </td>
             </tr>
@@ -192,6 +202,89 @@
       <button pButton type="submit" label="Calcular" icon="pi pi-calculator" [loading]="calculating()" [disabled]="!campos().length"></button>
     </div>
   </form>
+</p-dialog>
+
+<!-- Modal de Confirmación de Pago -->
+<p-dialog
+  header="Confirmar Pago"
+  [visible]="modalPagoVisible()"
+  modal
+  [style]="{ width: '32rem' }"
+  [breakpoints]="{ '640px': '95vw' }"
+  (onHide)="cerrarModalPago()"
+  styleClass="pago-dialog"
+>
+  <ng-container *ngIf="determinacionParaPago() as det">
+    <div class="pago-info">
+      <div class="pago-icon">
+        <i class="pi pi-credit-card"></i>
+      </div>
+      <h3 class="pago-contribucion">{{ det.contribucionInstance?.contribucionNombre || 'Contribución' }}</h3>
+      <p class="pago-periodo">Periodo: {{ det.periodo || 'N/A' }}</p>
+      <div class="pago-monto">
+        <span class="pago-monto-label">Monto a pagar:</span>
+        <strong class="pago-monto-value">{{ formatCurrency(det.monto) }}</strong>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button pButton type="button" label="Cancelar" severity="secondary" outlined (click)="cerrarModalPago()"></button>
+      <button pButton type="button" label="Proceder al Pago" icon="pi pi-check" severity="success" [loading]="procesandoPago()" (click)="confirmarPago()"></button>
+    </div>
+  </ng-container>
+</p-dialog>
+
+<!-- Modal de Orden de Pago Generada -->
+<p-dialog
+  header="¡Orden de Pago Generada!"
+  [visible]="modalOrdenVisible()"
+  modal
+  [style]="{ width: '40rem' }"
+  [breakpoints]="{ '640px': '95vw' }"
+  (onHide)="cerrarModalOrden()"
+  styleClass="orden-dialog"
+>
+  <ng-container *ngIf="ordenGenerada() as orden">
+    <div class="orden-info">
+      <div class="orden-success-icon">
+        <i class="pi pi-check-circle"></i>
+      </div>
+      
+      <div class="orden-detalle">
+        <div class="orden-field">
+          <label>Número de Orden</label>
+          <strong class="orden-numero">{{ orden.numeroOrden }}</strong>
+        </div>
+        
+        <div class="orden-field">
+          <label>Línea de Captura</label>
+          <strong class="orden-linea">{{ orden.lineaCaptura }}</strong>
+        </div>
+        
+        <div class="orden-field">
+          <label>Monto Total</label>
+          <strong class="orden-monto">{{ formatCurrency(orden.montoTotal) }}</strong>
+        </div>
+      </div>
+      
+      <div class="orden-instrucciones">
+        <i class="pi pi-info-circle"></i>
+        <div>
+          <p><strong>Instrucciones de Pago:</strong></p>
+          <ul>
+            <li>Acude a la ventanilla de pagos</li>
+            <li>Proporciona tu línea de captura</li>
+            <li>Conserva tu comprobante de pago</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button pButton type="button" label="Imprimir" icon="pi pi-print" outlined (click)="imprimirOrden()"></button>
+      <button pButton type="button" label="Volver" icon="pi pi-arrow-left" (click)="cerrarModalOrden()"></button>
+    </div>
+  </ng-container>
 </p-dialog>
 
 <!-- Loading Template -->

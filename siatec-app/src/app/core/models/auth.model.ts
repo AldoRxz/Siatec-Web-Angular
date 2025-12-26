@@ -2,15 +2,18 @@
  * Modelo de usuario autenticado en SIATEC
  */
 export interface User {
-  id: number;
+  id: number | string;
   email: string;
   contribuyenteId?: number;
   idContribuyente?: number;
   nombre?: string;
   apellidos?: string;
+  nombreCompleto?: string;
+  fullName?: string;
+  rfc?: string;
   tipo?: 'fisica' | 'moral';
   identityInfo?: {
-    id: number;
+    id: number | string;
     email: string;
     [key: string]: any;
   };

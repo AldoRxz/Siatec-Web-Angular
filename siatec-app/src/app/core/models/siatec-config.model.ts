@@ -8,6 +8,7 @@ export interface SiatecConfig {
   tesoreriaApiBaseUrl: string;
   notificacionesApiBaseUrl: string;
   paccioliApiBaseUrl: string;
+  cajaApiBaseUrl: string;
   environment: 'development' | 'staging' | 'production' | 'docker-local';
   baseUrl: string;
   getApiUrl: (service: string) => string;
@@ -23,6 +24,7 @@ declare global {
       contribucionesApi: string;
       tesoreriaApi: string;
       notificacionesApi: string;
+      cajaApi: string;
       environment: string;
     };
   }

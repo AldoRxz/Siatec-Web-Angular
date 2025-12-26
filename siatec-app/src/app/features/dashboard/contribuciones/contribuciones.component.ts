@@ -13,7 +13,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { AuthService, ContribucionesService } from '../../../core/services';
+import { AuthService, ContribucionesService, CajaService } from '../../../core/services';
+import { OrdenPagoResponse } from '../../../core/services/caja.service';
 import {
   Determinacion,
   ContribucionVersion,
@@ -53,6 +54,7 @@ interface DynamicField {
 })
 export class ContribucionesComponent implements OnInit {
   private readonly contribucionesService = inject(ContribucionesService);
+  private readonly cajaService = inject(CajaService);
   private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);
   private readonly messageService = inject(MessageService);
@@ -64,6 +66,13 @@ export class ContribucionesComponent implements OnInit {
   readonly resultado = signal<DeterminacionCalculoData | null>(null);
   readonly campos = signal<DynamicField[]>([]);
   readonly form = signal<FormGroup>(this.fb.group({}));
+  
+  // Signals para pago
+  readonly modalPagoVisible = signal(false);
+  readonly modalOrdenVisible = signal(false);
+  readonly procesandoPago = signal(false);
+  readonly determinacionParaPago = signal<Determinacion | null>(null);
+  readonly ordenGenerada = signal<OrdenPagoResponse | null>(null);
 
   readonly hasOperaciones = computed(() => this.operaciones().length > 0);
 
@@ -76,6 +85,10 @@ export class ContribucionesComponent implements OnInit {
 
   trackByDeterminacion(_: number, item: Determinacion): number {
     return item.id;
+  }
+
+  tieneMonto(item: Determinacion): boolean {
+    return item.monto != null && item.monto > 0;
   }
 
   estadoTag(estado?: OperacionEstado): 'success' | 'warn' | 'danger' | 'info' {
@@ -145,6 +158,70 @@ export class ContribucionesComponent implements OnInit {
     this.versionActiva = null;
     this.campos.set([]);
     this.form().reset();
+  }
+
+  iniciarPago(item: Determinacion): void {
+    this.determinacionParaPago.set(item);
+    this.modalPagoVisible.set(true);
+  }
+
+  cerrarModalPago(): void {
+    this.modalPagoVisible.set(false);
+    this.determinacionParaPago.set(null);
+  }
+
+  cerrarModalOrden(): void {
+    this.modalOrdenVisible.set(false);
+    this.ordenGenerada.set(null);
+    this.cargarOperaciones();
+  }
+
+  confirmarPago(): void {
+    const det = this.determinacionParaPago();
+    if (!det || !det.monto) {
+      this.messageService.add({ severity: 'warn', summary: 'Pago', detail: 'No se encontró el monto a pagar.' });
+      return;
+    }
+
+    const user = this.authService.getCurrentUser();
+    if (!user || !user.id) {
+      this.messageService.add({ severity: 'error', summary: 'Sesión', detail: 'No se pudo identificar al usuario.' });
+      return;
+    }
+
+    this.procesandoPago.set(true);
+
+    const ordenData = {
+      determinacionId: det.id,
+      contribucionId: det.contribucionId,
+      usuarioId: user.id,
+      contribuyenteId: null,
+      rfcContribuyente: user.rfc || 'RFC',
+      nombreContribuyente: user.nombreCompleto || user.fullName || 'Contribuyente',
+      conceptoCodigo: '3-NOMINA',
+      conceptoDescripcion: det.contribucionInstance?.contribucionNombre || 'Contribución',
+      periodo: det.periodo || new Date().toISOString().substring(0, 7),
+      montoBase: det.monto,
+      origen: 1
+    };
+
+    this.cajaService.crearOrdenPago(ordenData)
+      .pipe(finalize(() => this.procesandoPago.set(false)))
+      .subscribe({
+        next: (orden) => {
+          this.ordenGenerada.set(orden);
+          this.modalPagoVisible.set(false);
+          this.modalOrdenVisible.set(true);
+          this.messageService.add({ severity: 'success', summary: '¡Éxito!', detail: 'Orden de pago generada correctamente.' });
+        },
+        error: (err) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.message || 'No se pudo crear la orden de pago.' });
+        }
+      });
+  }
+
+  imprimirOrden(): void {
+    window.print();
   }
 
   formatCurrency(value?: number | string): string {
