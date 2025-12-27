@@ -45,6 +45,32 @@ $danger-bg: #fee2e2;
   color: #fff;
   box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
 
+  &__logos {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-right: 1.25rem;
+    border-right: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  &__logo {
+    height: 3.5rem;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.95;
+  }
+
+  &__logo-servicio {
+    height: 3rem;
+    width: auto;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.5rem;
+    border-radius: 0.625rem;
+    backdrop-filter: blur(8px);
+  }
+
   &__icon {
     display: flex;
     align-items: center;
@@ -628,6 +654,23 @@ $danger-bg: #fee2e2;
     flex-direction: column;
     align-items: flex-start;
     padding: 1.25rem 1.5rem;
+
+    &__logos {
+      padding-right: 0;
+      border-right: none;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      width: 100%;
+      justify-content: center;
+    }
+
+    &__logo {
+      height: 2.5rem;
+    }
+
+    &__logo-servicio {
+      height: 2.25rem;
+    }
 
     &__icon {
       width: 3rem;
