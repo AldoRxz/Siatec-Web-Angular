@@ -1,341 +1,693 @@
+// ============================================
+// Inscripción Page Styles with PrimeNG Stepper
+// ============================================
+
+// Design Tokens - Matching dashboard colors
+$primary-color: #2563eb;
+$primary-dark: #1e40af;
+$primary-light: #3b82f6;
+$primary-bg: #eff6ff;
+$text-dark: #0f172a;
+$text-medium: #475569;
+$text-light: #64748b;
+$text-muted: #94a3b8;
+$border-color: #d4dbe8;
+$border-light: #e2e8f0;
+$card-bg: rgba(255, 255, 255, 0.95);
+$card-shadow: 0 10px 40px rgba(37, 99, 235, 0.1);
+
+$success-color: #16a34a;
+$success-bg: #dcfce7;
+$warn-color: #ea580c;
+$warn-bg: #ffedd5;
+$danger-color: #dc2626;
+$danger-bg: #fee2e2;
+
 .inscripcion-page {
-  padding: 1rem;
-  background: var(--surface-ground, #f8fafc);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
   max-width: 1400px;
   margin: 0 auto;
-}
-
-.inscripcion-hero {
-  background: #0f172a;
-  color: #fff;
-  border-radius: 1.25rem;
-  padding: 1.5rem 2rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: 0.7rem;
-    margin-bottom: 0.5rem;
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  h2 {
-    margin: 0 0 0.75rem;
-    font-size: 1.5rem;
-  }
-
-  p {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.9rem;
-  }
-}
-
-.hero-meta {
-  background: rgba(15, 23, 42, 0.65);
-  border-radius: 1rem;
-  padding: 1.25rem;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  padding: 0 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-
-  .label {
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  .meta-actions {
-    display: flex;
-    gap: 0.875rem;
-    flex-wrap: wrap;
-    margin-top: 0.5rem;
-  }
-
-  &.muted {
-    opacity: 0.8;
-  }
+  gap: 1.5rem;
 }
 
-.steps {
+// ========================================
+// Page Header
+// ========================================
+.page-header {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  border-radius: 1.25rem;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
 
-  button {
-    border: 1px solid #e2e8f0;
-    border-radius: 999px;
-    background: #fff;
-    padding: 0.625rem 1.25rem;
+  &__icon {
     display: flex;
     align-items: center;
-    gap: 0.625rem;
-    cursor: pointer;
-    color: #475569;
-    transition: all 0.2s ease;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.875rem;
+    font-size: 1.5rem;
+    backdrop-filter: blur(8px);
+  }
 
-    .number {
-      width: 1.75rem;
-      height: 1.75rem;
-      border-radius: 999px;
-      background: #e2e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      color: #0f172a;
+  &__content {
+    flex: 1;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  &__subtitle {
+    margin: 0.375rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+}
+
+.records-badge {
+  font-weight: 600;
+}
+
+// ========================================
+// State Card
+// ========================================
+:host ::ng-deep .state-card {
+  border-radius: 1rem;
+  border: 1px solid $warn-bg;
+  background: lighten($warn-bg, 8%);
+  box-shadow: none;
+
+  .p-card-body {
+    padding: 1.25rem;
+  }
+}
+
+.state-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  i {
+    font-size: 1.75rem;
+    color: $warn-color;
+  }
+
+  > div {
+    flex: 1;
+
+    strong {
+      display: block;
+      color: $text-dark;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
     }
 
-    &.active {
-      border-color: #2563eb;
-      color: #1d4ed8;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
-      .number {
-        background: #2563eb;
-        color: #fff;
-      }
+    p {
+      margin: 0.25rem 0;
+      color: $text-medium;
+      font-size: 0.875rem;
     }
 
-    &.done {
-      border-color: #22c55e;
-      color: #15803d;
-      .number {
-        background: #22c55e;
-        color: #fff;
-      }
+    small {
+      color: $text-light;
+      font-size: 0.75rem;
     }
   }
 }
 
-.wizard {
-  background: #fff;
-  border-radius: 1.5rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
-  padding: 2rem;
+// ========================================
+// Main Card
+// ========================================
+:host ::ng-deep .inscripcion-card {
+  border-radius: 1.25rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $border-light;
+  background: $card-bg;
+
+  .p-card-body {
+    padding: 0;
+  }
+
+  .p-card-content {
+    padding: 0;
+  }
+}
+
+// ========================================
+// Stepper Customization
+// ========================================
+:host ::ng-deep .inscripcion-stepper {
+  .p-stepper-header {
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+
+    &:hover {
+      background: $primary-bg;
+    }
+
+    .p-stepper-number {
+      width: 2.25rem;
+      height: 2.25rem;
+      font-weight: 600;
+      background: $border-light;
+      color: $text-medium;
+      border: none;
+    }
+
+    .p-stepper-title {
+      font-weight: 500;
+      color: $text-medium;
+      font-size: 0.925rem;
+    }
+  }
+
+  .p-stepper-header.p-highlight {
+    .p-stepper-number {
+      background: $primary-color;
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .p-stepper-title {
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
+
+  .p-stepper-separator {
+    background: $border-light;
+    margin: 0 0.5rem;
+  }
+
+  .p-stepper-panels {
+    padding: 2rem;
+    background: white;
+  }
+}
+
+// ========================================
+// Step Content
+// ========================================
+.step-content {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  min-height: 400px;
 }
 
-.step-card {
+.step-header {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid $border-light;
 
-  h3 {
-    margin: 0;
-    color: #0f172a;
+  i {
+    font-size: 2rem;
+    color: $primary-color;
+    opacity: 0.9;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-dark;
+    flex: 1;
   }
 }
 
+// ========================================
+// Persona Toggle
+// ========================================
 .persona-toggle {
-  display: inline-flex;
-  padding: 0.25rem;
-  background: #f8fafc;
-  border-radius: 999px;
-  border: 1px solid #e2e8f0;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: $primary-bg;
+  border-radius: 0.875rem;
 
-  button {
-    border: none;
-    background: transparent;
-    padding: 0.5rem 1rem;
-    border-radius: 999px;
+  .persona-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: white;
+    border: 2px solid $border-light;
+    border-radius: 0.75rem;
+    color: $text-medium;
+    font-weight: 500;
+    font-size: 0.95rem;
     cursor: pointer;
-    font-weight: 600;
-    color: #475569;
+    transition: all 0.2s;
+
+    i {
+      font-size: 1.25rem;
+    }
+
+    &:hover {
+      border-color: $primary-light;
+      color: $primary-color;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    }
 
     &.active {
-      background: #fff;
-      color: #1d4ed8;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+      background: $primary-color;
+      border-color: $primary-color;
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
   }
 }
 
-.grid {
+// ========================================
+// Form Grid
+// ========================================
+.form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 
-  label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    font-size: 0.9rem;
-    color: #475569;
+  p-floatlabel {
+    display: block;
 
-    span {
-      font-weight: 600;
+    &.full-width {
+      grid-column: 1 / -1;
     }
   }
 
-  .wide {
-    grid-column: span 2;
+  :host ::ng-deep {
+    .p-float-label input {
+      width: 100%;
+      padding: 0.875rem 0.75rem;
+      border: 1px solid $border-light;
+      border-radius: 0.625rem;
+      font-size: 0.925rem;
+      transition: all 0.2s;
+
+      &:focus {
+        border-color: $primary-color;
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.1);
+      }
+
+      &.uppercase {
+        text-transform: uppercase;
+      }
+    }
+
+    .p-float-label label {
+      color: $text-light;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
   }
 }
 
-.combo {
+// ========================================
+// Tag Group
+// ========================================
+.tag-group {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
+}
 
-  .combo-input {
-    display: flex;
-    gap: 0.5rem;
+.tag-group-label {
+  font-weight: 600;
+  color: $text-dark;
+  font-size: 0.95rem;
+}
+
+.tag-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+
+  .flex-1 {
+    flex: 1;
+  }
+
+  input {
+    padding: 0.75rem 1rem;
+    border: 1px solid $border-light;
+    border-radius: 0.625rem;
+    font-size: 0.925rem;
+    transition: all 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.1);
+    }
   }
 }
 
-.chip-list {
+.tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.625rem;
+  padding: 1rem;
   background: #f8fafc;
-  padding: 0.75rem;
-  border-radius: 1rem;
-  border: 1px dashed #cbd5f5;
+  border-radius: 0.75rem;
+  min-height: 3.5rem;
+  border: 1px solid $border-light;
 
-  .chip {
-    background: #2563eb;
-    color: #fff;
-    border-radius: 999px;
-    padding: 0.25rem 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
+  :host ::ng-deep .p-chip {
+    background: $primary-color;
+    color: white;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
 
-    button {
-      background: transparent;
-      border: none;
-      color: inherit;
-      cursor: pointer;
+    .p-chip-remove-icon {
+      color: white;
+      margin-left: 0.5rem;
+      font-size: 0.875rem;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
     }
-  }
-
-  .placeholder {
-    color: #94a3b8;
-    font-size: 0.85rem;
   }
 }
 
-.impuestos {
+.tag-placeholder {
+  color: $text-muted;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+// ========================================
+// Impuestos Section
+// ========================================
+.impuestos-section {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: $primary-bg;
+  border-radius: 0.875rem;
+}
 
-  p {
-    margin: 0;
-    font-weight: 600;
-    color: #0f172a;
-  }
+.impuestos-label {
+  font-weight: 600;
+  color: $text-dark;
+  font-size: 0.95rem;
 }
 
 .impuestos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.impuesto-item {
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.625rem;
+  border: 1px solid $border-light;
+  transition: all 0.2s;
 
-  label {
-    display: flex;
-    gap: 0.75rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 1rem;
-    padding: 0.75rem;
-    background: #fff;
-    align-items: center;
+  &:hover {
+    border-color: $primary-light;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+  }
 
-    input {
-      width: 1rem;
-      height: 1rem;
-    }
+  :host ::ng-deep .p-checkbox {
+    .p-checkbox-box {
+      border-color: $border-color;
+      border-radius: 0.375rem;
 
-    strong {
-      display: block;
-      color: #0f172a;
-    }
-
-    p {
-      margin: 0;
-      color: #64748b;
-      font-size: 0.85rem;
+      &.p-highlight {
+        background: $primary-color;
+        border-color: $primary-color;
+      }
     }
   }
 }
 
+.impuesto-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  cursor: pointer;
+  flex: 1;
+
+  strong {
+    color: $primary-color;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  span {
+    color: $text-medium;
+    font-size: 0.825rem;
+  }
+}
+
+// ========================================
+// Resumen Grid
+// ========================================
 .resumen-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
 
-  article {
-    background: #f8fafc;
-    border-radius: 1rem;
-    padding: 1rem;
-    border: 1px solid #e2e8f0;
+.resumen-section {
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 0.875rem;
+  border: 1px solid $border-light;
 
-    h4 {
-      margin: 0 0 0.5rem;
-      color: #0f172a;
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  h3 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-dark;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    i {
+      color: $primary-color;
+      font-size: 1.125rem;
     }
+  }
 
-    p {
-      margin: 0;
-      color: #475569;
+  p {
+    margin: 0.5rem 0;
+    color: $text-medium;
+    font-size: 0.925rem;
+    line-height: 1.6;
+  }
+}
+
+.resumen-nombre {
+  font-size: 1.125rem !important;
+  font-weight: 600;
+  color: $text-dark !important;
+}
+
+.resumen-detail {
+  color: $text-light !important;
+  font-size: 0.875rem !important;
+}
+
+.resumen-empty {
+  color: $text-muted !important;
+  font-style: italic;
+  font-size: 0.875rem !important;
+}
+
+.resumen-impuestos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+
+  :host ::ng-deep .p-chip {
+    background: $success-color;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+.resumen-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: lighten($warn-bg, 8%);
+  border-radius: 0.75rem;
+  border-left: 4px solid $warn-color;
+
+  i {
+    color: $warn-color;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+
+  p {
+    margin: 0;
+    color: $text-medium;
+    font-size: 0.9rem;
+    line-height: 1.6;
+
+    code {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-size: 0.85rem;
+      color: $warn-color;
+      font-weight: 500;
     }
   }
 }
 
-.summary-note {
-  background: #ecfeff;
-  border: 1px dashed #06b6d4;
-  border-radius: 1rem;
-  padding: 1rem;
-  color: #0f172a;
-}
-
-.wizard-actions {
+// ========================================
+// Step Actions
+// ========================================
+.step-actions {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid $border-light;
+  margin-top: auto;
+
+  button {
+    min-width: 140px;
+  }
+
+  :host ::ng-deep {
+    .p-button {
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      border-radius: 0.625rem;
+      transition: all 0.2s;
+
+      &:not(.p-button-outlined) {
+        background: $primary-color;
+        border-color: $primary-color;
+
+        &:hover {
+          background: $primary-dark;
+          border-color: $primary-dark;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+      }
+
+      &.p-button-secondary {
+        &.p-button-outlined {
+          color: $text-medium;
+          border-color: $border-color;
+
+          &:hover {
+            background: $border-light;
+            border-color: $border-color;
+          }
+        }
+      }
+    }
+  }
 }
 
-.final-actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.uppercase {
-  text-transform: uppercase;
-}
-
+// ========================================
+// Responsive
+// ========================================
 @media (max-width: 768px) {
-  .inscripcion-page {
-    padding: 1.25rem;
-  }
-
-  .wizard {
-    padding: 1.5rem;
-  }
-
-  .steps {
+  .page-header {
     flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem 1.5rem;
+
+    &__icon {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.25rem;
+    }
+
+    &__title {
+      font-size: 1.25rem;
+    }
+  }
+
+  :host ::ng-deep .inscripcion-stepper {
+    .p-stepper-panels {
+      padding: 1.5rem 1rem;
+    }
+  }
+
+  .step-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .persona-toggle {
+    flex-direction: column;
+  }
+
+  .tag-input-group {
+    flex-wrap: wrap;
+
+    .flex-1 {
+      flex-basis: 100%;
+    }
+  }
+
+  .impuestos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .resumen-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-actions {
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
   }
 }

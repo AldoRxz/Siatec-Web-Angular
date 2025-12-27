@@ -1,301 +1,433 @@
 <p-toast></p-toast>
 
-<section class="inscripcion-page">
-  <header class="inscripcion-hero">
-    <div>
-      <p class="eyebrow">Solicitud de inscripción</p>
-      <h2>Registro Estatal de Contribuyentes</h2>
-      <p>Replica del flujo original: pasos, borradores y estado almacenado en <code>localStorage</code>.</p>
+<div class="inscripcion-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="page-header__icon">
+      <i class="pi pi-file-edit"></i>
     </div>
-    <div class="hero-meta" *ngIf="processingState(); else draftInfo">
-      <p class="label">Estado actual</p>
-      <p-tag [value]="processingState()?.status || 'Procesando'" severity="warn"></p-tag>
-      <small>{{ processingState()?.timestamp | date: 'medium' }}</small>
-      <div class="meta-actions">
-        <button pButton type="button" label="Editar" icon="pi pi-pen-to-square" (click)="editProcessingPayload()"></button>
-        <button pButton type="button" label="Limpiar" icon="pi pi-times" severity="secondary" (click)="clearProcessingState()"></button>
-      </div>
+    <div class="page-header__content">
+      <h1 class="page-header__title">Inscripción al Padrón</h1>
+      <p class="page-header__subtitle">Registro Estatal de Contribuyentes</p>
     </div>
-    <ng-template #draftInfo>
-      <div class="hero-meta" *ngIf="draftUpdatedAt(); else emptyDraft">
-        <p class="label">Borrador guardado</p>
-        <small>{{ draftUpdatedAt() | date: 'medium' }}</small>
-        <div class="meta-actions">
-          <button pButton type="button" label="Descartar" icon="pi pi-trash" severity="secondary" (click)="clearDraft()"></button>
-        </div>
-      </div>
-      <ng-template #emptyDraft>
-        <div class="hero-meta muted">
-          <p class="label">Sin borradores</p>
-          <small>Guarda un borrador en el último paso.</small>
-        </div>
-      </ng-template>
-    </ng-template>
+    <p-tag *ngIf="processingState()" [value]="processingState()?.status || 'Procesando'" severity="warn" class="records-badge"></p-tag>
   </header>
 
-  <div class="steps">
-    <button
-      type="button"
-      *ngFor="let step of steps; let index = index"
-      [class.active]="index === currentStep()"
-      [class.done]="index < currentStep()"
-      (click)="index <= currentStep() ? currentStep.set(index) : null"
-    >
-      <span class="number">{{ index + 1 }}</span>
-      <span class="text">{{ step }}</span>
-    </button>
-  </div>
-
-  <form class="wizard" [formGroup]="form" (ngSubmit)="submitSolicitud()">
-    <section class="step-card" *ngIf="currentStep() === 0" formGroupName="identificacion">
-      <div class="persona-toggle">
-        <button type="button" [class.active]="form.controls.tipoPersona.value === 'fisica'" (click)="togglePersona('fisica')">
-          Persona física
-        </button>
-        <button type="button" [class.active]="form.controls.tipoPersona.value === 'moral'" (click)="togglePersona('moral')">
-          Persona moral
-        </button>
+  <!-- Alert de estado procesando -->
+  <p-card *ngIf="processingState()" class="state-card">
+    <div class="state-info">
+      <i class="pi pi-info-circle"></i>
+      <div>
+        <strong>Solicitud en validación</strong>
+        <p>Tu solicitud está siendo procesada. Estado: <strong>{{ processingState()?.status }}</strong></p>
+        <small>{{ processingState()?.timestamp | date: 'medium' }}</small>
       </div>
-      <div class="grid">
-        <label>
-          <span>Nombre(s)</span>
-          <input pInputText type="text" formControlName="nombres" placeholder="Nombre o razón social" />
-        </label>
-        <label *ngIf="form.controls.tipoPersona.value === 'fisica'">
-          <span>Primer apellido</span>
-          <input pInputText type="text" formControlName="primerApellido" />
-        </label>
-        <label *ngIf="form.controls.tipoPersona.value === 'fisica'">
-          <span>Segundo apellido</span>
-          <input pInputText type="text" formControlName="segundoApellido" />
-        </label>
-        <label *ngIf="form.controls.tipoPersona.value === 'moral'">
-          <span>Razón social *</span>
-          <input pInputText type="text" formControlName="razonSocial" />
-        </label>
-        <label>
-          <span>RFC *</span>
-          <input pInputText type="text" formControlName="rfc" maxlength="13" class="uppercase" />
-        </label>
-        <label>
-          <span>CURP</span>
-          <input pInputText type="text" formControlName="curp" maxlength="18" class="uppercase" />
-        </label>
-        <label>
-          <span>Correo electrónico *</span>
-          <input pInputText type="email" formControlName="email" />
-        </label>
-        <label>
-          <span>Teléfono</span>
-          <input pInputText type="tel" formControlName="telefono" />
-        </label>
-        <label>
-          <span>Teléfono alterno</span>
-          <input pInputText type="tel" formControlName="telefonoAlterno" />
-        </label>
-      </div>
-    </section>
-
-    <section class="step-card" *ngIf="currentStep() === 1" formGroupName="domicilio">
-      <h3>Domicilio fiscal</h3>
-      <div class="grid">
-        <label>
-          <span>Calle *</span>
-          <input pInputText type="text" formControlName="calle" />
-        </label>
-        <label>
-          <span>No. exterior *</span>
-          <input pInputText type="text" formControlName="numeroExterior" />
-        </label>
-        <label>
-          <span>No. interior</span>
-          <input pInputText type="text" formControlName="numeroInterior" />
-        </label>
-        <label>
-          <span>Colonia *</span>
-          <input pInputText type="text" formControlName="colonia" />
-        </label>
-        <label>
-          <span>Código postal *</span>
-          <input pInputText type="text" formControlName="cp" maxlength="5" />
-        </label>
-        <label>
-          <span>Municipio *</span>
-          <input pInputText type="text" formControlName="municipio" />
-        </label>
-        <label>
-          <span>Estado *</span>
-          <input pInputText type="text" formControlName="estado" />
-        </label>
-        <label class="wide">
-          <span>Entre calles</span>
-          <input pInputText type="text" formControlName="entreCalles" />
-        </label>
-        <label class="wide">
-          <span>Referencias</span>
-          <input pInputText type="text" formControlName="referencias" />
-        </label>
-      </div>
-    </section>
-
-    <section class="step-card" *ngIf="currentStep() === 2">
-      <h3>Régimen e impuestos</h3>
-      <div class="combo">
-        <label>
-          <span>Agregar régimen</span>
-          <div class="combo-input">
-            <input pInputText type="text" [formControl]="regimenControl" placeholder="Descripción del régimen" />
-            <button pButton type="button" icon="pi pi-plus" (click)="addRegimen()"></button>
-          </div>
-        </label>
-        <div class="chip-list">
-          <span class="chip" *ngFor="let item of regimenes(); let idx = index">
-            {{ item }}
-            <button type="button" (click)="removeRegimen(idx)"><i class="pi pi-times"></i></button>
-          </span>
-          <span class="placeholder" *ngIf="!regimenes().length">Sin registros</span>
-        </div>
-      </div>
-
-      <div class="combo">
-        <label>
-          <span>Actividades económicas</span>
-          <div class="combo-input">
-            <input pInputText type="text" [formControl]="actividadControl" placeholder="Nombre de la actividad" />
-            <button pButton type="button" icon="pi pi-plus" severity="success" (click)="addActividad()"></button>
-          </div>
-        </label>
-        <div class="chip-list">
-          <span class="chip" *ngFor="let item of actividades(); let idx = index">
-            {{ item }}
-            <button type="button" (click)="removeActividad(idx)"><i class="pi pi-times"></i></button>
-          </span>
-          <span class="placeholder" *ngIf="!actividades().length">Sin registros</span>
-        </div>
-      </div>
-
-      <div class="impuestos">
-        <p>Impuestos estatales *</p>
-        <div class="impuestos-grid">
-          <label *ngFor="let impuesto of impuestosCatalog">
-            <input type="checkbox" [checked]="getImpuestoSeleccionado(impuesto.code)" (change)="toggleImpuesto(impuesto.code, $event.target.checked)" />
-            <div>
-              <strong>{{ impuesto.code }}</strong>
-              <p>{{ impuesto.label }}</p>
-            </div>
-          </label>
-        </div>
-      </div>
-
-      <div class="grid" formGroupName="fechas">
-        <label>
-          <span>Inicio de operaciones *</span>
-          <input pInputText type="date" formControlName="inicioOperaciones" />
-        </label>
-        <label>
-          <span>Registro IMSS</span>
-          <input pInputText type="text" formControlName="registroIMSS" />
-        </label>
-      </div>
-    </section>
-
-    <section class="step-card" *ngIf="currentStep() === 3" formGroupName="representante">
-      <div class="header">
-        <h3>Representante legal</h3>
-        <button type="button" pButton label="Soy el representante" icon="pi pi-user-check" severity="secondary" (click)="useCurrentUserAs('representante')"></button>
-      </div>
-      <div class="grid">
-        <label>
-          <span>Nombre(s)</span>
-          <input pInputText type="text" formControlName="nombres" />
-        </label>
-        <label>
-          <span>Primer apellido</span>
-          <input pInputText type="text" formControlName="primerApellido" />
-        </label>
-        <label>
-          <span>Segundo apellido</span>
-          <input pInputText type="text" formControlName="segundoApellido" />
-        </label>
-        <label>
-          <span>RFC</span>
-          <input pInputText type="text" formControlName="rfc" maxlength="13" class="uppercase" />
-        </label>
-        <label>
-          <span>CURP</span>
-          <input pInputText type="text" formControlName="curp" maxlength="18" class="uppercase" />
-        </label>
-      </div>
-    </section>
-
-    <section class="step-card" *ngIf="currentStep() === 4" formGroupName="pagos">
-      <div class="header">
-        <h3>Persona que realizará pagos</h3>
-        <button type="button" pButton label="Soy yo" icon="pi pi-user" severity="secondary" (click)="useCurrentUserAs('pagos')"></button>
-      </div>
-      <div class="grid">
-        <label>
-          <span>Nombre completo</span>
-          <input pInputText type="text" formControlName="nombre" />
-        </label>
-        <label>
-          <span>Teléfono</span>
-          <input pInputText type="tel" formControlName="telefono" />
-        </label>
-        <label>
-          <span>Correo</span>
-          <input pInputText type="email" formControlName="correo" />
-        </label>
-        <label class="wide">
-          <span>Domicilio</span>
-          <input pInputText type="text" formControlName="domicilio" />
-        </label>
-      </div>
-    </section>
-
-    <section class="step-card" *ngIf="currentStep() === 5">
-      <h3>Resumen previo al envío</h3>
-      <div class="resumen-grid">
-        <article>
-          <h4>Identificación</h4>
-          <p>{{ form.controls.identificacion.value.nombres || form.controls.identificacion.value.razonSocial }}</p>
-          <p>{{ form.controls.identificacion.value.rfc }} · {{ personaDescripcion() }}</p>
-        </article>
-        <article>
-          <h4>Domicilio</h4>
-          <p>{{ form.controls.domicilio.value.calle }} {{ form.controls.domicilio.value.numeroExterior }}</p>
-          <p>{{ form.controls.domicilio.value.colonia }}, {{ form.controls.domicilio.value.municipio }}</p>
-        </article>
-        <article>
-          <h4>Régimen y actividades</h4>
-          <p>{{ resumenRegimenes }}</p>
-          <p>{{ resumenActividades }}</p>
-        </article>
-        <article>
-          <h4>Impuestos</h4>
-          <p>{{ resumenImpuestos }}</p>
-        </article>
-      </div>
-      <div class="summary-note">
-        <p>Al enviar generaremos el mismo estado <code>inscripcionProcesando</code> que usa el panel legacy para mostrar "Solicitud en validación".</p>
-      </div>
-    </section>
-
-    <div class="wizard-actions">
-      <button pButton type="button" label="Anterior" icon="pi pi-chevron-left" (click)="prevStep()" [disabled]="currentStep() === 0"></button>
-      <button
-        pButton
-        type="button"
-        label="Siguiente"
-        iconPos="right"
-        icon="pi pi-chevron-right"
-        (click)="nextStep()"
-        *ngIf="currentStep() < steps.length - 1"
-      ></button>
-      <div *ngIf="currentStep() === steps.length - 1" class="final-actions">
-        <button pButton type="button" label="Guardar borrador" icon="pi pi-save" severity="secondary" (click)="saveDraft()"></button>
-        <button pButton type="submit" label="Enviar solicitud" icon="pi pi-send" [loading]="loading()"></button>
-      </div>
+      <button pButton label="Limpiar" icon="pi pi-times" severity="secondary" outlined (click)="clearProcessingState()"></button>
     </div>
-  </form>
-</section>
+  </p-card>
+
+  <!-- Stepper Form -->
+  <p-card class="inscripcion-card">
+    <form [formGroup]="form" (ngSubmit)="submitSolicitud()">
+      <p-stepper [linear]="true" styleClass="inscripcion-stepper">
+        
+        <!-- Paso 1: Datos Generales -->
+        <p-step label="Datos Generales">
+          <ng-template #content let-nextCallback="nextCallback" let-index="index">
+            <div class="step-content">
+              <div class="step-header">
+                <i class="pi pi-id-card"></i>
+                <h2>Identificación del Contribuyente</h2>
+              </div>
+
+              <!-- Toggle Tipo Persona -->
+              <div class="persona-toggle">
+                <button 
+                  type="button" 
+                  class="persona-btn" 
+                  [class.active]="form.controls.tipoPersona.value === 'fisica'"
+                  (click)="togglePersona('fisica')">
+                  <i class="pi pi-user"></i>
+                  <span>Persona Física</span>
+                </button>
+                <button 
+                  type="button" 
+                  class="persona-btn" 
+                  [class.active]="form.controls.tipoPersona.value === 'moral'"
+                  (click)="togglePersona('moral')">
+                  <i class="pi pi-building"></i>
+                  <span>Persona Moral</span>
+                </button>
+              </div>
+
+              <div formGroupName="identificacion" class="form-grid">
+                <p-floatlabel *ngIf="form.controls.tipoPersona.value === 'fisica'">
+                  <input pInputText id="nombres" formControlName="nombres" class="w-full" />
+                  <label for="nombres">Nombre(s) *</label>
+                </p-floatlabel>
+
+                <p-floatlabel *ngIf="form.controls.tipoPersona.value === 'fisica'">
+                  <input pInputText id="primerApellido" formControlName="primerApellido" class="w-full" />
+                  <label for="primerApellido">Primer Apellido *</label>
+                </p-floatlabel>
+
+                <p-floatlabel *ngIf="form.controls.tipoPersona.value === 'fisica'">
+                  <input pInputText id="segundoApellido" formControlName="segundoApellido" class="w-full" />
+                  <label for="segundoApellido">Segundo Apellido</label>
+                </p-floatlabel>
+
+                <p-floatlabel *ngIf="form.controls.tipoPersona.value === 'moral'" class="full-width">
+                  <input pInputText id="razonSocial" formControlName="razonSocial" class="w-full" />
+                  <label for="razonSocial">Razón Social *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="rfc" formControlName="rfc" class="w-full uppercase" maxlength="13" />
+                  <label for="rfc">RFC *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="curp" formControlName="curp" class="w-full uppercase" maxlength="18" />
+                  <label for="curp">CURP</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="email" type="email" formControlName="email" class="w-full" />
+                  <label for="email">Correo Electrónico *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="telefono" formControlName="telefono" class="w-full" />
+                  <label for="telefono">Teléfono</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="telefonoAlterno" formControlName="telefonoAlterno" class="w-full" />
+                  <label for="telefonoAlterno">Teléfono Alterno</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
+            </div>
+          </ng-template>
+        </p-step>
+
+        <!-- Paso 2: Ubicación y Contacto -->
+        <p-step label="Ubicación">
+          <ng-template #content let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+            <div class="step-content">
+              <div class="step-header">
+                <i class="pi pi-map-marker"></i>
+                <h2>Domicilio Fiscal</h2>
+              </div>
+
+              <div formGroupName="domicilio" class="form-grid">
+                <p-floatlabel class="full-width">
+                  <input pInputText id="calle" formControlName="calle" class="w-full" />
+                  <label for="calle">Calle *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="numeroExterior" formControlName="numeroExterior" class="w-full" />
+                  <label for="numeroExterior">No. Exterior *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="numeroInterior" formControlName="numeroInterior" class="w-full" />
+                  <label for="numeroInterior">No. Interior</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="colonia" formControlName="colonia" class="w-full" />
+                  <label for="colonia">Colonia *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="cp" formControlName="cp" class="w-full" maxlength="5" />
+                  <label for="cp">Código Postal *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="municipio" formControlName="municipio" class="w-full" />
+                  <label for="municipio">Municipio *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="estado" formControlName="estado" class="w-full" />
+                  <label for="estado">Estado *</label>
+                </p-floatlabel>
+
+                <p-floatlabel class="full-width">
+                  <input pInputText id="entreCalles" formControlName="entreCalles" class="w-full" />
+                  <label for="entreCalles">Entre Calles</label>
+                </p-floatlabel>
+
+                <p-floatlabel class="full-width">
+                  <input pInputText id="referencias" formControlName="referencias" class="w-full" />
+                  <label for="referencias">Referencias</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button pButton label="Anterior" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
+              <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
+            </div>
+          </ng-template>
+        </p-step>
+
+        <!-- Paso 3: Régimen e Impuestos -->
+        <p-step label="Régimen e Impuestos">
+          <ng-template #content let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+            <div class="step-content">
+              <div class="step-header">
+                <i class="pi pi-briefcase"></i>
+                <h2>Régimen Fiscal e Impuestos</h2>
+              </div>
+
+              <!-- Régimen Fiscal -->
+              <div class="tag-group">
+                <label class="tag-group-label">Régimen Fiscal</label>
+                <div class="tag-input-group">
+                  <input 
+                    pInputText 
+                    [formControl]="regimenControl" 
+                    placeholder="Descripción del régimen" 
+                    class="flex-1"
+                    (keydown.enter)="$event.preventDefault(); addRegimen()" />
+                  <button pButton type="button" icon="pi pi-plus" (click)="addRegimen()"></button>
+                  <button pButton type="button" icon="pi pi-trash" severity="secondary" outlined (click)="clearRegimenes()"></button>
+                </div>
+                <div class="tag-list">
+                  <p-chip *ngFor="let item of regimenes(); let idx = index" [label]="item" [removable]="true" (onRemove)="removeRegimen(idx)"></p-chip>
+                  <span *ngIf="!regimenes().length" class="tag-placeholder">Sin registros. Agrega al menos un régimen fiscal.</span>
+                </div>
+              </div>
+
+              <!-- Actividades Económicas -->
+              <div class="tag-group">
+                <label class="tag-group-label">Actividades Económicas</label>
+                <div class="tag-input-group">
+                  <input 
+                    pInputText 
+                    [formControl]="actividadControl" 
+                    placeholder="Nombre de la actividad" 
+                    class="flex-1"
+                    (keydown.enter)="$event.preventDefault(); addActividad()" />
+                  <button pButton type="button" icon="pi pi-plus" severity="success" (click)="addActividad()"></button>
+                  <button pButton type="button" icon="pi pi-trash" severity="secondary" outlined (click)="clearActividades()"></button>
+                </div>
+                <div class="tag-list">
+                  <p-chip *ngFor="let item of actividades(); let idx = index" [label]="item" [removable]="true" (onRemove)="removeActividad(idx)"></p-chip>
+                  <span *ngIf="!actividades().length" class="tag-placeholder">Sin registros. Agrega al menos una actividad económica.</span>
+                </div>
+              </div>
+
+              <!-- Impuestos -->
+              <div class="impuestos-section">
+                <label class="impuestos-label">Impuestos Estatales</label>
+                <div class="impuestos-grid">
+                  <div *ngFor="let impuesto of impuestosCatalog" class="impuesto-item">
+                    <p-checkbox 
+                      [binary]="true" 
+                      [inputId]="impuesto.code"
+                      [checked]="getImpuestoSeleccionado(impuesto.code)"
+                      (onChange)="toggleImpuesto(impuesto.code, $event.checked)">
+                    </p-checkbox>
+                    <label [for]="impuesto.code" class="impuesto-label">
+                      <strong>{{ impuesto.code }}</strong>
+                      <span>{{ impuesto.label }}</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fechas -->
+              <div formGroupName="fechas" class="form-grid">
+                <p-floatlabel>
+                  <input pInputText id="inicioOperaciones" type="date" formControlName="inicioOperaciones" class="w-full" />
+                  <label for="inicioOperaciones">Inicio de Operaciones *</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="registroIMSS" formControlName="registroIMSS" class="w-full" />
+                  <label for="registroIMSS">Registro IMSS</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button pButton label="Anterior" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
+              <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
+            </div>
+          </ng-template>
+        </p-step>
+
+        <!-- Paso 4: Representante Legal -->
+        <p-step label="Representante">
+          <ng-template #content let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+            <div class="step-content">
+              <div class="step-header">
+                <i class="pi pi-user-edit"></i>
+                <h2>Representante Legal</h2>
+                <button 
+                  pButton 
+                  type="button" 
+                  label="Soy el representante" 
+                  icon="pi pi-user-check" 
+                  severity="secondary" 
+                  outlined
+                  class="ml-auto"
+                  (click)="useCurrentUserAs('representante')">
+                </button>
+              </div>
+
+              <div formGroupName="representante" class="form-grid">
+                <p-floatlabel>
+                  <input pInputText id="repNombres" formControlName="nombres" class="w-full" />
+                  <label for="repNombres">Nombre(s)</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="repPrimerApellido" formControlName="primerApellido" class="w-full" />
+                  <label for="repPrimerApellido">Primer Apellido</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="repSegundoApellido" formControlName="segundoApellido" class="w-full" />
+                  <label for="repSegundoApellido">Segundo Apellido</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="repRfc" formControlName="rfc" class="w-full uppercase" maxlength="13" />
+                  <label for="repRfc">RFC</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="repCurp" formControlName="curp" class="w-full uppercase" maxlength="18" />
+                  <label for="repCurp">CURP</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button pButton label="Anterior" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
+              <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
+            </div>
+          </ng-template>
+        </p-step>
+
+        <!-- Paso 5: Persona que efectuará Pagos -->
+        <p-step label="Pagos">
+          <ng-template #content let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+            <div class="step-content">
+              <div class="step-header">
+                <i class="pi pi-wallet"></i>
+                <h2>Persona que efectuará Pagos</h2>
+                <button 
+                  pButton 
+                  type="button" 
+                  label="Soy yo" 
+                  icon="pi pi-user" 
+                  severity="secondary" 
+                  outlined
+                  class="ml-auto"
+                  (click)="useCurrentUserAs('pagos')">
+                </button>
+              </div>
+
+              <div formGroupName="pagos" class="form-grid">
+                <p-floatlabel class="full-width">
+                  <input pInputText id="pagosNombre" formControlName="nombre" class="w-full" />
+                  <label for="pagosNombre">Nombre Completo</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="pagosTelefono" formControlName="telefono" class="w-full" />
+                  <label for="pagosTelefono">Teléfono</label>
+                </p-floatlabel>
+
+                <p-floatlabel>
+                  <input pInputText id="pagosCorreo" type="email" formControlName="correo" class="w-full" />
+                  <label for="pagosCorreo">Correo</label>
+                </p-floatlabel>
+
+                <p-floatlabel class="full-width">
+                  <input pInputText id="pagosDomicilio" formControlName="domicilio" class="w-full" />
+                  <label for="pagosDomicilio">Domicilio</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button pButton label="Anterior" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
+              <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
+            </div>
+          </ng-template>
+        </p-step>
+
+        <!-- Paso 6: Resumen -->
+        <p-step label="Resumen">
+          <ng-template #content let-prevCallback="prevCallback">
+            <div class="step-content">
+              <div class="step-header">
+                <i class="pi pi-check-circle"></i>
+                <h2>Resumen de la Solicitud</h2>
+              </div>
+
+              <div class="resumen-grid">
+                <div class="resumen-section">
+                  <h3><i class="pi pi-id-card"></i> Identificación</h3>
+                  <p class="resumen-nombre">{{ form.controls.identificacion.value.nombres || form.controls.identificacion.value.razonSocial }}</p>
+                  <p class="resumen-detail">RFC: {{ form.controls.identificacion.value.rfc }}</p>
+                  <p class="resumen-detail">Tipo: {{ personaDescripcion() }}</p>
+                </div>
+
+                <div class="resumen-section">
+                  <h3><i class="pi pi-map-marker"></i> Domicilio</h3>
+                  <p>{{ form.controls.domicilio.value.calle }} {{ form.controls.domicilio.value.numeroExterior }}</p>
+                  <p>{{ form.controls.domicilio.value.colonia }}, {{ form.controls.domicilio.value.municipio }}</p>
+                  <p>CP: {{ form.controls.domicilio.value.cp }}</p>
+                </div>
+
+                <div class="resumen-section">
+                  <h3><i class="pi pi-briefcase"></i> Régimen Fiscal</h3>
+                  <p *ngIf="regimenes().length">{{ resumenRegimenes }}</p>
+                  <p *ngIf="!regimenes().length" class="resumen-empty">Sin régimen fiscal</p>
+                </div>
+
+                <div class="resumen-section">
+                  <h3><i class="pi pi-chart-line"></i> Actividades</h3>
+                  <p *ngIf="actividades().length">{{ resumenActividades }}</p>
+                  <p *ngIf="!actividades().length" class="resumen-empty">Sin actividades</p>
+                </div>
+
+                <div class="resumen-section full-width">
+                  <h3><i class="pi pi-money-bill"></i> Impuestos Seleccionados</h3>
+                  <div class="resumen-impuestos">
+                    <p-chip *ngFor="let code of impuestosSeleccionados()" [label]="getImpuestoLabel(code)"></p-chip>
+                    <span *ngIf="!impuestosSeleccionados().length" class="resumen-empty">Sin impuestos seleccionados</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="resumen-note">
+                <i class="pi pi-info-circle"></i>
+                <p>Al enviar tu solicitud, generaremos un registro que podrás consultar posteriormente. El estado será "Procesando" hasta que sea revisado.</p>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button pButton label="Anterior" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
+              <button pButton type="button" label="Guardar Borrador" icon="pi pi-save" severity="secondary" (click)="saveDraft()"></button>
+              <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-send" [loading]="loading()"></button>
+            </div>
+          </ng-template>
+        </p-step>
+
+      </p-stepper>
+    </form>
+  </p-card>
+</div>

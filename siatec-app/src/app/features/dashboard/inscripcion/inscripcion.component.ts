@@ -7,6 +7,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { StepperModule } from 'primeng/stepper';
+import { CardModule } from 'primeng/card';
+import { CheckboxModule } from 'primeng/checkbox';
+import { Select } from 'primeng/select';
+import { ChipModule } from 'primeng/chip';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { finalize } from 'rxjs/operators';
 import { AuthService, ContribuyentesService } from '../../../core/services';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
@@ -35,7 +41,20 @@ interface CatalogOption {
 @Component({
   selector: 'app-inscripcion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, TagModule, ToastModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    TagModule,
+    ToastModule,
+    StepperModule,
+    CardModule,
+    CheckboxModule,
+    Select,
+    ChipModule,
+    FloatLabelModule
+  ],
   providers: [MessageService],
   templateUrl: './inscripcion.component.html',
   styleUrl: './inscripcion.component.scss'
@@ -178,6 +197,23 @@ export class InscripcionComponent implements OnInit {
     this.actividades.update((list) => list.filter((_, idx) => idx !== index));
   }
 
+  clearRegimenes(): void {
+    this.regimenes.set([]);
+  }
+
+  clearActividades(): void {
+    this.actividades.set([]);
+  }
+
+  getImpuestoSeleccionado(code: string): boolean {
+    return this.impuestosSeleccionados().includes(code);
+  }
+
+  getImpuestoLabel(code: string): string {
+    const impuesto = this.impuestosCatalog.find(i => i.code === code);
+    return impuesto ? `${impuesto.code} - ${impuesto.label}` : code;
+  }
+
   toggleImpuesto(code: string, checked: boolean): void {
     this.impuestosSeleccionados.update((list) => {
       if (checked) {
@@ -288,10 +324,6 @@ export class InscripcionComponent implements OnInit {
         correo: user.email || identity['correo'] || ''
       });
     }
-  }
-
-  getImpuestoSeleccionado(code: string): boolean {
-    return this.impuestosSeleccionados().includes(code);
   }
 
   get resumenRegimenes(): string {
