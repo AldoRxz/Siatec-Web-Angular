@@ -1,84 +1,64 @@
 // ============================================
-// Inscripción Page Styles with PrimeNG Stepper
+// Inscripción Page Styles
 // ============================================
+// Based on Mi Cuenta component styling
 
-// Design Tokens - Following DESIGN_SYSTEM.md
-$primary: #2563eb;
+// Design Tokens (matching auth and dashboard components)
+$primary-color: #2563eb;
 $primary-dark: #1e40af;
 $primary-light: #3b82f6;
 $primary-bg: #eff6ff;
-
-$text-primary: #1e293b;
-$text-secondary: #64748b;
+$text-dark: #0f172a;
+$text-medium: #475569;
+$text-light: #64748b;
 $text-muted: #94a3b8;
-
-$bg-page: #f8fafc;
-$bg-card: #ffffff;
-$border: #e2e8f0;
-$border-light: #f1f5f9;
-
-$success: #16a34a;
-$success-bg: #dcfce7;
-$warn: #ea580c;
-$warn-bg: #ffedd5;
-$danger: #dc2626;
-$danger-bg: #fee2e2;
-$info: #0ea5e9;
+$border-color: #d4dbe8;
+$border-light: #e2e8f0;
+$error-color: #dc2626;
+$error-bg: #fef2f2;
+$success-color: #059669;
+$input-bg: #fdfefe;
+$card-bg: rgba(255, 255, 255, 0.95);
+$card-shadow: 0 10px 40px rgba(37, 99, 235, 0.1);
+$card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 
 .inscripcion-page {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
 
 // ========================================
-// Page Header
+// Page Header (with Logos)
 // ========================================
 .page-header {
   display: flex;
   align-items: center;
   gap: 1.25rem;
+  margin-bottom: 1.5rem;
   padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
   border-radius: 1.25rem;
   color: #fff;
-  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+  position: relative;
 
   &__logos {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    padding-right: 1.5rem;
-    border-right: 2px solid rgba(255, 255, 255, 0.25);
+    gap: 0.75rem;
   }
 
   &__logo {
     height: 3.25rem;
     width: auto;
-    object-fit: contain;
-    filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
 
   &__logo-servicio {
     height: 3.25rem;
     width: auto;
-    object-fit: contain;
-    filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-  }
-
-  &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3.5rem;
-    height: 3.5rem;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 0.875rem;
-    font-size: 1.5rem;
-    backdrop-filter: blur(8px);
+    filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
 
   &__content {
@@ -97,71 +77,80 @@ $info: #0ea5e9;
     font-size: 0.9rem;
     opacity: 0.9;
   }
-}
 
-.records-badge {
-  font-weight: 600;
-  font-size: 0.8rem;
-  padding: 0.5rem 1rem;
-  border-radius: 2rem;
-  background: rgba(255, 255, 255, 0.18);
+  .records-badge {
+    margin-left: auto;
+  }
 }
 
 // ========================================
 // State Card
 // ========================================
-:host ::ng-deep .state-card {
-  border-radius: 1rem;
-  border: 1px solid $warn-bg;
-  background: #fff5ed;
-  box-shadow: none;
+.state-card {
+  margin-bottom: 1.5rem;
 
-  .p-card-body {
-    padding: 1.25rem;
-  }
-}
-
-.state-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  i {
-    font-size: 1.75rem;
-    color: $warn;
+  :host ::ng-deep .p-card {
+    border-radius: 0.875rem;
+    border: 1px solid #fef3c7;
+    background: #fffbeb;
+    box-shadow: 0 2px 8px rgba(234, 179, 8, 0.15);
   }
 
-  > div {
-    flex: 1;
+  .state-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
 
-    strong {
-      display: block;
-      color: $text-primary;
-      font-size: 1rem;
-      margin-bottom: 0.25rem;
+    > i {
+      font-size: 1.5rem;
+      color: #f59e0b;
+      flex-shrink: 0;
     }
 
-    p {
-      margin: 0.25rem 0;
-      color: $text-secondary;
-      font-size: 0.875rem;
+    > div {
+      flex: 1;
+
+      strong {
+        display: block;
+        color: #92400e;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+      }
+
+      p {
+        margin: 0.25rem 0;
+        color: #78350f;
+        font-size: 0.9rem;
+      }
+
+      small {
+        color: #a16207;
+        font-size: 0.8rem;
+      }
     }
 
-    small {
-      color: $text-secondary;
-      font-size: 0.75rem;
+    button {
+      margin-left: auto;
+      flex-shrink: 0;
     }
   }
 }
 
 // ========================================
-// Main Card
+// Card Styling (matching cuenta)
 // ========================================
 :host ::ng-deep .inscripcion-card {
   border-radius: 1.25rem;
   box-shadow: $card-shadow;
   border: 1px solid $border-light;
   background: $card-bg;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: $card-shadow-hover;
+  }
 
   .p-card-body {
     padding: 0;
@@ -173,88 +162,60 @@ $info: #0ea5e9;
 }
 
 // ========================================
-// Stepper Customization
+// Form Styles
 // ========================================
-:host ::ng-deep .inscripcion-stepper {
-  .p-stepper-header {
-    padding: 0.75rem 1rem;
-    background: transparent;
-    border-radius: 0.75rem;
-    transition: all 0.2s;
-
-    &:hover {
-      background: $primary-bg;
-    }
-
-    .p-stepper-number {
-      width: 2.25rem;
-      height: 2.25rem;
-      font-weight: 600;
-      background: $border-light;
-      color: $text-secondary;
-      border: none;
-    }
-
-    .p-stepper-title {
-      font-weight: 500;
-      color: $text-secondary;
-      font-size: 0.925rem;
-    }
-  }
-
-  .p-stepper-header.p-highlight {
-    .p-stepper-number {
-      background: $primary;
-      color: white;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    }
-
-    .p-stepper-title {
-      color: $primary;
-      font-weight: 600;
-    }
-  }
-
-  .p-stepper-separator {
-    background: $border-light;
-    margin: 0 0.5rem;
-  }
-
-  .p-stepper-panels {
-    padding: 2rem;
-    background: white;
-  }
-}
-
-// ========================================
-// Step Content
-// ========================================
-.step-content {
+.inscripcion-form {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  min-height: 400px;
+  gap: 0;
 }
 
-.step-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 2px solid $border-light;
+// Form Section
+.form-section {
+  padding: 2rem;
+  background: #fff;
 
-  i {
-    font-size: 2rem;
-    color: $primary;
-    opacity: 0.9;
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    margin-bottom: 1.5rem;
   }
 
-  h2 {
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: $primary-bg;
+    color: $primary-color;
+    border-radius: 0.625rem;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+
+    &--location {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    &--activity {
+      background: #d1fae5;
+      color: $success-color;
+    }
+  }
+
+  &__title {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    color: $text-primary;
-    flex: 1;
+    color: $text-dark;
+  }
+
+  &__description {
+    margin: 0.25rem 0 0;
+    font-size: 0.85rem;
+    color: $text-light;
   }
 }
 
@@ -263,44 +224,19 @@ $info: #0ea5e9;
 // ========================================
 .persona-toggle {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: $primary-bg;
-  border-radius: 0.875rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 
   .persona-btn {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    background: white;
-    border: 2px solid $border-light;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
     border-radius: 0.75rem;
-    color: $text-secondary;
-    font-weight: 500;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    i {
-      font-size: 1.25rem;
-    }
-
-    &:hover {
-      border-color: $primary-light;
-      color: $primary;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-    }
-
-    &.active {
-      background: $primary;
-      border-color: $primary;
-      color: white;
-      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-    }
+    font-weight: 600;
+    transition: all 0.2s ease;
   }
 }
 
@@ -309,432 +245,413 @@ $info: #0ea5e9;
 // ========================================
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-
-  p-floatlabel {
-    display: block;
-
-    &.full-width {
-      grid-column: 1 / -1;
-    }
-  }
-
-  :host ::ng-deep {
-    .p-float-label input {
-      width: 100%;
-      padding: 0.875rem 0.75rem;
-      border: 1px solid $border-light;
-      border-radius: 0.625rem;
-      font-size: 0.925rem;
-      transition: all 0.2s;
-
-      &:focus {
-        border-color: $primary;
-        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.1);
-      }
-
-      &.uppercase {
-        text-transform: uppercase;
-      }
-    }
-
-    .p-float-label label {
-      color: $text-secondary;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-  }
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
 }
 
-// ========================================
-// Tag Group
-// ========================================
-.tag-group {
+.form-field {
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+
+  &--error {
+    :host ::ng-deep p-floatlabel input {
+      border-color: #ea580c !important;
+      box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12) !important;
+    }
+  }
+
+  &__error {
+    font-size: 0.75rem;
+    color: $error-color;
+    margin-top: 0.5rem;
+  }
 }
 
-.tag-group-label {
-  font-weight: 600;
-  color: $text-primary;
-  font-size: 0.95rem;
-}
-
-.tag-input-group {
+// ========================================
+// Form Content (for non-grid sections)
+// ========================================
+.form-content {
   display: flex;
-  gap: 0.75rem;
-  align-items: center;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
-  .flex-1 {
+// ========================================
+// Input Groups (for arrays/tags)
+// ========================================
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  &__label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $text-dark;
+  }
+}
+
+.input-with-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+
+  p-floatlabel {
     flex: 1;
   }
 
-  input {
-    padding: 0.75rem 1rem;
-    border: 1px solid $border-light;
-    border-radius: 0.625rem;
-    font-size: 0.925rem;
-    transition: all 0.2s;
-
-    &:focus {
-      outline: none;
-      border-color: $primary;
-      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.1);
-    }
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
   }
 }
 
 .tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.625rem;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px dashed $border-color;
+}
+
+// ========================================
+// Impuestos Grid
+// ========================================
+.impuestos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.875rem;
   padding: 1rem;
   background: #f8fafc;
   border-radius: 0.75rem;
-  min-height: 3.5rem;
   border: 1px solid $border-light;
-
-  :host ::ng-deep .p-chip {
-    background: $primary;
-    color: white;
-    padding: 0.5rem 0.875rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-
-    .p-chip-remove-icon {
-      color: white;
-      margin-left: 0.5rem;
-      font-size: 0.875rem;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
-      }
-    }
-  }
-}
-
-.tag-placeholder {
-  color: $text-muted;
-  font-size: 0.875rem;
-  font-style: italic;
-}
-
-// ========================================
-// Impuestos Section
-// ========================================
-.impuestos-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: $primary-bg;
-  border-radius: 0.875rem;
-}
-
-.impuestos-label {
-  font-weight: 600;
-  color: $text-primary;
-  font-size: 0.95rem;
-}
-
-.impuestos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
 }
 
 .impuesto-item {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: white;
-  border-radius: 0.625rem;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.625rem;
+  background: #fff;
+  border-radius: 0.5rem;
   border: 1px solid $border-light;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 
   &:hover {
-    border-color: $primary-light;
+    border-color: $primary-color;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
   }
 
-  :host ::ng-deep .p-checkbox {
-    .p-checkbox-box {
-      border-color: $border-color;
-      border-radius: 0.375rem;
-
-      &.p-highlight {
-        background: $primary;
-        border-color: $primary;
-      }
-    }
-  }
-}
-
-.impuesto-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  cursor: pointer;
-  flex: 1;
-
-  strong {
-    color: $primary;
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-
-  span {
-    color: $text-secondary;
-    font-size: 0.825rem;
-  }
-}
-
-// ========================================
-// Resumen Grid
-// ========================================
-.resumen-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.resumen-section {
-  padding: 1.5rem;
-  background: #f8fafc;
-  border-radius: 0.875rem;
-  border: 1px solid $border-light;
-
-  &.full-width {
-    grid-column: 1 / -1;
-  }
-
-  h3 {
-    margin: 0 0 1rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: $text-primary;
+  .impuesto-label {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    i {
-      color: $primary;
-      font-size: 1.125rem;
-    }
-  }
-
-  p {
-    margin: 0.5rem 0;
-    color: $text-secondary;
-    font-size: 0.925rem;
-    line-height: 1.6;
-  }
-}
-
-.resumen-nombre {
-  font-size: 1.125rem !important;
-  font-weight: 600;
-  color: $text-primary !important;
-}
-
-.resumen-detail {
-  color: $text-secondary !important;
-  font-size: 0.875rem !important;
-}
-
-.resumen-empty {
-  color: $text-muted !important;
-  font-style: italic;
-  font-size: 0.875rem !important;
-}
-
-.resumen-impuestos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.625rem;
-  margin-top: 0.5rem;
-
-  :host ::ng-deep .p-chip {
-    background: $success;
-    color: white;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-}
-
-.resumen-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.25rem;
-  background: lighten($warn-bg, 8%);
-  border-radius: 0.75rem;
-  border-left: 4px solid $warn;
-
-  i {
-    color: $warn;
-    font-size: 1.5rem;
-    flex-shrink: 0;
-    margin-top: 0.125rem;
-  }
-
-  p {
-    margin: 0;
-    color: $text-secondary;
-    font-size: 0.9rem;
-    line-height: 1.6;
-
-    code {
-      background: rgba(0, 0, 0, 0.05);
-      padding: 0.125rem 0.375rem;
-      border-radius: 0.25rem;
-      font-size: 0.85rem;
-      color: $warn;
-      font-weight: 500;
-    }
-  }
-}
-
-// ========================================
-// Step Actions
-// ========================================
-.step-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-top: 2rem;
-  border-top: 1px solid $border-light;
-  margin-top: auto;
-
-  button {
-    min-width: 140px;
-  }
-
-  :host ::ng-deep {
-    .p-button {
-      padding: 0.75rem 1.5rem;
-      font-weight: 500;
-      border-radius: 0.625rem;
-      transition: all 0.2s;
-
-      &:not(.p-button-outlined) {
-        background: $primary;
-        border-color: $primary;
-
-        &:hover {
-          background: $primary-dark;
-          border-color: $primary-dark;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-      }
-
-      &.p-button-secondary {
-        &.p-button-outlined {
-          color: $text-secondary;
-          border-color: $border-color;
-
-          &:hover {
-            background: $border-light;
-            border-color: $border-color;
-          }
-        }
-      }
-    }
-  }
-}
-
-// ========================================
-// Responsive
-// ========================================
-@media (max-width: 768px) {
-  .page-header {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 1.25rem 1.5rem;
+    gap: 0.25rem;
+    cursor: pointer;
 
-    &__logos {
-      padding-right: 0;
-      border-right: none;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-      width: 100%;
+    strong {
+      font-size: 0.85rem;
+      color: $text-dark;
+    }
+
+    span {
+      font-size: 0.75rem;
+      color: $text-light;
+    }
+  }
+}
+
+// ========================================
+// Float Label Styling (matching cuenta exactly)
+// ========================================
+:host ::ng-deep {
+  p-floatlabel {
+    position: relative;
+    display: block;
+    margin-top: 0.4rem;
+  }
+
+  p-floatlabel > label {
+    position: absolute;
+    left: 1.25rem;
+    top: 1.25rem;
+    color: $text-muted;
+    font-weight: 600;
+    font-size: 0.95rem;
+    pointer-events: none;
+    transition: all 0.18s ease;
+    background: transparent;
+  }
+
+  p-floatlabel.with-icon > label {
+    left: 3.2rem;
+  }
+
+  p-iconfield {
+    width: 100%;
+    position: relative;
+
+    .p-inputicon {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $text-muted;
+      font-size: 1rem;
+      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
       justify-content: center;
     }
 
-    &__logo {
-      height: 2.5rem;
-    }
-
-    &__logo-servicio {
-      height: 2.25rem;
-    }
-
-    &__icon {
-      width: 3rem;
-      height: 3rem;
-      font-size: 1.25rem;
-    }
-
-    &__title {
-      font-size: 1.25rem;
+    .p-inputtext {
+      padding-left: 3.05rem;
     }
   }
 
-  :host ::ng-deep .inscripcion-stepper {
-    .p-stepper-panels {
-      padding: 1.5rem 1rem;
-    }
+  p-iconfield:focus-within .p-inputicon {
+    color: $primary-color;
   }
 
-  .step-header {
-    flex-direction: column;
-    align-items: flex-start;
-
-    h2 {
-      font-size: 1.25rem;
-    }
-
-    button {
-      width: 100%;
-    }
+  p-floatlabel input {
+    width: 100%;
+    border: 1px solid $border-color;
+    border-radius: 1rem;
+    padding: 1.1rem 1.2rem 0.55rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-dark;
+    background: $input-bg;
+    caret-color: $primary-color;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
+  p-floatlabel input::placeholder {
+    color: transparent;
+  }
+
+  p-floatlabel input:-webkit-autofill {
+    -webkit-text-fill-color: $text-dark;
+    transition: background-color 9999s ease-out;
+  }
+
+  p-floatlabel input.ng-invalid.ng-touched {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+  }
+
+  p-floatlabel:focus-within input {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  // Float label animation states
+  p-floatlabel:focus-within > label,
+  p-floatlabel > input:not(:placeholder-shown) + label,
+  p-floatlabel:has(input:not(:placeholder-shown)) > label,
+  p-floatlabel:has(input:-webkit-autofill) > label {
+    top: -0.55rem;
+    font-size: 0.8rem;
+    color: #1d4ed8;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 0 0.5rem;
+    box-shadow: 0 0 0 1px $border-light;
+  }
+
+  p-floatlabel.with-icon:focus-within > label,
+  p-floatlabel.with-icon > input:not(:placeholder-shown) + label,
+  p-floatlabel.with-icon:has(input:not(:placeholder-shown)) > label,
+  p-floatlabel.with-icon:has(input:-webkit-autofill) > label {
+    left: 1.25rem;
+  }
+
+  .p-divider {
+    margin: 0;
+
+    &::before {
+      border-color: $border-light;
+    }
+  }
+}
+
+// ========================================
+// Chips Styling
+// ========================================
+:host ::ng-deep {
+  .p-chip {
+    background: $primary-bg;
+    color: $primary-dark;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+
+    .p-chip-remove-icon {
+      margin-left: 0.5rem;
+      color: $primary-color;
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: $error-color;
+      }
+    }
+  }
+}
+
+// ========================================
+// Checkbox Styling
+// ========================================
+:host ::ng-deep {
+  .p-checkbox {
+    .p-checkbox-box {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 0.375rem;
+      border: 2px solid $border-color;
+      transition: all 0.2s ease;
+
+      &.p-highlight {
+        border-color: $primary-color;
+        background: $primary-color;
+      }
+    }
+  }
+}
+
+// ========================================
+// Form Actions (matching cuenta button)
+// ========================================
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+  border-top: 1px solid $border-light;
+
+  :host ::ng-deep .p-button {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+
+    &:not([severity="secondary"]):not([outlined]) {
+      background: $primary-color;
+      border: none;
+
+      &:hover:not(:disabled) {
+        background: $primary-dark;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+      }
+    }
+  }
+}
+
+// ========================================
+// Responsive Styles
+// ========================================
+@media (max-width: 968px) {
   .form-grid {
     grid-template-columns: 1fr;
-  }
-
-  .persona-toggle {
-    flex-direction: column;
-  }
-
-  .tag-input-group {
-    flex-wrap: wrap;
-
-    .flex-1 {
-      flex-basis: 100%;
-    }
   }
 
   .impuestos-grid {
     grid-template-columns: 1fr;
   }
+}
 
-  .resumen-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .page-header {
+    padding: 1.25rem 1.5rem;
+    flex-wrap: wrap;
+
+    &__logos {
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+    }
+
+    &__content {
+      width: 100%;
+      text-align: center;
+    }
+
+    &__title {
+      font-size: 1.25rem;
+    }
+
+    &__subtitle {
+      font-size: 0.85rem;
+    }
+
+    .records-badge {
+      margin: 0.75rem auto 0;
+    }
   }
 
-  .step-actions {
-    flex-direction: column-reverse;
+  .form-section {
+    padding: 1.5rem;
+  }
 
-    button {
+  .form-actions {
+    padding: 1.25rem 1.5rem;
+    flex-direction: column;
+
+    :host ::ng-deep .p-button {
       width: 100%;
+      justify-content: center;
     }
+  }
+
+  .persona-toggle {
+    flex-direction: column;
   }
 }
 
+@media (max-width: 480px) {
+  .page-header {
+    padding: 1rem 1.25rem;
+  }
 
+  .form-section {
+    padding: 1.25rem;
+
+    &__header {
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+    }
+  }
+
+  .form-actions {
+    padding: 1rem 1.25rem;
+  }
+
+  .input-with-actions {
+    flex-direction: column;
+
+    .action-buttons {
+      width: 100%;
+
+      button {
+        flex: 1;
+      }
+    }
+  }
+}

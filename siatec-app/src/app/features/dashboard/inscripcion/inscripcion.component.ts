@@ -1,18 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, FormControl } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, FormControl, FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { StepperModule } from 'primeng/stepper';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
-import { Select } from 'primeng/select';
 import { ChipModule } from 'primeng/chip';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { DividerModule } from 'primeng/divider';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { finalize } from 'rxjs/operators';
 import { AuthService, ContribuyentesService } from '../../../core/services';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
@@ -44,15 +45,18 @@ interface CatalogOption {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     ButtonModule,
     InputTextModule,
     TagModule,
     ToastModule,
-    StepperModule,
     CardModule,
     CheckboxModule,
     ChipModule,
-    FloatLabelModule
+    FloatLabelModule,
+    DividerModule,
+    IconFieldModule,
+    InputIconModule
   ],
   providers: [MessageService],
   templateUrl: './inscripcion.component.html',
@@ -75,6 +79,8 @@ export class InscripcionComponent implements OnInit {
 
   readonly regimenControl = this.fb.control('');
   readonly actividadControl = this.fb.control('');
+  regimenInput = '';
+  actividadInput = '';
   readonly regimenes = signal<string[]>([]);
   readonly actividades = signal<string[]>([]);
   readonly impuestosCatalog: CatalogOption[] = [
@@ -163,7 +169,7 @@ export class InscripcionComponent implements OnInit {
   }
 
   addRegimen(): void {
-    const value = (this.regimenControl.value || '').trim();
+    const value = (this.regimenInput || '').trim();
     if (!value) {
       return;
     }
@@ -172,15 +178,15 @@ export class InscripcionComponent implements OnInit {
       return;
     }
     this.regimenes.update((list) => [...list, value]);
-    this.regimenControl.reset('');
+    this.regimenInput = '';
   }
 
-  removeRegimen(index: number): void {
-    this.regimenes.update((list) => list.filter((_, idx) => idx !== index));
+  removeRegimen(value: string): void {
+    this.regimenes.update((list) => list.filter((item) => item !== value));
   }
 
   addActividad(): void {
-    const value = (this.actividadControl.value || '').trim();
+    const value = (this.actividadInput || '').trim();
     if (!value) {
       return;
     }
@@ -189,11 +195,11 @@ export class InscripcionComponent implements OnInit {
       return;
     }
     this.actividades.update((list) => [...list, value]);
-    this.actividadControl.reset('');
+    this.actividadInput = '';
   }
 
-  removeActividad(index: number): void {
-    this.actividades.update((list) => list.filter((_, idx) => idx !== index));
+  removeActividad(value: string): void {
+    this.actividades.update((list) => list.filter((item) => item !== value));
   }
 
   clearRegimenes(): void {
