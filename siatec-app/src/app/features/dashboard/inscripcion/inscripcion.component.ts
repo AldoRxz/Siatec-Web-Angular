@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, FormControl, FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
@@ -42,6 +42,7 @@ interface CatalogOption {
 @Component({
   selector: 'app-inscripcion',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -486,6 +487,19 @@ export class InscripcionComponent implements OnInit {
       impuestos: this.impuestosSeleccionados(),
       personaDescripcion: this.personaDescripcion()
     };
+  }
+
+  // TrackBy functions para optimizar loops
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  trackByString(_index: number, item: string): string {
+    return item;
+  }
+
+  trackByCode(_index: number, item: CatalogOption): string {
+    return item.code;
   }
 
   private prefillFromUser(): void {

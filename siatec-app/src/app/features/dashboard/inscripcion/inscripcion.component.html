@@ -307,7 +307,7 @@
             </div>
             @if (regimenes().length > 0) {
               <div class="tag-list">
-                @for (regimen of regimenes(); track regimen) {
+                @for (regimen of regimenes(); track trackByString($index, regimen)) {
                   <p-chip [label]="regimen" [removable]="true" (onRemove)="removeRegimen(regimen)"></p-chip>
                 }
               </div>
@@ -332,7 +332,7 @@
             </div>
             @if (actividades().length > 0) {
               <div class="tag-list">
-                @for (actividad of actividades(); track actividad) {
+                @for (actividad of actividades(); track trackByString($index, actividad)) {
                   <p-chip [label]="actividad" [removable]="true" (onRemove)="removeActividad(actividad)"></p-chip>
                 }
               </div>
@@ -343,7 +343,7 @@
           <div class="input-group">
             <label class="input-group__label">Impuestos Estatales *</label>
             <div class="impuestos-grid">
-              @for (impuesto of impuestosCatalog; track impuesto.code) {
+              @for (impuesto of impuestosCatalog; track trackByCode($index, impuesto)) {
                 <div class="impuesto-item">
                   <p-checkbox 
                     [binary]="true" 

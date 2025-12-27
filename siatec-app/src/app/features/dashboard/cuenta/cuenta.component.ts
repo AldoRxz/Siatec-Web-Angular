@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { of } from 'rxjs';
 import { finalize, switchMap, catchError } from 'rxjs/operators';
@@ -25,6 +25,7 @@ import { User, UpdateAccountData } from '../../../core/models/auth.model';
 @Component({
   selector: 'app-dashboard-cuenta',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     ReactiveFormsModule,
