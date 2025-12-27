@@ -8,7 +8,7 @@ import { BaseApiService } from './base-api.service';
 export interface CrearOrdenPagoRequest {
   determinacionId?: number;
   contribucionId?: number;
-  usuarioId?: string;
+  usuarioId?: string | number;
   contribuyenteId?: number | null;
   rfcContribuyente: string;
   nombreContribuyente: string;

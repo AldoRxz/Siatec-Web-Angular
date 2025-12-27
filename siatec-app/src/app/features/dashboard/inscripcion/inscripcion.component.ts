@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -51,7 +51,6 @@ interface CatalogOption {
     StepperModule,
     CardModule,
     CheckboxModule,
-    Select,
     ChipModule,
     FloatLabelModule
   ],
@@ -207,6 +206,11 @@ export class InscripcionComponent implements OnInit {
 
   getImpuestoSeleccionado(code: string): boolean {
     return this.impuestosSeleccionados().includes(code);
+  }
+
+  getImpuestoControl(code: string): FormControl {
+    const control = new FormControl(this.getImpuestoSeleccionado(code));
+    return control;
   }
 
   getImpuestoLabel(code: string): string {

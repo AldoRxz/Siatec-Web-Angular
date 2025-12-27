@@ -144,7 +144,11 @@ export class AuthService {
     }
 
     // Prioridad 2: usuario actual
-    return this.contribuyenteId();
+    const contribuyenteId = this.contribuyenteId();
+    if (typeof contribuyenteId === 'number') {
+      return contribuyenteId;
+    }
+    return null;
   }
 
   /**

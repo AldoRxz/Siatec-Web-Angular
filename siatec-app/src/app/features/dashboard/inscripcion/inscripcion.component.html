@@ -234,7 +234,7 @@
                     <p-checkbox 
                       [binary]="true" 
                       [inputId]="impuesto.code"
-                      [checked]="getImpuestoSeleccionado(impuesto.code)"
+                      [formControl]="getImpuestoControl(impuesto.code)"
                       (onChange)="toggleImpuesto(impuesto.code, $event.checked)">
                     </p-checkbox>
                     <label [for]="impuesto.code" class="impuesto-label">
