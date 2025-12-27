@@ -14,6 +14,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { StepperModule } from 'primeng/stepper';
 import { finalize } from 'rxjs/operators';
 import { AuthService, ContribuyentesService } from '../../../core/services';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
@@ -57,7 +58,8 @@ interface CatalogOption {
     FloatLabelModule,
     DividerModule,
     IconFieldModule,
-    InputIconModule
+    InputIconModule,
+    StepperModule
   ],
   providers: [MessageService],
   templateUrl: './inscripcion.component.html',
@@ -77,6 +79,12 @@ export class InscripcionComponent implements OnInit {
   readonly loading = signal(false);
   readonly currentStep = signal(0);
   readonly steps = ['Datos generales', 'Ubicación y contacto', 'Régimen e impuestos', 'Representante', 'Pagos', 'Resumen'];
+
+  // RFC validation signals
+  readonly rfcValue = signal('');
+  readonly tipoPersona = signal<'fisica' | 'moral' | null>(null);
+  readonly rfcValidado = signal(false);
+  readonly rfcError = signal<string | null>(null);
 
   readonly regimenControl = this.fb.control('');
   readonly actividadControl = this.fb.control('');
@@ -146,6 +154,56 @@ export class InscripcionComponent implements OnInit {
     this.loadDraft();
     this.loadProcessingState();
     this.prefillFromUser();
+  }
+
+  /**
+   * Validates RFC and determines persona type based on length
+   * 12 characters = Persona Moral
+   * 13 characters = Persona Física
+   */
+  evaluarRFC(): void {
+    const rfc = this.rfcValue().trim().toUpperCase();
+    this.rfcValue.set(rfc);
+    this.rfcError.set(null);
+
+    if (!rfc) {
+      this.rfcError.set('Captura un RFC primero');
+      return;
+    }
+
+    if (rfc.length !== 12 && rfc.length !== 13) {
+      this.rfcError.set(`Longitud inválida (${rfc.length}). Debe ser 12 (Persona Moral) o 13 (Persona Física)`);
+      return;
+    }
+
+    // Determine persona type
+    if (rfc.length === 12) {
+      this.tipoPersona.set('moral');
+      this.form.controls.tipoPersona.setValue('moral');
+    } else {
+      this.tipoPersona.set('fisica');
+      this.form.controls.tipoPersona.setValue('fisica');
+    }
+
+    // Set RFC in form
+    this.form.controls.identificacion.controls.rfc.setValue(rfc);
+    this.rfcValidado.set(true);
+  }
+
+  /**
+   * Resets the RFC validation and returns to initial state
+   */
+  resetRFC(): void {
+    this.rfcValue.set('');
+    this.tipoPersona.set(null);
+    this.rfcValidado.set(false);
+    this.rfcError.set(null);
+    this.form.reset();
+    this.form.controls.tipoPersona.setValue('fisica');
+    this.regimenes.set([]);
+    this.actividades.set([]);
+    this.impuestosSeleccionados.set([]);
+    this.currentStep.set(0);
   }
 
   togglePersona(tipo: 'fisica' | 'moral'): void {

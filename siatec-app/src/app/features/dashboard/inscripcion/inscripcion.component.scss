@@ -650,3 +650,496 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
     }
   }
 }
+
+// ========================================
+// RFC Validation Screen
+// ========================================
+.rfc-validation {
+  padding: 3rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+
+  &__header {
+    margin-bottom: 2.5rem;
+  }
+
+  &__icon {
+    font-size: 3.5rem;
+    color: $primary-color;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  &__title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: $text-dark;
+    margin-bottom: 0.5rem;
+  }
+
+  &__subtitle {
+    color: $text-medium;
+    font-size: 1rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &__input {
+    font-size: 1.25rem !important;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: $error-color;
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    background: $error-bg;
+    border-radius: 0.5rem;
+    font-weight: 500;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: $primary-bg;
+    border-radius: 0.75rem;
+    border: 1px solid rgba($primary-color, 0.2);
+  }
+
+  &__info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+
+    i {
+      font-size: 1.5rem;
+      color: $primary-color;
+      min-width: 1.5rem;
+    }
+
+    span {
+      font-size: 0.9375rem;
+      color: $text-medium;
+
+      strong {
+        color: $text-dark;
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__button {
+    font-size: 1.125rem;
+    padding: 0.875rem 2rem;
+  }
+}
+
+// ========================================
+// Stepper Form (after RFC validated)
+// ========================================
+.stepper-form {
+  padding: 1.5rem;
+}
+
+.rfc-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, $primary-bg 0%, rgba($primary-color, 0.05) 100%);
+  border: 1px solid rgba($primary-color, 0.2);
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+
+  &__badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+    color: $text-dark;
+
+    i {
+      font-size: 1.25rem;
+      color: $primary-color;
+    }
+
+    strong {
+      font-weight: 600;
+      color: $text-dark;
+    }
+  }
+
+  button {
+    white-space: nowrap;
+  }
+}
+
+// ========================================
+// PrimeNG Stepper Overrides
+// ========================================
+:host ::ng-deep {
+  // Stepper container
+  .p-stepper {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  // Step header container
+  .p-stepper-header {
+    padding: 1rem !important;
+    background: transparent !important;
+    border: none !important;
+    margin-bottom: 0.5rem;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 100%;
+      height: 2px;
+      background: $border-light;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    // Active state
+    &.p-stepper-header-active {
+      .step-number {
+        background: $primary-color;
+        color: white;
+        border-color: $primary-color;
+      }
+
+      .step-title {
+        color: $primary-color;
+        font-weight: 600;
+      }
+    }
+
+    // Completed state
+    &.p-highlight {
+      .step-number {
+        background: $success-color;
+        color: white;
+        border-color: $success-color;
+      }
+    }
+  }
+
+  // Stepper panels nav
+  .p-stepper-panels {
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  // Individual step panel
+  .p-stepper-panel {
+    background: $card-bg;
+    border-radius: 1rem;
+    padding: 0;
+    box-shadow: $card-shadow;
+    margin-bottom: 2rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Step header action (clickable)
+  .p-stepper-header-action {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem 1rem !important;
+    background: white !important;
+    border-radius: 0.75rem !important;
+    border: none !important;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+    cursor: pointer !important;
+
+    &:hover {
+      background: $primary-bg !important;
+      transform: translateY(-2px);
+    }
+
+    &:focus {
+      outline: 2px solid rgba($primary-color, 0.3);
+      outline-offset: 2px;
+    }
+  }
+
+  // Separator between steps
+  .p-stepper-separator {
+    flex: 1;
+    min-width: 2rem;
+    height: 2px;
+    background: $border-light;
+    margin: 0 0.5rem;
+    position: relative;
+    z-index: 0;
+  }
+
+  .p-stepper-header-active + .p-stepper-separator,
+  .p-highlight + .p-stepper-separator {
+    background: $primary-color;
+  }
+}
+
+// Step number circle
+.step-number {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  background: white;
+  border: 2px solid $border-color;
+  color: $text-medium;
+  transition: all 0.3s ease;
+
+  &.active {
+    background: $primary-color;
+    color: white;
+    border-color: $primary-color;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+}
+
+// Step title
+.step-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $text-medium;
+  transition: color 0.3s ease;
+}
+
+// ========================================
+// Step Content
+// ========================================
+.step-content {
+  padding: 2rem;
+
+  h3.step-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid $border-light;
+
+    i {
+      color: $primary-color;
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// ========================================
+// Step Actions (Navigation Buttons)
+// ========================================
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid $border-light;
+  background: rgba($primary-bg, 0.3);
+
+  :host ::ng-deep .p-button {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+  }
+}
+
+// ========================================
+// Tag Section (Régimen & Actividades in stepper)
+// ========================================
+.tag-section {
+  margin-bottom: 2rem;
+
+  &__label {
+    display: block;
+    font-weight: 600;
+    color: $text-dark;
+    margin-bottom: 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  &__input {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    p-floatlabel {
+      flex: 1;
+    }
+
+    button {
+      flex-shrink: 0;
+    }
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.75rem;
+    background: rgba($primary-bg, 0.3);
+    border-radius: 0.5rem;
+    border: 1px dashed $border-color;
+
+    :host ::ng-deep .p-chip {
+      background: white;
+      border: 1px solid $border-color;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+
+      .p-chip-remove-icon {
+        margin-left: 0.5rem;
+        color: $text-medium;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: $error-color;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// Responsive Stepper
+// ========================================
+@media (max-width: 768px) {
+  .rfc-validation {
+    padding: 2rem 1rem;
+
+    &__title {
+      font-size: 1.5rem;
+    }
+
+    &__icon {
+      font-size: 3rem;
+    }
+  }
+
+  .stepper-form {
+    padding: 1rem;
+  }
+
+  .rfc-status {
+    flex-direction: column;
+    align-items: flex-start;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .step-content {
+    padding: 1.5rem;
+
+    h3.step-title {
+      font-size: 1.125rem;
+    }
+  }
+
+  .step-actions {
+    flex-direction: column-reverse;
+    padding: 1rem 1.5rem;
+
+    :host ::ng-deep .p-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  :host ::ng-deep {
+    .p-stepper-header {
+      flex-direction: column;
+      text-align: center;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    .p-stepper-separator {
+      display: none;
+    }
+
+    .p-stepper-header-action {
+      width: 100%;
+    }
+  }
+
+  .step-number {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+  }
+
+  .step-title {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .rfc-validation {
+    &__info-item {
+      flex-direction: column;
+      text-align: center;
+
+      i {
+        font-size: 2rem;
+      }
+    }
+  }
+
+  .tag-section {
+    &__input {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
