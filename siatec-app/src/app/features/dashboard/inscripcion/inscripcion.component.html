@@ -79,11 +79,14 @@
           <button 
             pButton 
             type="button"
-            label="Continuar"
-            icon="pi pi-arrow-right"
+            label="Validar RFC"
+            icon="pi pi-check-circle"
             iconPos="right"
             (click)="evaluarRFC()"
+            [disabled]="!rfcValue() || rfcValue().length < 12"
             class="rfc-validation__button"
+            severity="primary"
+            size="large"
           ></button>
         </div>
       </div>
@@ -115,12 +118,55 @@
           ></button>
         </div>
 
+        <!-- BOTÓN CONTINUAR después de validar RFC -->
+        @if (rfcValidado() && tipoPersona() && !mostrarFormulario()) {
+          <div class="continue-section">
+            <div class="rfc-confirmed">
+              <i class="pi pi-check-circle"></i>
+              <h3>RFC Validado Correctamente</h3>
+              <p class="rfc-display">{{ rfcValue() }}</p>
+              <p class="tipo-persona-badge">
+                @if (tipoPersona() === 'fisica') {
+                  <span class="badge badge-fisica">
+                    <i class="pi pi-user"></i>
+                    Persona Física
+                  </span>
+                }
+                @if (tipoPersona() === 'moral') {
+                  <span class="badge badge-moral">
+                    <i class="pi pi-building"></i>
+                    Persona Moral
+                  </span>
+                }
+              </p>
+            </div>
+            <div class="continue-actions">
+              <button
+                type="button"
+                class="btn-continue"
+                (click)="continuarInscripcion()"
+              >
+                <i class="pi pi-arrow-right"></i>
+                Continuar con la Inscripción
+              </button>
+              <button
+                type="button"
+                class="btn-change-rfc"
+                (click)="resetRFC()"
+              >
+                <i class="pi pi-pencil"></i>
+                Cambiar RFC
+              </button>
+            </div>
+          </div>
+        }
+
         <form [formGroup]="form" (ngSubmit)="submitSolicitud()">
           <!-- Stepper para Persona Física -->
-          @if (tipoPersona() === 'fisica') {
+          @if (tipoPersona() === 'fisica' && mostrarFormulario()) {
             <p-stepper [linear]="true">
               <!-- Step 1: Identificación PF -->
-              <p-stepperPanel header="Identificación">
+              <p-step-panel header="Identificación">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Identificación</span>
@@ -201,10 +247,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 2: Domicilio Fiscal PF -->
-              <p-stepperPanel header="Domicilio Fiscal">
+              <p-step-panel header="Domicilio Fiscal">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Domicilio Fiscal</span>
@@ -304,10 +350,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 3: Régimen y Actividades PF -->
-              <p-stepperPanel header="Régimen y Actividades">
+              <p-step-panel header="Régimen y Actividades">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Régimen y Actividades</span>
@@ -376,10 +422,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 4: Impuestos PF -->
-              <p-stepperPanel header="Impuestos">
+              <p-step-panel header="Impuestos">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Impuestos</span>
@@ -391,7 +437,7 @@
                       Selecciona los Impuestos
                     </h3>
                     <div class="impuestos-grid">
-                      @for (impuesto of impuestosCatalog; track trackByCode($index, impuesto.code)) {
+                      @for (impuesto of impuestosCatalog; track trackByCode($index, impuesto)) {
                         <div class="impuesto-item">
                           <p-checkbox 
                             [inputId]="'imp_pf_' + impuesto.code"
@@ -413,10 +459,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 5: Representante Legal PF -->
-              <p-stepperPanel header="Representante Legal">
+              <p-step-panel header="Representante Legal">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Representante Legal</span>
@@ -480,10 +526,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 6: Persona que efectuará pagos PF -->
-              <p-stepperPanel header="Persona que efectuará pagos">
+              <p-step-panel header="Persona que efectuará pagos">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Pagos</span>
@@ -538,15 +584,15 @@
                     <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
             </p-stepper>
           }
 
           <!-- Stepper para Persona Moral -->
-          @if (tipoPersona() === 'moral') {
+          @if (tipoPersona() === 'moral' && mostrarFormulario()) {
             <p-stepper [linear]="true">
               <!-- Step 1: Identificación PM -->
-              <p-stepperPanel header="Identificación">
+              <p-step-panel header="Identificación">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Identificación</span>
@@ -600,10 +646,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 2: Domicilio Fiscal PM -->
-              <p-stepperPanel header="Domicilio Fiscal">
+              <p-step-panel header="Domicilio Fiscal">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Domicilio Fiscal</span>
@@ -703,10 +749,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 3: Representante Legal PM (required) -->
-              <p-stepperPanel header="Representante Legal">
+              <p-step-panel header="Representante Legal">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Representante Legal</span>
@@ -770,10 +816,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 4: Régimen y Actividades PM -->
-              <p-stepperPanel header="Régimen y Actividades">
+              <p-step-panel header="Régimen y Actividades">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Régimen y Actividades</span>
@@ -842,10 +888,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 5: Impuestos PM -->
-              <p-stepperPanel header="Impuestos">
+              <p-step-panel header="Impuestos">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Impuestos</span>
@@ -857,7 +903,7 @@
                       Selecciona los Impuestos
                     </h3>
                     <div class="impuestos-grid">
-                      @for (impuesto of impuestosCatalog; track trackByCode($index, impuesto.code)) {
+                      @for (impuesto of impuestosCatalog; track trackByCode($index, impuesto)) {
                         <div class="impuesto-item">
                           <p-checkbox 
                             [inputId]="'imp_pm_' + impuesto.code"
@@ -879,10 +925,10 @@
                     <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
 
               <!-- Step 6: Persona que efectuará pagos PM -->
-              <p-stepperPanel header="Persona que efectuará pagos">
+              <p-step-panel header="Persona que efectuará pagos">
                 <ng-template pTemplate="header" let-index="index" let-active="active">
                   <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
                   <span class="step-title">Pagos</span>
@@ -937,7 +983,7 @@
                     <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
                   </div>
                 </ng-template>
-              </p-stepperPanel>
+              </p-step-panel>
             </p-stepper>
           }
         </form>
@@ -945,3 +991,6 @@
     }
   </p-card>
 </div>
+
+
+

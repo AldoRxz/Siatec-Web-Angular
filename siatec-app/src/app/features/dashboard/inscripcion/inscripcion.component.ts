@@ -85,6 +85,7 @@ export class InscripcionComponent implements OnInit {
   readonly tipoPersona = signal<'fisica' | 'moral' | null>(null);
   readonly rfcValidado = signal(false);
   readonly rfcError = signal<string | null>(null);
+  readonly mostrarFormulario = signal(false);
 
   readonly regimenControl = this.fb.control('');
   readonly actividadControl = this.fb.control('');
@@ -191,6 +192,13 @@ export class InscripcionComponent implements OnInit {
   }
 
   /**
+   * Continues to the inscription form after RFC validation
+   */
+  continuarInscripcion(): void {
+    this.mostrarFormulario.set(true);
+  }
+
+  /**
    * Resets the RFC validation and returns to initial state
    */
   resetRFC(): void {
@@ -198,6 +206,7 @@ export class InscripcionComponent implements OnInit {
     this.tipoPersona.set(null);
     this.rfcValidado.set(false);
     this.rfcError.set(null);
+    this.mostrarFormulario.set(false);
     this.form.reset();
     this.form.controls.tipoPersona.setValue('fisica');
     this.regimenes.set([]);
