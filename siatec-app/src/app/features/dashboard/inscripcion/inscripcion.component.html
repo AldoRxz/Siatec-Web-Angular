@@ -29,234 +29,208 @@
 
   <!-- Main Form Card -->
   <p-card class="inscripcion-card">
-    <!-- RFC Validation Screen (shown when not validated) -->
-    @if (!rfcValidado()) {
-      <div class="rfc-validation">
-        <div class="rfc-validation__header">
-          <i class="pi pi-shield rfc-validation__icon"></i>
-          <div>
-            <h2 class="rfc-validation__title">Verificación de RFC</h2>
-            <p class="rfc-validation__subtitle">Ingresa tu RFC para continuar con el registro</p>
-          </div>
-        </div>
-
-        <div class="rfc-validation__form">
-          <p-floatlabel class="with-icon">
-            <p-iconfield>
-              <p-inputicon styleClass="pi pi-id-card" />
-              <input 
-                pInputText 
-                id="rfc"
-                [(ngModel)]="rfcValue"
-                [ngModelOptions]="{standalone: true}"
-                placeholder=" "
-                maxlength="13"
-                (keyup.enter)="evaluarRFC()"
-                class="rfc-validation__input"
-              />
-            </p-iconfield>
-            <label for="rfc">RFC *</label>
-          </p-floatlabel>
-
-          @if (rfcError()) {
-            <small class="rfc-validation__error">
-              <i class="pi pi-exclamation-triangle"></i>
-              {{ rfcError() }}
-            </small>
-          }
-
-          <div class="rfc-validation__info">
-            <div class="rfc-validation__info-item">
-              <i class="pi pi-building"></i>
-              <span><strong>12 caracteres:</strong> Persona Moral</span>
+    <form [formGroup]="form" (ngSubmit)="submitSolicitud()">
+      
+      <!-- RFC Validation Section -->
+      @if (!rfcValidado()) {
+        <div class="rfc-section">
+          <div class="rfc-content">
+            <div class="rfc-icon">
+              <i class="pi pi-id-card"></i>
             </div>
-            <div class="rfc-validation__info-item">
-              <i class="pi pi-user"></i>
-              <span><strong>13 caracteres:</strong> Persona Física</span>
+            
+            <h2 class="rfc-title">Ingresa tu RFC</h2>
+            <p class="rfc-subtitle">
+              Validaremos tu información para continuar con tu inscripción
+            </p>
+
+            <div class="rfc-input-wrapper">
+              <div class="rfc-float-input">
+                <p-floatlabel class="with-icon">
+                  <p-iconfield>
+                    <p-inputicon styleClass="pi pi-id-card" />
+                    <input 
+                      pInputText 
+                      id="rfc-input" 
+                      [value]="rfcValue()"
+                      (input)="onRfcInput($event)"
+                      (keyup.enter)="rfcValue().length >= 12 && evaluarRFC()"
+                      placeholder=" " 
+                      maxlength="13"
+                      class="rfc-main-input"
+                    />
+                  </p-iconfield>
+                  <label for="rfc-input">RFC (12 o 13 caracteres)</label>
+                </p-floatlabel>
+              </div>
+              
+              <button 
+                pButton 
+                label="Validar"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (click)="evaluarRFC()"
+                [disabled]="rfcValue().length < 12"
+                type="button"
+                class="rfc-submit-btn"
+              ></button>
             </div>
-          </div>
 
-          <button 
-            pButton 
-            type="button"
-            label="Validar RFC"
-            icon="pi pi-check-circle"
-            iconPos="right"
-            (click)="evaluarRFC()"
-            [disabled]="!rfcValue() || rfcValue().length < 12"
-            class="rfc-validation__button"
-            severity="primary"
-            size="large"
-          ></button>
-        </div>
-      </div>
-    }
-
-    <!-- Stepper Form (shown after RFC validation) -->
-    @if (rfcValidado()) {
-      <div class="stepper-form">
-        <!-- RFC Status Badge -->
-        <div class="rfc-status">
-          <div class="rfc-status__badge">
-            @if (tipoPersona() === 'fisica') {
-              <i class="pi pi-user"></i>
-              <span><strong>RFC:</strong> {{ rfcValue() }} - Persona Física</span>
-            } @else {
-              <i class="pi pi-building"></i>
-              <span><strong>RFC:</strong> {{ rfcValue() }} - Persona Moral</span>
+            @if (rfcError()) {
+              <div class="rfc-error-message">
+                <i class="pi pi-exclamation-triangle"></i>
+                <span>{{ rfcError() }}</span>
+              </div>
             }
+
+            <div class="rfc-helper">
+              <span class="helper-text">12 caracteres para Persona Moral • 13 para Persona Física</span>
+            </div>
           </div>
+        </div>
+      }
+
+      <!-- RFC Validated Confirmation -->
+      @if (rfcValidado() && !mostrarFormulario()) {
+        <div class="rfc-validated-section">
+          <div class="check-animation">
+            <div class="check-circle">
+              <i class="pi pi-check"></i>
+            </div>
+          </div>
+          
+          <h2 class="validated-title">¡RFC Validado Exitosamente!</h2>
+          
+          <div class="rfc-info">
+            <div class="info-card">
+              <i class="pi pi-id-card"></i>
+              <div>
+                <span class="info-label">RFC</span>
+                <span class="info-value">{{ rfcValue() }}</span>
+              </div>
+            </div>
+            
+            <div class="info-card">
+              <i class="pi {{ tipoPersona() === 'fisica' ? 'pi-user' : 'pi-building' }}"></i>
+              <div>
+                <span class="info-label">Tipo de Persona</span>
+                <span class="info-value">{{ tipoPersona() === 'fisica' ? 'Física' : 'Moral' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="continue-description">
+            Ahora puedes continuar con el registro de tu información.
+          </p>
+
           <button 
             pButton 
+            label="CONTINUAR CON LA INSCRIPCIÓN" 
+            icon="pi pi-arrow-right" 
+            iconPos="right"
+            (click)="continuarInscripcion()"
             type="button"
-            label="Cambiar RFC"
-            icon="pi pi-refresh"
-            severity="secondary"
-            outlined
-            size="small"
-            (click)="resetRFC()"
+            class="continue-button"
           ></button>
         </div>
+      }
 
-        <!-- BOTÓN CONTINUAR después de validar RFC -->
-        @if (rfcValidado() && tipoPersona() && !mostrarFormulario()) {
-          <div class="continue-section">
-            <div class="rfc-confirmed">
-              <i class="pi pi-check-circle"></i>
-              <h3>RFC Validado Correctamente</h3>
-              <p class="rfc-display">{{ rfcValue() }}</p>
-              <p class="tipo-persona-badge">
-                @if (tipoPersona() === 'fisica') {
-                  <span class="badge badge-fisica">
-                    <i class="pi pi-user"></i>
-                    Persona Física
-                  </span>
-                }
-                @if (tipoPersona() === 'moral') {
-                  <span class="badge badge-moral">
-                    <i class="pi pi-building"></i>
-                    Persona Moral
-                  </span>
-                }
-              </p>
-            </div>
-            <div class="continue-actions">
-              <button
-                type="button"
-                class="btn-continue"
-                (click)="continuarInscripcion()"
-              >
-                <i class="pi pi-arrow-right"></i>
-                Continuar con la Inscripción
-              </button>
-              <button
-                type="button"
-                class="btn-change-rfc"
-                (click)="resetRFC()"
-              >
-                <i class="pi pi-pencil"></i>
-                Cambiar RFC
-              </button>
-            </div>
-          </div>
-        }
+      <!-- Stepper para Persona Física -->
+      @if (mostrarFormulario() && tipoPersona() === 'fisica') {
+      <p-stepper [value]="1" [linear]="true">
+        <p-step-list>
+          <p-step [value]="1">Identificación</p-step>
+          <p-step [value]="2">Domicilio Fiscal</p-step>
+          <p-step [value]="3">Régimen y Actividades</p-step>
+          <p-step [value]="4">Impuestos</p-step>
+          <p-step [value]="5">Representante Legal</p-step>
+          <p-step [value]="6">Pagos</p-step>
+        </p-step-list>
 
-        <form [formGroup]="form" (ngSubmit)="submitSolicitud()">
-          <!-- Stepper para Persona Física -->
-          @if (tipoPersona() === 'fisica' && mostrarFormulario()) {
-            <p-stepper [linear]="true">
-              <!-- Step 1: Identificación PF -->
-              <p-step-panel header="Identificación">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Identificación</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-nextCallback="nextCallback">
-                  <div class="step-content" formGroupName="identificacion">
-                    <h3 class="step-title">
-                      <i class="pi pi-user"></i>
-                      Datos de la Persona Física
-                    </h3>
-                    <div class="form-grid">
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-user" />
-                            <input pInputText id="nombres_pf" formControlName="nombres" placeholder=" " />
-                          </p-iconfield>
-                          <label for="nombres_pf">Nombre(s) *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-user" />
-                            <input pInputText id="primerApellido_pf" formControlName="primerApellido" placeholder=" " />
-                          </p-iconfield>
-                          <label for="primerApellido_pf">Primer Apellido *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-user" />
-                            <input pInputText id="segundoApellido_pf" formControlName="segundoApellido" placeholder=" " />
-                          </p-iconfield>
-                          <label for="segundoApellido_pf">Segundo Apellido</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-id-card" />
-                            <input pInputText id="curp_pf" formControlName="curp" placeholder=" " maxlength="18" />
-                          </p-iconfield>
-                          <label for="curp_pf">CURP</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-envelope" />
-                            <input pInputText id="email_pf" formControlName="email" type="email" placeholder=" " />
-                          </p-iconfield>
-                          <label for="email_pf">Correo Electrónico *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-phone" />
-                            <input pInputText id="telefono_pf" formControlName="telefono" placeholder=" " />
-                          </p-iconfield>
-                          <label for="telefono_pf">Teléfono</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-phone" />
-                            <input pInputText id="telefonoAlterno_pf" formControlName="telefonoAlterno" placeholder=" " />
-                          </p-iconfield>
-                          <label for="telefonoAlterno_pf">Teléfono Alterno</label>
-                        </p-floatlabel>
-                      </div>
-                    </div>
+        <p-step-panels>
+          <!-- Step 1: Identificación PF -->
+          <p-step-panel [value]="1">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="step-content" formGroupName="identificacion">
+                <h3 class="step-title">
+                  <i class="pi pi-user"></i> Datos de la Persona Física
+                </h3>
+                <div class="form-grid">
+                  <div class="form-field">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-user" />
+                        <input pInputText id="nombres_pf" formControlName="nombres" placeholder=" " />
+                      </p-iconfield>
+                      <label for="nombres_pf">Nombre(s) *</label>
+                    </p-floatlabel>
                   </div>
-                  <div class="step-actions">
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
+                  <div class="form-field">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-user" />
+                        <input pInputText id="primerApellido_pf" formControlName="primerApellido" placeholder=" " />
+                      </p-iconfield>
+                      <label for="primerApellido_pf">Primer Apellido *</label>
+                    </p-floatlabel>
                   </div>
-                </ng-template>
-              </p-step-panel>
+                  <div class="form-field">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-user" />
+                        <input pInputText id="segundoApellido_pf" formControlName="segundoApellido" placeholder=" " />
+                      </p-iconfield>
+                      <label for="segundoApellido_pf">Segundo Apellido</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="form-field">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-id-card" />
+                        <input pInputText id="curp_pf" formControlName="curp" placeholder=" " maxlength="18" />
+                      </p-iconfield>
+                      <label for="curp_pf">CURP</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="form-field form-field--full">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-envelope" />
+                        <input pInputText id="email_pf" formControlName="email" type="email" placeholder=" " />
+                      </p-iconfield>
+                      <label for="email_pf">Correo Electrónico *</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="form-field">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-phone" />
+                        <input pInputText id="telefono_pf" formControlName="telefono" placeholder=" " />
+                      </p-iconfield>
+                      <label for="telefono_pf">Teléfono</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="form-field">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-phone" />
+                        <input pInputText id="telefonoAlterno_pf" formControlName="telefonoAlterno" placeholder=" " />
+                      </p-iconfield>
+                      <label for="telefonoAlterno_pf">Teléfono Alterno</label>
+                    </p-floatlabel>
+                  </div>
+                </div>
+                <div class="step-actions">
+                  <button pButton label="CONTINUAR" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(2)" type="button"></button>
+                </div>
+              </div>
+            </ng-template>
+          </p-step-panel>
 
-              <!-- Step 2: Domicilio Fiscal PF -->
-              <p-step-panel header="Domicilio Fiscal">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Domicilio Fiscal</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
-                  <div class="step-content" formGroupName="domicilio">
+          <!-- Step 2: Domicilio Fiscal PF -->
+          <p-step-panel [value]="2">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="step-content" formGroupName="domicilio">
                     <h3 class="step-title">
                       <i class="pi pi-map-marker"></i>
                       Dirección Fiscal
@@ -345,22 +319,18 @@
                       </div>
                     </div>
                   </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
+              <div class="step-actions">
+                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(1)" type="button"></button>
+                <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(3)" type="button"></button>
+              </div>
+            </ng-template>
+          </p-step-panel>
 
-              <!-- Step 3: Régimen y Actividades PF -->
-              <p-step-panel header="Régimen y Actividades">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Régimen y Actividades</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
-                  <div class="step-content">
-                    <h3 class="step-title">
+          <!-- Step 3: Régimen y Actividades PF -->
+          <p-step-panel [value]="3">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="step-content">
+                <h3 class="step-title">
                       <i class="pi pi-briefcase"></i>
                       Régimen Fiscal y Actividades Económicas
                     </h3>
@@ -417,22 +387,18 @@
                       </div>
                     </div>
                   </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
+              <div class="step-actions">
+                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(2)" type="button"></button>
+                <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" type="button"></button>
+              </div>
+            </ng-template>
+          </p-step-panel>
 
-              <!-- Step 4: Impuestos PF -->
-              <p-step-panel header="Impuestos">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Impuestos</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
-                  <div class="step-content">
-                    <h3 class="step-title">
+          <!-- Step 4: Impuestos PF -->
+          <p-step-panel [value]="4">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="step-content">
+                <h3 class="step-title">
                       <i class="pi pi-dollar"></i>
                       Selecciona los Impuestos
                     </h3>
@@ -454,22 +420,18 @@
                       }
                     </div>
                   </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
+              <div class="step-actions">
+                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(3)" type="button"></button>
+                <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(5)" type="button"></button>
+              </div>
+            </ng-template>
+          </p-step-panel>
 
-              <!-- Step 5: Representante Legal PF -->
-              <p-step-panel header="Representante Legal">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Representante Legal</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
-                  <div class="step-content" formGroupName="representante">
-                    <h3 class="step-title">
+          <!-- Step 5: Representante Legal PF -->
+          <p-step-panel [value]="5">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="step-content" formGroupName="representante">
+                <h3 class="step-title">
                       <i class="pi pi-user-edit"></i>
                       Datos del Representante Legal (opcional)
                     </h3>
@@ -520,477 +482,78 @@
                         </p-floatlabel>
                       </div>
                     </div>
-                  </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
+              </div>
+              <div class="step-actions">
+                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(4)" type="button"></button>
+                <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(6)" type="button"></button>
+              </div>
+            </ng-template>
+          </p-step-panel>
 
-              <!-- Step 6: Persona que efectuará pagos PF -->
-              <p-step-panel header="Persona que efectuará pagos">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Pagos</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback">
-                  <div class="step-content" formGroupName="pagos">
-                    <h3 class="step-title">
-                      <i class="pi pi-wallet"></i>
-                      Persona que efectuará los pagos (opcional)
-                    </h3>
-                    <div class="form-grid">
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-user" />
-                            <input pInputText id="pagos_nombre_pf" formControlName="nombre" placeholder=" " />
-                          </p-iconfield>
-                          <label for="pagos_nombre_pf">Nombre completo</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-phone" />
-                            <input pInputText id="pagos_telefono_pf" formControlName="telefono" placeholder=" " />
-                          </p-iconfield>
-                          <label for="pagos_telefono_pf">Teléfono</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-envelope" />
-                            <input pInputText id="pagos_correo_pf" formControlName="correo" placeholder=" " />
-                          </p-iconfield>
-                          <label for="pagos_correo_pf">Correo</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-map-marker" />
-                            <input pInputText id="pagos_domicilio_pf" formControlName="domicilio" placeholder=" " />
-                          </p-iconfield>
-                          <label for="pagos_domicilio_pf">Domicilio</label>
-                        </p-floatlabel>
-                      </div>
-                    </div>
+          <!-- Step 6: Persona que efectuará pagos PF -->
+          <p-step-panel [value]="6">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="step-content" formGroupName="pagos">
+                <h3 class="step-title">
+                  <i class="pi pi-wallet"></i>
+                  Persona que efectuará los pagos (opcional)
+                </h3>
+                <div class="form-grid">
+                  <div class="form-field form-field--full">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-user" />
+                        <input pInputText id="pagos_nombre_pf" formControlName="nombre" placeholder=" " />
+                      </p-iconfield>
+                      <label for="pagos_nombre_pf">Nombre completo</label>
+                    </p-floatlabel>
                   </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
+                  <div class="form-field">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-phone" />
+                        <input pInputText id="pagos_telefono_pf" formControlName="telefono" placeholder=" " />
+                      </p-iconfield>
+                      <label for="pagos_telefono_pf">Teléfono</label>
+                    </p-floatlabel>
                   </div>
-                </ng-template>
-              </p-step-panel>
-            </p-stepper>
-          }
+                  <div class="form-field">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-envelope" />
+                        <input pInputText id="pagos_correo_pf" formControlName="correo" placeholder=" " />
+                      </p-iconfield>
+                      <label for="pagos_correo_pf">Correo</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="form-field form-field--full">
+                    <p-floatlabel class="with-icon">
+                      <p-iconfield>
+                        <p-inputicon styleClass="pi pi-map-marker" />
+                        <input pInputText id="pagos_domicilio_pf" formControlName="domicilio" placeholder=" " />
+                      </p-iconfield>
+                      <label for="pagos_domicilio_pf">Domicilio</label>
+                    </p-floatlabel>
+                  </div>
+                </div>
+              </div>
+              <div class="step-actions">
+                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(5)" type="button"></button>
+                <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
+              </div>
+            </ng-template>
+          </p-step-panel>
+        </p-step-panels>
+      </p-stepper>
+      }
 
-          <!-- Stepper para Persona Moral -->
-          @if (tipoPersona() === 'moral' && mostrarFormulario()) {
-            <p-stepper [linear]="true">
-              <!-- Step 1: Identificación PM -->
-              <p-step-panel header="Identificación">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Identificación</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-nextCallback="nextCallback">
-                  <div class="step-content" formGroupName="identificacion">
-                    <h3 class="step-title">
-                      <i class="pi pi-building"></i>
-                      Datos de la Persona Moral
-                    </h3>
-                    <div class="form-grid">
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-building" />
-                            <input pInputText id="razonSocial" formControlName="razonSocial" placeholder=" " />
-                          </p-iconfield>
-                          <label for="razonSocial">Razón Social *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-envelope" />
-                            <input pInputText id="email_pm" formControlName="email" type="email" placeholder=" " />
-                          </p-iconfield>
-                          <label for="email_pm">Correo Electrónico *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-phone" />
-                            <input pInputText id="telefono_pm" formControlName="telefono" placeholder=" " />
-                          </p-iconfield>
-                          <label for="telefono_pm">Teléfono</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-phone" />
-                            <input pInputText id="telefonoAlterno_pm" formControlName="telefonoAlterno" placeholder=" " />
-                          </p-iconfield>
-                          <label for="telefonoAlterno_pm">Teléfono Alterno</label>
-                        </p-floatlabel>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="step-actions">
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
-
-              <!-- Step 2: Domicilio Fiscal PM -->
-              <p-step-panel header="Domicilio Fiscal">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Domicilio Fiscal</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
-                  <div class="step-content" formGroupName="domicilio">
-                    <h3 class="step-title">
-                      <i class="pi pi-map-marker"></i>
-                      Dirección Fiscal
-                    </h3>
-                    <div class="form-grid">
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-map" />
-                            <input pInputText id="calle_pm" formControlName="calle" placeholder=" " />
-                          </p-iconfield>
-                          <label for="calle_pm">Calle *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-hashtag" />
-                            <input pInputText id="numeroExterior_pm" formControlName="numeroExterior" placeholder=" " />
-                          </p-iconfield>
-                          <label for="numeroExterior_pm">Número Exterior *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-hashtag" />
-                            <input pInputText id="numeroInterior_pm" formControlName="numeroInterior" placeholder=" " />
-                          </p-iconfield>
-                          <label for="numeroInterior_pm">Número Interior</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-building" />
-                            <input pInputText id="colonia_pm" formControlName="colonia" placeholder=" " />
-                          </p-iconfield>
-                          <label for="colonia_pm">Colonia *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-map-marker" />
-                            <input pInputText id="cp_pm" formControlName="cp" placeholder=" " maxlength="5" />
-                          </p-iconfield>
-                          <label for="cp_pm">Código Postal *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-building" />
-                            <input pInputText id="municipio_pm" formControlName="municipio" placeholder=" " />
-                          </p-iconfield>
-                          <label for="municipio_pm">Municipio *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-globe" />
-                            <input pInputText id="estado_pm" formControlName="estado" placeholder=" " />
-                          </p-iconfield>
-                          <label for="estado_pm">Estado *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-map" />
-                            <input pInputText id="entreCalles_pm" formControlName="entreCalles" placeholder=" " />
-                          </p-iconfield>
-                          <label for="entreCalles_pm">Entre calles</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-info-circle" />
-                            <input pInputText id="referencias_pm" formControlName="referencias" placeholder=" " />
-                          </p-iconfield>
-                          <label for="referencias_pm">Referencias</label>
-                        </p-floatlabel>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
-
-              <!-- Step 3: Representante Legal PM (required) -->
-              <p-step-panel header="Representante Legal">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Representante Legal</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
-                  <div class="step-content" formGroupName="representante">
-                    <h3 class="step-title">
-                      <i class="pi pi-user-edit"></i>
-                      Datos del Representante Legal *
-                    </h3>
-                    <div class="form-grid">
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-user" />
-                            <input pInputText id="rep_nombres_pm" formControlName="nombres" placeholder=" " />
-                          </p-iconfield>
-                          <label for="rep_nombres_pm">Nombre(s) *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-user" />
-                            <input pInputText id="rep_primerApellido_pm" formControlName="primerApellido" placeholder=" " />
-                          </p-iconfield>
-                          <label for="rep_primerApellido_pm">Primer Apellido *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-user" />
-                            <input pInputText id="rep_segundoApellido_pm" formControlName="segundoApellido" placeholder=" " />
-                          </p-iconfield>
-                          <label for="rep_segundoApellido_pm">Segundo Apellido</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-id-card" />
-                            <input pInputText id="rep_rfc_pm" formControlName="rfc" placeholder=" " maxlength="13" />
-                          </p-iconfield>
-                          <label for="rep_rfc_pm">RFC *</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-id-card" />
-                            <input pInputText id="rep_curp_pm" formControlName="curp" placeholder=" " maxlength="18" />
-                          </p-iconfield>
-                          <label for="rep_curp_pm">CURP *</label>
-                        </p-floatlabel>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
-
-              <!-- Step 4: Régimen y Actividades PM -->
-              <p-step-panel header="Régimen y Actividades">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Régimen y Actividades</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
-                  <div class="step-content">
-                    <h3 class="step-title">
-                      <i class="pi pi-briefcase"></i>
-                      Régimen Fiscal y Actividades Económicas
-                    </h3>
-                    <!-- Regímenes Fiscales -->
-                    <div class="tag-section">
-                      <label class="tag-section__label">Régimen Fiscal</label>
-                      <div class="tag-section__input">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-book" />
-                            <input 
-                              pInputText 
-                              id="regimen_input_pm"
-                              [(ngModel)]="regimenInput"
-                              [ngModelOptions]="{standalone: true}"
-                              placeholder=" "
-                              (keyup.enter)="addRegimen()"
-                            />
-                          </p-iconfield>
-                          <label for="regimen_input_pm">Descripción del régimen</label>
-                        </p-floatlabel>
-                        <button pButton type="button" icon="pi pi-plus" severity="success" (click)="addRegimen()"></button>
-                      </div>
-                      <div class="tag-section__chips">
-                        @for (regimen of regimenes(); track trackByString($index, regimen)) {
-                          <p-chip [label]="regimen" [removable]="true" (onRemove)="removeRegimen(regimen)"></p-chip>
-                        }
-                      </div>
-                    </div>
-                    <!-- Actividades Económicas -->
-                    <div class="tag-section">
-                      <label class="tag-section__label">Actividades Económicas</label>
-                      <div class="tag-section__input">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-briefcase" />
-                            <input 
-                              pInputText 
-                              id="actividad_input_pm"
-                              [(ngModel)]="actividadInput"
-                              [ngModelOptions]="{standalone: true}"
-                              placeholder=" "
-                              (keyup.enter)="addActividad()"
-                            />
-                          </p-iconfield>
-                          <label for="actividad_input_pm">Nombre de actividad</label>
-                        </p-floatlabel>
-                        <button pButton type="button" icon="pi pi-plus" severity="success" (click)="addActividad()"></button>
-                      </div>
-                      <div class="tag-section__chips">
-                        @for (actividad of actividades(); track trackByString($index, actividad)) {
-                          <p-chip [label]="actividad" [removable]="true" (onRemove)="removeActividad(actividad)"></p-chip>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
-
-              <!-- Step 5: Impuestos PM -->
-              <p-step-panel header="Impuestos">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Impuestos</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
-                  <div class="step-content">
-                    <h3 class="step-title">
-                      <i class="pi pi-dollar"></i>
-                      Selecciona los Impuestos
-                    </h3>
-                    <div class="impuestos-grid">
-                      @for (impuesto of impuestosCatalog; track trackByCode($index, impuesto)) {
-                        <div class="impuesto-item">
-                          <p-checkbox 
-                            [inputId]="'imp_pm_' + impuesto.code"
-                            [value]="impuesto.code"
-                            [binary]="true"
-                            [ngModel]="getImpuestoSeleccionado(impuesto.code)"
-                            [ngModelOptions]="{standalone: true}"
-                            (onChange)="toggleImpuesto(impuesto.code, $event.checked)"
-                          ></p-checkbox>
-                          <label [for]="'imp_pm_' + impuesto.code" class="impuesto-label">
-                            <strong>{{ impuesto.code }}</strong> - {{ impuesto.label }}
-                          </label>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (click)="nextCallback.emit()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
-
-              <!-- Step 6: Persona que efectuará pagos PM -->
-              <p-step-panel header="Persona que efectuará pagos">
-                <ng-template pTemplate="header" let-index="index" let-active="active">
-                  <span class="step-number" [class.active]="active">{{ index + 1 }}</span>
-                  <span class="step-title">Pagos</span>
-                </ng-template>
-                <ng-template pTemplate="content" let-prevCallback="prevCallback">
-                  <div class="step-content" formGroupName="pagos">
-                    <h3 class="step-title">
-                      <i class="pi pi-wallet"></i>
-                      Persona que efectuará los pagos (opcional)
-                    </h3>
-                    <div class="form-grid">
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-user" />
-                            <input pInputText id="pagos_nombre_pm" formControlName="nombre" placeholder=" " />
-                          </p-iconfield>
-                          <label for="pagos_nombre_pm">Nombre completo</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-phone" />
-                            <input pInputText id="pagos_telefono_pm" formControlName="telefono" placeholder=" " />
-                          </p-iconfield>
-                          <label for="pagos_telefono_pm">Teléfono</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-envelope" />
-                            <input pInputText id="pagos_correo_pm" formControlName="correo" placeholder=" " />
-                          </p-iconfield>
-                          <label for="pagos_correo_pm">Correo</label>
-                        </p-floatlabel>
-                      </div>
-                      <div class="form-field form-field--full">
-                        <p-floatlabel class="with-icon">
-                          <p-iconfield>
-                            <p-inputicon styleClass="pi pi-map-marker" />
-                            <input pInputText id="pagos_domicilio_pm" formControlName="domicilio" placeholder=" " />
-                          </p-iconfield>
-                          <label for="pagos_domicilio_pm">Domicilio</label>
-                        </p-floatlabel>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="prevCallback.emit()"></button>
-                    <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
-                  </div>
-                </ng-template>
-              </p-step-panel>
-            </p-stepper>
-          }
-        </form>
-      </div>
-    }
+      <!-- Stepper para Persona Moral (placeholder) -->
+      @if (mostrarFormulario() && tipoPersona() === 'moral') {
+        <div class="moral-placeholder">
+          <h3>Formulario para Persona Moral</h3>
+          <p>En construcción...</p>
+        </div>
+      }
+    </form>
   </p-card>
 </div>
-
-
-

@@ -162,6 +162,16 @@ export class InscripcionComponent implements OnInit {
    * 12 characters = Persona Moral
    * 13 characters = Persona Física
    */
+  /**
+   * Handle RFC input changes
+   */
+  onRfcInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value.toUpperCase();
+    this.rfcValue.set(value);
+    this.rfcError.set(null);
+  }
+
   evaluarRFC(): void {
     const rfc = this.rfcValue().trim().toUpperCase();
     this.rfcValue.set(rfc);
@@ -189,6 +199,7 @@ export class InscripcionComponent implements OnInit {
     // Set RFC in form
     this.form.controls.identificacion.controls.rfc.setValue(rfc);
     this.rfcValidado.set(true);
+    // Don't show form yet, wait for continuarInscripcion()
   }
 
   /**
