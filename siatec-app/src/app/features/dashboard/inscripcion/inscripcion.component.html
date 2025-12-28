@@ -217,7 +217,7 @@
                   </div>
                 </div>
                 <div class="step-actions">
-                  <button pButton label="CONTINUAR" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(2)" type="button"></button>
+                  <button pButton label="CONTINUAR" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(2)" type="button" class="step-button-primary"></button>
                 </div>
               </div>
             </ng-template>
@@ -314,10 +314,10 @@
                         </p-floatlabel>
                       </div>
                     </div>
+                  <div class="step-actions">
+                    <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(1)" type="button" class="step-button-secondary"></button>
+                    <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(3)" type="button" class="step-button-primary"></button>
                   </div>
-              <div class="step-actions">
-                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(1)" type="button"></button>
-                <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(3)" type="button"></button>
               </div>
             </ng-template>
           </p-step-panel>
@@ -382,10 +382,10 @@
                         }
                       </div>
                     </div>
+                  <div class="step-actions">
+                    <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(2)" type="button" class="step-button-secondary"></button>
+                    <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" type="button" class="step-button-primary"></button>
                   </div>
-              <div class="step-actions">
-                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(2)" type="button"></button>
-                <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" type="button"></button>
               </div>
             </ng-template>
           </p-step-panel>
@@ -415,10 +415,10 @@
                         </div>
                       }
                     </div>
+                  <div class="step-actions">
+                    <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(3)" type="button" class="step-button-secondary"></button>
+                    <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(5)" type="button" class="step-button-primary"></button>
                   </div>
-              <div class="step-actions">
-                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(3)" type="button"></button>
-                <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(5)" type="button"></button>
               </div>
             </ng-template>
           </p-step-panel>
@@ -478,10 +478,10 @@
                         </p-floatlabel>
                       </div>
                     </div>
-              </div>
-              <div class="step-actions">
-                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(4)" type="button"></button>
-                <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(6)" type="button"></button>
+                  <div class="step-actions">
+                    <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(4)" type="button" class="step-button-secondary"></button>
+                    <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(6)" type="button" class="step-button-primary"></button>
+                  </div>
               </div>
             </ng-template>
           </p-step-panel>
@@ -532,10 +532,10 @@
                     </p-floatlabel>
                   </div>
                 </div>
-              </div>
-              <div class="step-actions">
-                <button pButton label="Atrás" icon="pi pi-arrow-left" severity="secondary" outlined (click)="activateCallback(5)" type="button"></button>
-                <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
+                <div class="step-actions">
+                  <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(5)" type="button" class="step-button-secondary"></button>
+                  <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
+                </div>
               </div>
             </ng-template>
           </p-step-panel>

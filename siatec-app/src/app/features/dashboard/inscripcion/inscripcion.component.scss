@@ -1605,44 +1605,115 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
   justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
-  padding: 2rem 0 0 0;
+  padding: 0;
   margin-top: 2.5rem;
-  border-top: 2px solid $border-light;
 
-  button {
-    min-width: 180px !important;
-    font-weight: 700 !important;
-    padding: 1rem 2rem !important;
-    font-size: 1rem !important;
-    height: 48px !important;
-    border-radius: 0.5rem !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-    transition: all 0.3s ease !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
+  // Estilo para botones primarios (Continuar) - copiado de rfc-submit-btn
+  .step-button-primary {
+    height: 48px;
+    min-width: 180px;
+    border-radius: 0.75rem;
+    padding: 0 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    white-space: nowrap;
+    background: rgba($primary-color, 0.3) !important;
+    border-color: rgba($primary-color, 0.3) !important;
+    color: $primary-color !important;
 
-    &:hover {
-      transform: translateY(-2px) !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    :host ::ng-deep {
+      .p-button-label {
+        font-weight: 600;
+        color: $primary-color !important;
+      }
+
+      .p-button-icon {
+        color: $primary-color !important;
+      }
     }
 
-    &:only-child {
-      margin-left: auto;
+    &:not(:disabled) {
+      background: $primary-color !important;
+      border-color: $primary-color !important;
+      color: white !important;
+      box-shadow: 0 4px 16px rgba($primary-color, 0.3);
+      cursor: pointer;
+
+      :host ::ng-deep {
+        .p-button-label {
+          color: white !important;
+        }
+
+        .p-button-icon {
+          color: white !important;
+        }
+      }
+
+      &:hover {
+        background: darken($primary-color, 8%) !important;
+        border-color: darken($primary-color, 8%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba($primary-color, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      box-shadow: none;
     }
   }
 
-  :host ::ng-deep .p-button {
-    min-width: 180px !important;
-    height: 48px !important;
+  // Estilo para botones secundarios (Atrás) - tono azul más claro
+  .step-button-secondary {
+    height: 48px;
+    min-width: 180px;
+    border-radius: 0.75rem;
+    padding: 0 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    white-space: nowrap;
+    background: lighten($primary-color, 35%) !important;
+    border-color: lighten($primary-color, 35%) !important;
+    color: $primary-color !important;
+    box-shadow: 0 4px 16px rgba($primary-color, 0.2);
 
-    .p-button-label {
-      font-weight: 700 !important;
-      color: white !important;
+    :host ::ng-deep {
+      .p-button-label {
+        font-weight: 600;
+        color: $primary-color !important;
+      }
+
+      .p-button-icon {
+        color: $primary-color !important;
+      }
     }
-    
-    .p-button-icon {
-      font-size: 1.1rem !important;
+
+    &:hover {
+      background: lighten($primary-color, 30%) !important;
+      border-color: lighten($primary-color, 30%) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba($primary-color, 0.3);
     }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  button:only-child {
+    margin-left: auto;
   }
 }
 
