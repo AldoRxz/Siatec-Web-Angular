@@ -1362,7 +1362,7 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 // ========================================
 .rfc-validated-section {
   background: linear-gradient(135deg, rgba($success-color, 0.05) 0%, rgba($success-color, 0.02) 100%);
-  padding: 4rem 3rem;
+  padding: 4rem 3rem 3rem 3rem;
   border-radius: 1rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   margin-bottom: 2.5rem;
@@ -1475,7 +1475,7 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
     display: flex;
     justify-content: center;
     gap: 2rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
     flex-wrap: wrap;
     animation: fadeIn 0.6s ease-out 0.4s both;
 
@@ -1533,28 +1533,43 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
     }
   }
 
-  .continue-description {
-    font-size: 1.05rem;
-    color: $text-medium;
-    margin-bottom: 2.5rem;
-    line-height: 1.6;
-    animation: fadeIn 0.6s ease-out 0.5s both;
-  }
-
   .continue-button {
-    min-width: 280px !important;
-    height: 56px !important;
-    font-size: 1.125rem !important;
-    font-weight: 700 !important;
+    min-width: 260px !important;
+    height: 48px !important;
+    border-radius: 0.75rem !important;
+    padding: 0 1.5rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
-    box-shadow: 0 4px 15px rgba($primary-color, 0.3) !important;
-    transition: all 0.3s ease !important;
+    background: $primary-color !important;
+    border-color: $primary-color !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba($primary-color, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     animation: fadeIn 0.6s ease-out 0.6s both;
+    white-space: nowrap !important;
+
+    :host ::ng-deep {
+      .p-button-label {
+        font-weight: 600 !important;
+        color: white !important;
+      }
+
+      .p-button-icon {
+        color: white !important;
+      }
+    }
 
     &:hover {
+      background: darken($primary-color, 8%) !important;
+      border-color: darken($primary-color, 8%) !important;
       transform: translateY(-2px) !important;
-      box-shadow: 0 6px 20px rgba($primary-color, 0.4) !important;
+      box-shadow: 0 8px 24px rgba($primary-color, 0.4) !important;
+    }
+
+    &:active {
+      transform: translateY(0) !important;
     }
   }
 }
