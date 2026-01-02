@@ -1,0 +1,1928 @@
+// ============================================
+// Inscripción Page Styles
+// ============================================
+// Based on Mi Cuenta component styling
+
+// Design Tokens (matching auth and dashboard components)
+$primary-color: #2563eb;
+$primary-dark: #1e40af;
+$primary-light: #3b82f6;
+$primary-bg: #eff6ff;
+$text-dark: #0f172a;
+$text-medium: #475569;
+$text-light: #64748b;
+$text-muted: #94a3b8;
+$border-color: #d4dbe8;
+$border-light: #e2e8f0;
+$error-color: #dc2626;
+$error-bg: #fef2f2;
+$success-color: #059669;
+$info-color: #0ea5e9;
+$warning: #f59e0b;
+$warn-color: #f97316;
+$input-bg: #fdfefe;
+$card-bg: rgba(255, 255, 255, 0.95);
+$card-shadow: 0 10px 40px rgba(37, 99, 235, 0.1);
+$card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
+
+.inscripcion-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+// ========================================
+// Page Header (with Logos)
+// ========================================
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  border-radius: 1.25rem;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+  position: relative;
+
+  &__logos {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__logo {
+    height: 3.25rem;
+    width: auto;
+    filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  &__logo-servicio {
+    height: 3.25rem;
+    width: auto;
+    filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  &__subtitle {
+    margin: 0.375rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  .records-badge {
+    margin-left: auto;
+  }
+}
+
+// ========================================
+// State Card
+// ========================================
+.state-card {
+  margin-bottom: 1.5rem;
+
+  :host ::ng-deep .p-card {
+    border-radius: 0.875rem;
+    border: 1px solid #fef3c7;
+    background: #fffbeb;
+    box-shadow: 0 2px 8px rgba(234, 179, 8, 0.15);
+  }
+
+  .state-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+
+    > i {
+      font-size: 1.5rem;
+      color: #f59e0b;
+      flex-shrink: 0;
+    }
+
+    > div {
+      flex: 1;
+
+      strong {
+        display: block;
+        color: #92400e;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+      }
+
+      p {
+        margin: 0.25rem 0;
+        color: #78350f;
+        font-size: 0.9rem;
+      }
+
+      small {
+        color: #a16207;
+        font-size: 0.8rem;
+      }
+    }
+
+    button {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// ========================================
+// Card Styling (matching cuenta)
+// ========================================
+:host ::ng-deep .inscripcion-card {
+  border-radius: 1.25rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $border-light;
+  background: $card-bg;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: $card-shadow-hover;
+  }
+
+  .p-card-body {
+    padding: 0 2.5rem 2.5rem 2.5rem;
+  }
+
+  .p-card-content {
+    padding: 0;
+  }
+}
+
+// ========================================
+// Form Styles
+// ========================================
+.inscripcion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+// Form Section
+.form-section {
+  padding: 2rem;
+  background: #fff;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: $primary-bg;
+    color: $primary-color;
+    border-radius: 0.625rem;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+
+    &--location {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    &--activity {
+      background: #d1fae5;
+      color: $success-color;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-dark;
+  }
+
+  &__description {
+    margin: 0.25rem 0 0;
+    font-size: 0.85rem;
+    color: $text-light;
+  }
+}
+
+// ========================================
+// Persona Toggle
+// ========================================
+.persona-toggle {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  .persona-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+}
+
+// ========================================
+// Form Grid
+// ========================================
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+
+  &--error {
+    :host ::ng-deep p-floatlabel input {
+      border-color: #ea580c !important;
+      box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12) !important;
+    }
+  }
+
+  &__error {
+    font-size: 0.75rem;
+    color: $error-color;
+    margin-top: 0.5rem;
+  }
+}
+
+// ========================================
+// Form Content (for non-grid sections)
+// ========================================
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// ========================================
+// Input Groups (for arrays/tags)
+// ========================================
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  &__label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $text-dark;
+  }
+}
+
+.input-with-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+
+  p-floatlabel {
+    flex: 1;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+  }
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px dashed $border-color;
+}
+
+// ========================================
+// Impuestos Grid
+// ========================================
+.impuestos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.875rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid $border-light;
+}
+
+.impuesto-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.625rem;
+  background: #fff;
+  border-radius: 0.5rem;
+  border: 1px solid $border-light;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+  }
+
+  .impuesto-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    cursor: pointer;
+
+    strong {
+      font-size: 0.85rem;
+      color: $text-dark;
+    }
+
+    span {
+      font-size: 0.75rem;
+      color: $text-light;
+    }
+  }
+}
+
+// ========================================
+// Float Label Styling (matching cuenta exactly)
+// ========================================
+:host ::ng-deep {
+  p-iconfield {
+    width: 100%;
+    position: relative;
+    display: block;
+
+    .p-inputicon {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $text-muted;
+      font-size: 1rem;
+      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+  }
+
+  p-iconfield:focus-within .p-inputicon {
+    color: $primary-color;
+  }
+
+  p-iconfield .p-inputtext {
+    padding-left: 3rem;
+  }
+
+  p-floatlabel {
+    position: relative;
+    display: block;
+  }
+
+  p-floatlabel > label {
+    position: absolute;
+    left: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-muted;
+    font-weight: 500;
+    font-size: 0.95rem;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    background: transparent;
+    z-index: 1;
+  }
+
+  p-floatlabel input {
+    width: 100%;
+    border: 1px solid $border-color;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: $text-dark;
+    background: $input-bg;
+    caret-color: $primary-color;
+    transition: all 0.2s ease;
+    height: 3rem;
+  }
+
+  p-floatlabel input::placeholder {
+    color: transparent;
+  }
+
+  p-floatlabel input:-webkit-autofill {
+    -webkit-text-fill-color: $text-dark;
+    transition: background-color 9999s ease-out;
+  }
+
+  p-floatlabel input.ng-invalid.ng-touched {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+  }
+
+  p-floatlabel:focus-within input {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    outline: none;
+  }
+
+  // Float label animation states
+  p-floatlabel:focus-within > label,
+  p-floatlabel:has(input:focus) > label,
+  p-floatlabel:has(input:not(:placeholder-shown)) > label,
+  p-floatlabel:has(input:-webkit-autofill) > label {
+    top: -0.625rem;
+    left: 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $primary-color;
+    background: #ffffff;
+    padding: 0 0.375rem;
+    border-radius: 4px;
+  }
+
+  .p-divider {
+    margin: 0;
+
+    &::before {
+      border-color: $border-light;
+    }
+  }
+}
+
+// ========================================
+// Chips Styling
+// ========================================
+:host ::ng-deep {
+  .p-chip {
+    background: $primary-bg;
+    color: $primary-dark;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+
+    .p-chip-remove-icon {
+      margin-left: 0.5rem;
+      color: $primary-color;
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: $error-color;
+      }
+    }
+  }
+}
+
+// ========================================
+// Checkbox Styling
+// ========================================
+:host ::ng-deep {
+  .p-checkbox {
+    .p-checkbox-box {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 0.375rem;
+      border: 2px solid $border-color;
+      transition: all 0.2s ease;
+
+      &.p-highlight {
+        border-color: $primary-color;
+        background: $primary-color;
+      }
+    }
+  }
+}
+
+// ========================================
+// Form Actions (matching cuenta button)
+// ========================================
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+  border-top: 1px solid $border-light;
+
+  :host ::ng-deep .p-button {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+
+    &:not([severity="secondary"]):not([outlined]) {
+      background: $primary-color;
+      border: none;
+
+      &:hover:not(:disabled) {
+        background: $primary-dark;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+      }
+    }
+  }
+}
+
+// ========================================
+// Responsive Styles
+// ========================================
+@media (max-width: 968px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .impuestos-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    padding: 1.25rem 1.5rem;
+    flex-wrap: wrap;
+
+    &__logos {
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+    }
+
+    &__content {
+      width: 100%;
+      text-align: center;
+    }
+
+    &__title {
+      font-size: 1.25rem;
+    }
+
+    &__subtitle {
+      font-size: 0.85rem;
+    }
+
+    .records-badge {
+      margin: 0.75rem auto 0;
+    }
+  }
+
+  .form-section {
+    padding: 1.5rem;
+  }
+
+  .form-actions {
+    padding: 1.25rem 1.5rem;
+    flex-direction: column;
+
+    :host ::ng-deep .p-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .persona-toggle {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .form-section {
+    padding: 1.25rem;
+
+    &__header {
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+    }
+  }
+
+  .form-actions {
+    padding: 1rem 1.25rem;
+  }
+
+  .input-with-actions {
+    flex-direction: column;
+
+    .action-buttons {
+      width: 100%;
+
+      button {
+        flex: 1;
+      }
+    }
+  }
+}
+
+// ========================================
+// RFC Validation Screen
+// ========================================
+.rfc-validation {
+  padding: 3rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+
+  &__header {
+    margin-bottom: 2.5rem;
+  }
+
+  &__icon {
+    font-size: 3.5rem;
+    color: $primary-color;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  &__title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: $text-dark;
+    margin-bottom: 0.5rem;
+  }
+
+  &__subtitle {
+    color: $text-medium;
+    font-size: 1rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &__input {
+    font-size: 1.25rem !important;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: $error-color;
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    background: $error-bg;
+    border-radius: 0.5rem;
+    font-weight: 500;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: $primary-bg;
+    border-radius: 0.75rem;
+    border: 1px solid rgba($primary-color, 0.2);
+  }
+
+  &__info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+
+    i {
+      font-size: 1.5rem;
+      color: $primary-color;
+      min-width: 1.5rem;
+    }
+
+    span {
+      font-size: 0.9375rem;
+      color: $text-medium;
+
+      strong {
+        color: $text-dark;
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__button {
+    width: 100%;
+    min-height: 56px !important;
+    font-size: 1.125rem !important;
+    padding: 1rem 2rem !important;
+    font-weight: 600 !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3) !important;
+    transition: all 0.3s ease !important;
+    margin-top: 1.5rem;
+    background-color: $primary-color !important;
+    border: none !important;
+    color: white !important;
+
+    ::ng-deep .p-button {
+      background-color: $primary-color !important;
+      border: none !important;
+    }
+
+    ::ng-deep .p-button-label {
+      font-size: 1.125rem !important;
+      font-weight: 600 !important;
+      color: white !important;
+    }
+
+    ::ng-deep .p-button-icon {
+      font-size: 1.25rem !important;
+      color: white !important;
+    }
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba($primary-color, 0.4) !important;
+      background-color: $primary-dark !important;
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ========================================
+// Continue Section (después de validar RFC)
+// ========================================
+.continue-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 3rem 2rem;
+  animation: fadeInScale 0.4s ease-out;
+
+  .rfc-confirmed {
+    text-align: center;
+    
+    i.pi-check-circle {
+      font-size: 4rem;
+      color: $success-color;
+      margin-bottom: 1rem;
+      animation: successPulse 0.6s ease-out;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      color: $text-dark;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .rfc-display {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: $primary-color;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .tipo-persona-badge {
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        
+        &.badge-fisica {
+          background: linear-gradient(135deg, $info-color 0%, darken($info-color, 10%) 100%);
+          color: white;
+        }
+
+        &.badge-moral {
+          background: linear-gradient(135deg, $success-color 0%, darken($success-color, 10%) 100%);
+          color: white;
+        }
+
+        i {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  .continue-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .btn-continue {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 10%) 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+
+      i {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba($primary-color, 0.4);
+        background: linear-gradient(135deg, darken($primary-color, 5%) 0%, darken($primary-color, 15%) 100%);
+
+        i {
+          transform: translateX(4px);
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .btn-change-rfc {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: transparent;
+      color: $text-medium;
+      border: 2px solid $border-color;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: $primary-color;
+        border-color: $primary-color;
+        background: rgba($primary-color, 0.05);
+      }
+    }
+  }
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// ========================================
+// Stepper Form (after RFC validated)
+// ========================================
+.stepper-form {
+  padding: 1.5rem;
+}
+
+.rfc-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, $primary-bg 0%, rgba($primary-color, 0.05) 100%);
+  border: 1px solid rgba($primary-color, 0.2);
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+
+  &__badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+    color: $text-dark;
+
+    i {
+      font-size: 1.25rem;
+      color: $primary-color;
+    }
+
+    strong {
+      font-weight: 600;
+      color: $text-dark;
+    }
+  }
+
+  button {
+    white-space: nowrap;
+  }
+}
+
+// ========================================
+// PrimeNG Stepper Overrides
+// ========================================
+:host ::ng-deep {
+  // Stepper container
+  .p-stepper {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 2rem 3rem 0 3rem !important;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible !important;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // Step header container
+  .p-stepper-header {
+    padding: 1rem 0.5rem !important;
+    background: transparent !important;
+    border: none !important;
+    margin-bottom: 0.5rem;
+    position: relative;
+    flex: 1 1 30% !important;
+    min-width: 180px !important;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 100%;
+      height: 2px;
+      background: $border-light;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    // Active state
+    &.p-stepper-header-active {
+      .step-number {
+        background: $primary-color;
+        color: white;
+        border-color: $primary-color;
+      }
+
+      .step-title {
+        color: $primary-color;
+        font-weight: 600;
+      }
+    }
+
+    // Completed state
+    &.p-highlight {
+      .step-number {
+        background: $success-color;
+        color: white;
+        border-color: $success-color;
+      }
+    }
+  }
+
+  // Step list container
+  .p-step-list {
+    margin-bottom: 3rem !important;
+    padding: 1.5rem 1rem !important;
+    background: white !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  // Stepper panels nav
+  .p-stepper-panels {
+    padding: 0 3rem !important;
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent !important;
+  }
+
+  // Individual step panel
+  .p-stepper-panel {
+    background: white;
+    border-radius: 1rem;
+    padding: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    border: 1px solid $border-light;
+    overflow: hidden;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Step header action (clickable)
+  .p-stepper-header-action {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem 1.25rem !important;
+    background: white !important;
+    border-radius: 0.75rem !important;
+    border: none !important;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+    cursor: pointer !important;
+    min-width: 140px !important;
+    white-space: nowrap !important;
+
+    &:hover {
+      background: $primary-bg !important;
+      transform: translateY(-2px);
+    }
+
+    &:focus {
+      outline: 2px solid rgba($primary-color, 0.3);
+      outline-offset: 2px;
+    }
+  }
+
+  // Step list container
+  .p-stepper-nav {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    overflow: hidden !important;
+    padding: 1rem 3rem !important;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 0.5rem !important;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 0 0 2.5rem;
+    }
+  }
+
+  // Ensure nav container doesn't force scroll
+  .p-stepper-nav-container {
+    overflow: hidden !important;
+    scrollbar-width: none;
+
+    .p-stepper-nav-content {
+      overflow: hidden !important;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // Hide scroll buttons if rendered
+  .p-stepper-nav-prev,
+  .p-stepper-nav-next {
+    display: none !important;
+  }
+
+  // Separator between steps
+  .p-stepper-separator {
+    flex: 1;
+    min-width: 2rem;
+    max-width: 4rem;
+    height: 2px;
+    background: $border-light;
+    margin: 0 0.5rem;
+    position: relative;
+    z-index: 0;
+  }
+
+  .p-stepper-header-active + .p-stepper-separator,
+  .p-highlight + .p-stepper-separator {
+    background: $primary-color;
+  }
+}
+
+// Step number circle
+.step-number {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  background: white;
+  border: 2px solid $border-color;
+  color: $text-medium;
+  transition: all 0.3s ease;
+
+  &.active {
+    background: $primary-color;
+    color: white;
+    border-color: $primary-color;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+}
+
+// ========================================
+// RFC Validation Section
+// ========================================
+.rfc-section {
+  background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+  border-radius: 1.5rem;
+  padding: 0;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $primary-color 0%, darken($primary-color, 10%) 100%);
+  }
+
+  .rfc-content {
+    padding: 4rem 3rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .rfc-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 10%) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba($primary-color, 0.3);
+
+    i {
+      font-size: 2.25rem;
+      color: white;
+    }
+  }
+
+  .rfc-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $text-dark;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.5px;
+  }
+
+  .rfc-subtitle {
+    font-size: 1.0625rem;
+    color: $text-medium;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+  }
+
+  .rfc-input-wrapper {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+
+    .rfc-float-input {
+      flex: 1;
+
+      :host ::ng-deep p-floatlabel {
+        width: 100%;
+
+        &.with-icon {
+          .p-float-label {
+            width: 100%;
+
+            input {
+              width: 100%;
+              height: 48px;
+              font-size: 1.0625rem;
+              font-weight: 600;
+              letter-spacing: 2px;
+              text-transform: uppercase;
+              padding-left: 3rem;
+            }
+
+            label {
+              left: 3rem;
+            }
+          }
+        }
+      }
+    }
+
+    .rfc-main-input {
+      width: 100%;
+    }
+
+    .rfc-submit-btn {
+      height: 48px;
+      min-width: 120px;
+      border-radius: 0.75rem;
+      padding: 0 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+      white-space: nowrap;
+      background: rgba($primary-color, 0.3) !important;
+      border-color: rgba($primary-color, 0.3) !important;
+      color: $primary-color !important;
+
+      :host ::ng-deep {
+        .p-button-label {
+          font-weight: 600;
+          color: $primary-color !important;
+        }
+
+        .p-button-icon {
+          color: $primary-color !important;
+        }
+      }
+
+      &:not(:disabled) {
+        background: $primary-color !important;
+        border-color: $primary-color !important;
+        color: white !important;
+        box-shadow: 0 4px 16px rgba($primary-color, 0.3);
+        cursor: pointer;
+
+        :host ::ng-deep {
+          .p-button-label {
+            color: white !important;
+          }
+
+          .p-button-icon {
+            color: white !important;
+          }
+        }
+
+        &:hover {
+          background: darken($primary-color, 8%) !important;
+          border-color: darken($primary-color, 8%) !important;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba($primary-color, 0.4);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+    }
+  }
+
+  .rfc-error-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: rgba($error-color, 0.08);
+    border: 1px solid rgba($error-color, 0.2);
+    border-radius: 0.75rem;
+    color: $error-color;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+    animation: errorShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+
+    @keyframes errorShake {
+      10%, 90% { transform: translateX(-2px); }
+      20%, 80% { transform: translateX(4px); }
+      30%, 50%, 70% { transform: translateX(-6px); }
+      40%, 60% { transform: translateX(6px); }
+    }
+
+    i {
+      font-size: 1.125rem;
+      flex-shrink: 0;
+    }
+  }
+
+  .rfc-helper {
+    .helper-text {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: $text-medium;
+      padding: 0.5rem 1rem;
+      background: rgba($primary-color, 0.05);
+      border-radius: 2rem;
+      font-weight: 500;
+    }
+  }
+}
+
+// ========================================
+// RFC Validated Confirmation Section
+// ========================================
+.rfc-validated-section {
+  background: linear-gradient(135deg, rgba($success-color, 0.05) 0%, rgba($success-color, 0.02) 100%);
+  padding: 4rem 3rem 3rem 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2.5rem;
+  border: 1px solid rgba($success-color, 0.15);
+  text-align: center;
+  animation: slideInUp 0.6s ease-out;
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .check-animation {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+
+    .check-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, $success-color 0%, darken($success-color, 10%) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 30px rgba($success-color, 0.4);
+      animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        animation: ripple 2s ease-out infinite;
+      }
+
+      @keyframes scaleIn {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes ripple {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      i {
+        font-size: 3.5rem;
+        color: white;
+        animation: checkDraw 0.6s ease-out 0.3s both;
+      }
+
+      @keyframes checkDraw {
+        0% {
+          transform: scale(0) rotate(-45deg);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .validated-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $text-dark;
+    margin-bottom: 2.5rem;
+    animation: fadeInDown 0.6s ease-out 0.2s both;
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .rfc-info {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    animation: fadeIn 0.6s ease-out 0.4s both;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .info-card {
+      background: white;
+      padding: 1.5rem 2rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border: 1px solid rgba($success-color, 0.2);
+      transition: all 0.3s ease;
+      min-width: 250px;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba($success-color, 0.15);
+      }
+
+      i {
+        font-size: 2rem;
+        color: $success-color;
+        flex-shrink: 0;
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+
+      .info-label {
+        font-size: 0.875rem;
+        color: $text-medium;
+        font-weight: 500;
+      }
+
+      .info-value {
+        font-size: 1.125rem;
+        color: $text-dark;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+    }
+  }
+
+  .continue-button {
+    min-width: 260px !important;
+    height: 48px !important;
+    border-radius: 0.75rem !important;
+    padding: 0 1.5rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    background: $primary-color !important;
+    border-color: $primary-color !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba($primary-color, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    animation: fadeIn 0.6s ease-out 0.6s both;
+    white-space: nowrap !important;
+
+    :host ::ng-deep {
+      .p-button-label {
+        font-weight: 600 !important;
+        color: white !important;
+      }
+
+      .p-button-icon {
+        color: white !important;
+      }
+    }
+
+    &:hover {
+      background: darken($primary-color, 8%) !important;
+      border-color: darken($primary-color, 8%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 24px rgba($primary-color, 0.4) !important;
+    }
+
+    &:active {
+      transform: translateY(0) !important;
+    }
+  }
+}
+
+// ========================================
+// Step Content
+// ========================================
+.step-content {
+  padding: 3rem;
+
+  h3.step-title {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $primary-color;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid $primary-color;
+
+    i {
+      font-size: 1.5rem;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+  }
+}
+
+// ========================================
+// Step Actions (Navigation Buttons)
+// ========================================
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0;
+  margin-top: 2.5rem;
+
+  // Estilo para botones primarios (Continuar) - copiado de rfc-submit-btn
+  .step-button-primary {
+    height: 48px;
+    min-width: 180px;
+    border-radius: 0.75rem;
+    padding: 0 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    white-space: nowrap;
+    background: rgba($primary-color, 0.3) !important;
+    border-color: rgba($primary-color, 0.3) !important;
+    color: $primary-color !important;
+
+    :host ::ng-deep {
+      .p-button-label {
+        font-weight: 600;
+        color: $primary-color !important;
+      }
+
+      .p-button-icon {
+        color: $primary-color !important;
+      }
+    }
+
+    &:not(:disabled) {
+      background: $primary-color !important;
+      border-color: $primary-color !important;
+      color: white !important;
+      box-shadow: 0 4px 16px rgba($primary-color, 0.3);
+      cursor: pointer;
+
+      :host ::ng-deep {
+        .p-button-label {
+          color: white !important;
+        }
+
+        .p-button-icon {
+          color: white !important;
+        }
+      }
+
+      &:hover {
+        background: darken($primary-color, 8%) !important;
+        border-color: darken($primary-color, 8%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba($primary-color, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
+
+  // Estilo para botones secundarios (Atrás) - tono azul más claro
+  .step-button-secondary {
+    height: 48px;
+    min-width: 180px;
+    border-radius: 0.75rem;
+    padding: 0 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    white-space: nowrap;
+    background: lighten($primary-color, 35%) !important;
+    border-color: lighten($primary-color, 35%) !important;
+    color: $primary-color !important;
+    box-shadow: 0 4px 16px rgba($primary-color, 0.2);
+
+    :host ::ng-deep {
+      .p-button-label {
+        font-weight: 600;
+        color: $primary-color !important;
+      }
+
+      .p-button-icon {
+        color: $primary-color !important;
+      }
+    }
+
+    &:hover {
+      background: lighten($primary-color, 30%) !important;
+      border-color: lighten($primary-color, 30%) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba($primary-color, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  button:only-child {
+    margin-left: auto;
+  }
+}
+
+// ========================================
+// Tag Section (Régimen & Actividades in stepper)
+// ========================================
+.tag-section {
+  margin-bottom: 2rem;
+
+  &__label {
+    display: block;
+    font-weight: 600;
+    color: $text-dark;
+    margin-bottom: 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  &__input {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    p-floatlabel {
+      flex: 1;
+    }
+
+    button {
+      flex-shrink: 0;
+    }
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.75rem;
+    background: rgba($primary-bg, 0.3);
+    border-radius: 0.5rem;
+    border: 1px dashed $border-color;
+
+    :host ::ng-deep .p-chip {
+      background: white;
+      border: 1px solid $border-color;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+
+      .p-chip-remove-icon {
+        margin-left: 0.5rem;
+        color: $text-medium;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: $error-color;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// Responsive Stepper
+// ========================================
+@media (max-width: 768px) {
+  .rfc-validation {
+    padding: 2rem 1rem;
+
+    &__title {
+      font-size: 1.5rem;
+    }
+
+    &__icon {
+      font-size: 3rem;
+    }
+  }
+
+  .stepper-form {
+    padding: 1rem;
+  }
+
+  .rfc-status {
+    flex-direction: column;
+    align-items: flex-start;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .step-content {
+    padding: 1.5rem;
+
+    h3.step-title {
+      font-size: 1.125rem;
+    }
+  }
+
+  .step-actions {
+    flex-direction: column-reverse;
+    padding: 1rem 1.5rem;
+
+    :host ::ng-deep .p-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  :host ::ng-deep {
+    .p-stepper-header {
+      flex-direction: column;
+      text-align: center;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    .p-stepper-separator {
+      display: none;
+    }
+
+    .p-stepper-header-action {
+      width: 100%;
+    }
+  }
+
+  .step-number {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+  }
+
+  .step-title {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .rfc-validation {
+    &__info-item {
+      flex-direction: column;
+      text-align: center;
+
+      i {
+        font-size: 2rem;
+      }
+    }
+  }
+
+  .tag-section {
+    &__input {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+

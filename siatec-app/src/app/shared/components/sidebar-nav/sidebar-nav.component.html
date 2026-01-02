@@ -1,0 +1,26 @@
+<aside class="sidebar-nav">
+  <div class="sidebar-header">
+    <span>{{ title }}</span>
+  </div>
+
+  <nav class="sidebar-menu" aria-label="Navegación principal">
+    <ng-container *ngFor="let item of items; trackBy: trackByItem">
+      <div *ngIf="item.separator" class="sidebar-divider" role="separator"></div>
+
+      <button
+        *ngIf="!item.separator"
+        type="button"
+        class="sidebar-link"
+        [class.active]="isActive(item)"
+        (click)="onSelect($event, item)"
+      >
+        <span class="icon-wrapper">
+          <i [ngClass]="item.icon"></i>
+          <span *ngIf="item.indicator" class="indicator" [ngClass]="item.indicator"></span>
+        </span>
+        <span class="label">{{ item.label }}</span>
+        <span *ngIf="item.badge" class="badge" [ngClass]="item.badgeClass">{{ item.badge }}</span>
+      </button>
+    </ng-container>
+  </nav>
+</aside>

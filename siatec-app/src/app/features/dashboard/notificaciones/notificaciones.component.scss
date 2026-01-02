@@ -1,0 +1,385 @@
+// ============================================
+// Notificaciones Page Styles
+// ============================================
+// Matching cuenta/dashboard styling
+
+// Design Tokens
+$primary-color: #2563eb;
+$primary-dark: #1e40af;
+$primary-light: #3b82f6;
+$primary-bg: #eff6ff;
+$text-dark: #0f172a;
+$text-medium: #475569;
+$text-light: #64748b;
+$text-muted: #94a3b8;
+$border-color: #d4dbe8;
+$border-light: #e2e8f0;
+$card-bg: rgba(255, 255, 255, 0.95);
+$card-shadow: 0 10px 40px rgba(37, 99, 235, 0.1);
+
+// Severity colors
+$success-color: #16a34a;
+$success-bg: #dcfce7;
+$success-border: #bbf7d0;
+$info-color: #2563eb;
+$info-bg: #dbeafe;
+$info-border: #bfdbfe;
+$warn-color: #ea580c;
+$warn-bg: #ffedd5;
+$warn-border: #fed7aa;
+
+.notificaciones-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+// ========================================
+// Page Header (matching cuenta)
+// ========================================
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  border-radius: 1.25rem;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.875rem;
+    font-size: 1.5rem;
+    backdrop-filter: blur(8px);
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  &__subtitle {
+    margin: 0.375rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+}
+
+.unread-badge {
+  font-weight: 600;
+}
+
+// ========================================
+// Card Styling
+// ========================================
+:host ::ng-deep .notificaciones-card {
+  border-radius: 1rem;
+  box-shadow: $card-shadow;
+  border: 1px solid $border-light;
+  background: $card-bg;
+  overflow: hidden;
+
+  .p-card-body {
+    padding: 0;
+  }
+
+  .p-card-content {
+    padding: 1.5rem;
+  }
+}
+
+// ========================================
+// Toolbar
+// ========================================
+.card-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid $border-light;
+  margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+}
+
+.toolbar-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $text-medium;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  i {
+    color: $primary-color;
+  }
+}
+
+// ========================================
+// Notifications List
+// ========================================
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.notification-item {
+  display: grid;
+  grid-template-columns: 4px 3rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1px solid $border-light;
+  border-radius: 0.875rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $primary-light;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
+  }
+
+  // Indicator bar
+  &__indicator {
+    width: 4px;
+    height: 100%;
+    min-height: 3rem;
+    border-radius: 4px;
+    margin-left: -0.25rem;
+  }
+
+  // Severity variants
+  &--success {
+    .notification-item__indicator {
+      background: linear-gradient(180deg, $success-color 0%, darken($success-color, 10%) 100%);
+    }
+    .notification-item__icon {
+      background: $success-bg;
+      color: $success-color;
+      border-color: $success-border;
+    }
+  }
+
+  &--info {
+    .notification-item__indicator {
+      background: linear-gradient(180deg, $info-color 0%, darken($info-color, 10%) 100%);
+    }
+    .notification-item__icon {
+      background: $info-bg;
+      color: $info-color;
+      border-color: $info-border;
+    }
+  }
+
+  &--warn {
+    .notification-item__indicator {
+      background: linear-gradient(180deg, $warn-color 0%, darken($warn-color, 10%) 100%);
+    }
+    .notification-item__icon {
+      background: $warn-bg;
+      color: $warn-color;
+      border-color: $warn-border;
+    }
+  }
+
+  // Icon
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.625rem;
+    font-size: 1.1rem;
+    border: 1px solid;
+    transition: all 0.2s ease;
+  }
+
+  // Content
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__message {
+    margin: 0 0 0.375rem 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: $text-dark;
+    line-height: 1.4;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+  }
+
+  &__date,
+  &__time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: $text-muted;
+
+    i {
+      font-size: 0.7rem;
+    }
+  }
+
+  // Badge
+  &__badge {
+    flex-shrink: 0;
+  }
+}
+
+// ========================================
+// Empty State
+// ========================================
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    height: 5rem;
+    background: linear-gradient(135deg, $primary-bg 0%, #dbeafe 100%);
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+
+    i {
+      font-size: 2.5rem;
+      color: $primary-color;
+    }
+  }
+
+  &__title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $text-dark;
+  }
+
+  &__text {
+    margin: 0;
+    font-size: 0.95rem;
+    color: $text-light;
+    max-width: 320px;
+  }
+}
+
+// ========================================
+// Responsive
+// ========================================
+@media (max-width: 768px) {
+  .page-header {
+    flex-wrap: wrap;
+    padding: 1.25rem 1.5rem;
+
+    &__icon {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.25rem;
+    }
+
+    &__title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .unread-badge {
+    margin-left: auto;
+  }
+
+  .card-toolbar {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .notification-item {
+    grid-template-columns: 4px 2.5rem 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.75rem;
+
+    &__indicator {
+      grid-row: span 2;
+    }
+
+    &__icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      font-size: 1rem;
+    }
+
+    &__badge {
+      grid-column: 2 / -1;
+      justify-self: start;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .notificaciones-page {
+    padding: 0;
+  }
+
+  .page-header {
+    border-radius: 0.75rem;
+    margin: 0 -0.5rem 1rem;
+  }
+
+  :host ::ng-deep .notificaciones-card {
+    border-radius: 0.75rem;
+    margin: 0 -0.5rem;
+  }
+
+  .notification-item {
+    padding: 0.875rem 1rem;
+
+    &__message {
+      font-size: 0.9rem;
+    }
+
+    &__meta {
+      gap: 0.75rem;
+    }
+  }
+
+  .empty-state {
+    padding: 3rem 1.5rem;
+
+    &__icon {
+      width: 4rem;
+      height: 4rem;
+
+      i {
+        font-size: 2rem;
+      }
+    }
+  }
+}

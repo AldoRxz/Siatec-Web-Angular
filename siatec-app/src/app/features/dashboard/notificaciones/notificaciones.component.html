@@ -1,0 +1,76 @@
+<div class="notificaciones-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="page-header__icon">
+      <i class="pi pi-bell"></i>
+    </div>
+    <div class="page-header__content">
+      <h1 class="page-header__title">Notificaciones</h1>
+      <p class="page-header__subtitle">Historial de alertas y mensajes del sistema</p>
+    </div>
+    <p-tag *ngIf="unreadCount() > 0" [value]="unreadCount() + ' sin leer'" severity="warn" class="unread-badge"></p-tag>
+  </header>
+
+  <!-- Main Card -->
+  <p-card class="notificaciones-card">
+    <!-- Toolbar -->
+    <div class="card-toolbar">
+      <div class="toolbar-info">
+        <i class="pi pi-inbox"></i>
+        <span>{{ notifications().length }} notificaciones</span>
+      </div>
+      <button 
+        pButton 
+        type="button" 
+        label="Marcar todas como leídas" 
+        icon="pi pi-check-circle" 
+        class="p-button-text p-button-sm"
+        (click)="marcarLeidas()" 
+        [disabled]="!unreadCount()">
+      </button>
+    </div>
+
+    <!-- Notifications List -->
+    <ng-container *ngIf="hasNotifications(); else emptyTpl">
+      <div class="notifications-list">
+        <article class="notification-item" *ngFor="let item of notifications(); trackBy: trackById" [ngClass]="'notification-item--' + severityFor(item.mensaje)">
+          <div class="notification-item__indicator"></div>
+          <div class="notification-item__icon">
+            <i class="pi" [ngClass]="iconFor(item.mensaje)"></i>
+          </div>
+          <div class="notification-item__content">
+            <p class="notification-item__message">{{ item.mensaje }}</p>
+            <div class="notification-item__meta">
+              <span class="notification-item__date">
+                <i class="pi pi-calendar"></i>
+                {{ item.fecha | date: 'dd MMM yyyy' }}
+              </span>
+              <span class="notification-item__time">
+                <i class="pi pi-clock"></i>
+                {{ item.fecha | date: 'HH:mm' }}
+              </span>
+            </div>
+          </div>
+          <div class="notification-item__badge">
+            <p-tag 
+              [value]="labelFor(item.mensaje)" 
+              [severity]="severityFor(item.mensaje)"
+              [rounded]="true">
+            </p-tag>
+          </div>
+        </article>
+      </div>
+    </ng-container>
+
+    <!-- Empty State -->
+    <ng-template #emptyTpl>
+      <div class="empty-state">
+        <div class="empty-state__icon">
+          <i class="pi pi-bell-slash"></i>
+        </div>
+        <h3 class="empty-state__title">Sin notificaciones</h3>
+        <p class="empty-state__text">No tienes notificaciones registradas aún. Las alertas del sistema aparecerán aquí.</p>
+      </div>
+    </ng-template>
+  </p-card>
+</div>

@@ -1,0 +1,20 @@
+<p-card class="metric-card" [ngClass]="'severity-' + severity">
+  <ng-template pTemplate="header">
+    <div class="card-header">
+      <span class="icon-wrapper">
+        <i [ngClass]="icon"></i>
+      </span>
+      <div>
+        <p class="label">{{ label }}</p>
+        <p-tag *ngIf="hint" [value]="hint" [severity]="tagSeverity"></p-tag>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="metric-body">
+    <p class="value">{{ value }}</p>
+    <p class="description">{{ description }}</p>
+  </div>
+
+  <button pButton type="button" [label]="actionLabel" icon="pi pi-arrow-right" class="w-full" (click)="emitAction()"></button>
+</p-card>

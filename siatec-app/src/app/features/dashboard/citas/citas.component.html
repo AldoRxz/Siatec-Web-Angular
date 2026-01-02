@@ -1,0 +1,402 @@
+<div class="citas-page">
+  <!-- Hero Header -->
+  <header class="hero-header">
+    <div class="hero-header__icon">
+      <i class="pi pi-calendar-clock"></i>
+    </div>
+    <div class="hero-header__content">
+      <h1 class="hero-header__title">Gestión de Citas</h1>
+      <p class="hero-header__subtitle">Agenda y administra tus citas con el SAT de manera sencilla</p>
+    </div>
+    <div class="hero-header__badges">
+      <div class="stat-pill stat-pill--primary">
+        <i class="pi pi-check-circle"></i>
+        <span>{{ citasAgendadas() }} Agendadas</span>
+      </div>
+      <div class="stat-pill stat-pill--success">
+        <i class="pi pi-verified"></i>
+        <span>{{ citasCompletadas() }} Completadas</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Citas Existentes -->
+  @if (citas().length > 0) {
+    <section class="glass-card">
+      <div class="card-header">
+        <div class="card-header__title">
+          <i class="pi pi-list"></i>
+          <h2>Citas Agendadas</h2>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <p-table 
+          [value]="citas()" 
+          [paginator]="true" 
+          [rows]="5"
+          styleClass="apple-table"
+          [rowHover]="true">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Oficina</th>
+              <th>Trámite</th>
+              <th>Estatus</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-cita>
+            <tr>
+              <td>
+                <div class="cell-with-icon">
+                  <i class="pi pi-calendar"></i>
+                  <span>{{ formatFecha(cita.fecha) }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="cell-with-icon">
+                  <i class="pi pi-clock"></i>
+                  <span>{{ cita.hora }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="cell-with-icon">
+                  <i class="pi pi-building"></i>
+                  <span>{{ cita.oficina }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="cell-with-icon">
+                  <i class="pi pi-file-edit"></i>
+                  <span>{{ cita.tramite }}</span>
+                </div>
+              </td>
+              <td>
+                <p-tag 
+                  [value]="cita.status" 
+                  [severity]="getStatusSeverity(cita.status)"
+                  [rounded]="true">
+                </p-tag>
+              </td>
+              <td class="text-center">
+                <div class="action-buttons">
+                  <button 
+                    pButton 
+                    pRipple
+                    type="button" 
+                    icon="pi pi-eye" 
+                    class="btn-action btn-action--view"
+                    pTooltip="Ver detalles"
+                    tooltipPosition="top"
+                    (click)="verDetalle(cita)">
+                  </button>
+                  @if (cita.status === 'AGENDADA') {
+                    <button 
+                      pButton 
+                      pRipple
+                      type="button" 
+                      icon="pi pi-times" 
+                      class="btn-action btn-action--cancel"
+                      pTooltip="Cancelar"
+                      tooltipPosition="top"
+                      (click)="cancelarCita(cita)">
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <i class="pi pi-calendar-plus"></i>
+                  <p>No tienes citas agendadas</p>
+                  <span>Agenda tu primera cita usando el formulario</span>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </section>
+  }
+
+  <!-- Formulario Nueva Cita -->
+  <section class="glass-card glass-card--accent">
+    <div class="card-header card-header--accent">
+      <div class="card-header__title">
+        <i class="pi pi-plus-circle"></i>
+        <h2>Agendar Nueva Cita</h2>
+      </div>
+    </div>
+
+    <form [formGroup]="citaForm" (ngSubmit)="agendarCita()" class="cita-form">
+      <!-- Sección: Datos del Contribuyente -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="pi pi-user"></i>
+          <span>Datos del contribuyente</span>
+        </h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <p-floatlabel variant="on">
+              <p-iconfield iconPosition="left">
+                <p-inputicon class="pi pi-user" />
+                <input 
+                  pInputText 
+                  id="nombre" 
+                  formControlName="nombre"
+                  autocomplete="off"
+                />
+              </p-iconfield>
+              <label for="nombre">Nombre completo</label>
+            </p-floatlabel>
+            @if (citaForm.get('nombre')?.invalid && citaForm.get('nombre')?.touched) {
+              <small class="error-hint">El nombre es requerido</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <p-floatlabel variant="on">
+              <p-iconfield iconPosition="left">
+                <p-inputicon class="pi pi-id-card" />
+                <input 
+                  pInputText 
+                  id="rfc" 
+                  formControlName="rfc"
+                  autocomplete="off"
+                  maxlength="13"
+                  style="text-transform: uppercase"
+                />
+              </p-iconfield>
+              <label for="rfc">RFC (12 o 13 caracteres)</label>
+            </p-floatlabel>
+            @if (tipoPersona()) {
+              <small class="success-hint">
+                <i class="pi pi-check-circle"></i>
+                {{ tipoPersona() === 'PF' ? 'Persona Física' : 'Persona Moral' }}
+              </small>
+            }
+            @if (citaForm.get('rfc')?.invalid && citaForm.get('rfc')?.touched && !tipoPersona()) {
+              <small class="error-hint">El RFC es requerido (12 o 13 caracteres)</small>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Ubicación -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="pi pi-map-marker"></i>
+          <span>Ubicación</span>
+        </h3>
+        
+        <div class="form-row form-row--3">
+          <div class="form-group">
+            <label class="select-label">Estado</label>
+            <p-select 
+              formControlName="estado"
+              [options]="estados()" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="Selecciona estado"
+              styleClass="apple-select">
+            </p-select>
+            @if (citaForm.get('estado')?.invalid && citaForm.get('estado')?.touched) {
+              <small class="error-hint">El estado es requerido</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="select-label">Municipio</label>
+            <p-select 
+              formControlName="municipio"
+              [options]="municipios()" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="Selecciona municipio"
+              styleClass="apple-select"
+              [disabled]="!citaForm.get('estado')?.value">
+            </p-select>
+          </div>
+
+          <div class="form-group">
+            <label class="select-label">Oficina</label>
+            <p-select 
+              formControlName="oficina"
+              [options]="oficinas()" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="Selecciona oficina"
+              styleClass="apple-select"
+              [disabled]="!citaForm.get('municipio')?.value">
+            </p-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Tipo de Trámite -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="pi pi-file-edit"></i>
+          <span>Tipo de trámite</span>
+        </h3>
+        
+        <div class="form-group">
+          <label class="select-label">Selecciona el trámite a realizar</label>
+          <p-select 
+            formControlName="tramite"
+            [options]="tramitesDisponibles()" 
+            optionLabel="label" 
+            optionValue="value"
+            placeholder="Selecciona primero el tipo de persona (RFC)"
+            styleClass="apple-select"
+            [disabled]="!tipoPersona()">
+            <ng-template pTemplate="item" let-item>
+              <div class="tramite-item">
+                <i class="pi {{ item.icon }}"></i>
+                <span>{{ item.label }}</span>
+              </div>
+            </ng-template>
+          </p-select>
+        </div>
+      </div>
+
+      <!-- Sección: Fecha y Hora -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="pi pi-calendar"></i>
+          <span>Fecha y hora</span>
+        </h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="select-label">Fecha de la cita</label>
+            <p-datepicker 
+              formControlName="fecha"
+              [minDate]="minDate"
+              dateFormat="dd/mm/yy"
+              [showIcon]="true"
+              styleClass="apple-datepicker"
+              placeholder="Selecciona una fecha">
+            </p-datepicker>
+          </div>
+
+          <div class="form-group">
+            <label class="select-label">Hora disponible</label>
+            <p-select 
+              formControlName="hora"
+              [options]="horasDisponibles()" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="Selecciona hora"
+              styleClass="apple-select"
+              [disabled]="!citaForm.get('fecha')?.value">
+            </p-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Documentos Requeridos -->
+      @if (documentosRequeridos().length > 0) {
+        <div class="form-section form-section--docs">
+          <h3 class="section-title section-title--docs">
+            <i class="pi pi-folder-open"></i>
+            <span>Documentos requeridos</span>
+          </h3>
+          
+          <div class="docs-grid">
+            @for (doc of documentosRequeridos(); track doc.codigo) {
+              <div class="doc-card" [class.doc-card--available]="doc.disponible">
+                <i class="pi" [ngClass]="doc.disponible ? 'pi-check-circle' : 'pi-file'"></i>
+                <span>{{ doc.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button 
+          pButton 
+          pRipple
+          type="submit" 
+          label="Agendar Cita"
+          icon="pi pi-calendar-plus"
+          class="submit-button"
+          [disabled]="citaForm.invalid || submitting()"
+          [loading]="submitting()">
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Dialog Detalle -->
+  <p-dialog 
+    [(visible)]="detalleVisible"
+    header="Detalle de Cita"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="detail-dialog"
+    [style]="{width: '480px'}">
+    
+    @if (citaDetalle()) {
+      <div class="detail-content">
+        <div class="detail-status">
+          <p-tag 
+            [value]="citaDetalle()!.status" 
+            [severity]="getStatusSeverity(citaDetalle()!.status)"
+            [rounded]="true"
+            styleClass="detail-tag">
+          </p-tag>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Nombre</label>
+            <span>{{ citaDetalle()!.nombre }}</span>
+          </div>
+          <div class="detail-item">
+            <label>RFC</label>
+            <span class="rfc-badge">{{ citaDetalle()!.rfc }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Fecha</label>
+            <span>{{ formatFecha(citaDetalle()!.fecha) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Hora</label>
+            <span>{{ citaDetalle()!.hora }}</span>
+          </div>
+          <div class="detail-item detail-item--full">
+            <label>Oficina</label>
+            <span>{{ citaDetalle()!.oficina }}</span>
+          </div>
+          <div class="detail-item detail-item--full">
+            <label>Trámite</label>
+            <span>{{ citaDetalle()!.tramite }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <ng-template pTemplate="footer">
+      <button 
+        pButton 
+        pRipple
+        type="button" 
+        label="Cerrar" 
+        class="p-button-text"
+        (click)="detalleVisible.set(false)">
+      </button>
+    </ng-template>
+  </p-dialog>
+</div>
+
+<p-toast position="top-right"></p-toast>

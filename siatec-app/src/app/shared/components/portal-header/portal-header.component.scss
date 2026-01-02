@@ -1,0 +1,282 @@
+// ============================================
+// Portal Header Component
+// ============================================
+// Clean, modern navigation bar
+
+// Design tokens
+$header-bg-start: #060c2e;
+$header-bg-end: #1d4ed8;
+$header-text: #fff;
+$header-shadow: 0 2px 12px rgba(6, 12, 46, 0.18);
+$header-height: 4rem;
+
+.portal-header {
+  background: linear-gradient(135deg, $header-bg-start 0%, $header-bg-end 100%);
+  border-radius: 0;
+  padding: 0 2rem 0 2rem;
+  height: $header-height;
+  min-height: $header-height;
+  color: $header-text;
+  box-shadow: $header-shadow;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border: none;
+  width: 100%;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 0.5rem;
+  }
+
+  .brand-mark {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .brand-tag {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .menu-toggle-button {
+    display: none; // Hidden on desktop, shown on mobile
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    transition: background 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .pi {
+      font-size: 0.85rem;
+    }
+  }
+
+  .menu-toggle-label {
+    white-space: nowrap;
+  }
+
+  .notification-button {
+    position: relative;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease;
+
+    .pi {
+      font-size: 1rem;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+  }
+
+  .user-menu-container {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .user-button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.4rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+  }
+}
+
+:host ::ng-deep .portal-header .notification-button .p-badge {
+  position: absolute;
+  right: -0.15rem;
+  top: -0.15rem;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  font-size: 0.65rem;
+}
+
+:host ::ng-deep .user-avatar.p-avatar {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+:host ::ng-deep .user-avatar .p-avatar-text {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+// TieredMenu styles are defined globally in styles.scss
+// to ensure proper specificity and avoid conflicts
+
+// Submenu arrow
+::ng-deep .portal-user-menu .p-submenu-icon {
+  color: #94a3b8 !important;
+  font-size: 0.875rem;
+}
+
+::ng-deep .portal-user-menu .p-menuitem-content:hover .p-submenu-icon {
+  color: #2563eb !important;
+}
+
+// ============================================
+// Responsive
+// ============================================
+
+// Show menu button when sidebar is hidden (mobile)
+@media (max-width: 960px) {
+  .portal-header .menu-toggle-button {
+    display: inline-flex !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .portal-header {
+    padding: 0.75rem 1rem;
+    height: auto;
+    min-height: auto;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+  }
+
+  .portal-header .header-left {
+    flex: 0 0 auto;
+    padding-left: 0;
+    gap: 0.65rem;
+  }
+
+  .portal-header .header-right {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .portal-header .brand-tag {
+    display: none;
+  }
+
+  .portal-header .brand-mark {
+    font-size: 1.15rem;
+  }
+
+  .portal-header .user-name {
+    display: none;
+  }
+
+  .portal-header .user-button {
+    padding: 0.3rem;
+    flex: 0 0 auto;
+  }
+
+  .portal-header .notification-button {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+  }
+
+  .portal-header .menu-toggle-button {
+    padding: 0.45rem;
+    min-width: 2.25rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    justify-content: center;
+
+    .pi {
+      font-size: 1rem;
+    }
+  }
+
+  .portal-header .menu-toggle-label {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-header {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .portal-header .brand-mark {
+    font-size: 1.1rem;
+  }
+
+  .portal-header .menu-toggle-label {
+    display: none;
+  }
+
+  .portal-header .menu-toggle-button {
+    padding: 0.4rem 0.55rem;
+    flex: 0 0 auto;
+  }
+
+  :host ::ng-deep .user-avatar.p-avatar {
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: 0.75rem;
+  }
+}

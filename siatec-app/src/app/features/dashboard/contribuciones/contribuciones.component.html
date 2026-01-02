@@ -1,0 +1,307 @@
+<p-toast></p-toast>
+
+<div class="operaciones-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="page-header__icon">
+      <i class="pi pi-calculator"></i>
+    </div>
+    <div class="page-header__content">
+      <h1 class="page-header__title">Contribuciones</h1>
+      <p class="page-header__subtitle">Gestiona tus determinaciones y pagos pendientes</p>
+    </div>
+    <p-tag *ngIf="hasOperaciones()" [value]="operaciones().length + ' registros'" severity="info" class="records-badge"></p-tag>
+  </header>
+
+  <!-- Main Card with Table -->
+  <p-card class="operaciones-card">
+    <!-- Card Toolbar -->
+    <div class="card-toolbar">
+      <div class="toolbar-info">
+        <i class="pi pi-list"></i>
+        <span>Determinaciones del contribuyente</span>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!loading(); else loadingTpl">
+      <ng-container *ngIf="hasOperaciones(); else emptyTpl">
+        <p-table 
+          [value]="operaciones()" 
+          responsiveLayout="stack" 
+          [breakpoint]="'960px'" 
+          [rowTrackBy]="trackByDeterminacion"
+          styleClass="operaciones-table"
+          [rowHover]="true">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Contribución</th>
+              <th>Periodo</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th class="text-center">Acción</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                <div class="contribucion-cell">
+                  <div class="contribucion-icon">
+                    <i class="pi pi-file-edit"></i>
+                  </div>
+                  <div class="contribucion-info">
+                    <strong>{{ row.contribucionInstance?.contribucionNombre || 'Contribución' }}</strong>
+                    <small>ID: {{ row.id }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="periodo-cell">
+                  <i class="pi pi-calendar"></i>
+                  <span>{{ row.periodo || 'Sin periodo' }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="monto-cell">
+                  <span class="monto-value">{{ formatCurrency(row.monto) }}</span>
+                </div>
+              </td>
+              <td>
+                <p-tag 
+                  [value]="row.estado || 'Pendiente'" 
+                  [severity]="estadoTag(row.estado)"
+                  [rounded]="true">
+                </p-tag>
+              </td>
+              <td class="text-center">
+                <button 
+                  *ngIf="!tieneMonto(row)"
+                  pButton 
+                  type="button" 
+                  label="Determinar" 
+                  icon="pi pi-calculator" 
+                  class="p-button-sm"
+                  (click)="abrirDeterminacion(row)">
+                </button>
+                <button 
+                  *ngIf="tieneMonto(row)"
+                  pButton 
+                  type="button" 
+                  label="Pagar" 
+                  icon="pi pi-credit-card" 
+                  class="p-button-sm p-button-success"
+                  (click)="iniciarPago(row)">
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-container>
+    </ng-container>
+  </p-card>
+
+  <!-- Resultado Card -->
+  <ng-container *ngIf="resultado() as res">
+    <p-card class="resultado-card">
+      <div class="resultado-header">
+        <div class="resultado-header__icon">
+          <i class="pi pi-check-circle"></i>
+        </div>
+        <div class="resultado-header__content">
+          <span class="resultado-header__label">Determinación generada</span>
+          <h2 class="resultado-header__monto">{{ formatCurrency(res.calculo.detalleCalculo?.montoFinal) }}</h2>
+        </div>
+      </div>
+      
+      <div class="resultado-grid">
+        <div class="resultado-item">
+          <div class="resultado-item__icon resultado-item__icon--blue">
+            <i class="pi pi-chart-line"></i>
+          </div>
+          <div class="resultado-item__content">
+            <span class="resultado-item__label">Base gravable</span>
+            <strong class="resultado-item__value">{{ formatCurrency(res.calculo.detalleCalculo?.baseGravable?.valor) }}</strong>
+          </div>
+        </div>
+        <div class="resultado-item">
+          <div class="resultado-item__icon resultado-item__icon--orange">
+            <i class="pi pi-minus-circle"></i>
+          </div>
+          <div class="resultado-item__content">
+            <span class="resultado-item__label">Deducciones</span>
+            <strong class="resultado-item__value">{{ formatCurrency(res.calculo.detalleCalculo?.totalDeducciones) }}</strong>
+          </div>
+        </div>
+        <div class="resultado-item">
+          <div class="resultado-item__icon resultado-item__icon--purple">
+            <i class="pi pi-calendar"></i>
+          </div>
+          <div class="resultado-item__content">
+            <span class="resultado-item__label">Periodo</span>
+            <strong class="resultado-item__value">{{ res.calculo.periodo }}</strong>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </ng-container>
+</div>
+
+<!-- Modal de Determinación -->
+<p-dialog
+  header="Calcular Determinación"
+  [visible]="modalVisible()"
+  modal
+  [style]="{ width: '32rem' }"
+  [breakpoints]="{ '640px': '95vw' }"
+  (onHide)="cerrarModal()"
+  styleClass="determinacion-dialog"
+>
+  <form class="dynamic-form" [formGroup]="form()" (ngSubmit)="enviarCalculo()">
+    <div class="form-fields" *ngIf="campos().length; else emptyFields">
+      <div class="form-field" *ngFor="let campo of campos()">
+        <label [for]="campo.name">{{ campo.label }}</label>
+        <ng-container [ngSwitch]="campo.type">
+          <input 
+            *ngSwitchCase="'number'" 
+            pInputText 
+            type="number" 
+            [id]="campo.name"
+            [formControlName]="campo.name" 
+            class="w-full" />
+          <p-select
+            *ngSwitchCase="'select'"
+            [options]="campo.options"
+            optionLabel="label"
+            optionValue="value"
+            [formControlName]="campo.name"
+            placeholder="Selecciona una opción"
+            class="w-full"
+          ></p-select>
+          <input 
+            *ngSwitchDefault 
+            pInputText 
+            type="text" 
+            [id]="campo.name"
+            [formControlName]="campo.name" 
+            class="w-full" />
+        </ng-container>
+        <small class="field-error" *ngIf="form().controls[campo.name]?.invalid && form().controls[campo.name]?.touched">
+          Este campo es requerido
+        </small>
+      </div>
+    </div>
+
+    <ng-template #emptyFields>
+      <div class="empty-fields">
+        <i class="pi pi-inbox"></i>
+        <p>No hay campos configurados para esta contribución.</p>
+      </div>
+    </ng-template>
+
+    <div class="dialog-footer">
+      <button pButton type="button" label="Cancelar" severity="secondary" outlined (click)="cerrarModal()"></button>
+      <button pButton type="submit" label="Calcular" icon="pi pi-calculator" [loading]="calculating()" [disabled]="!campos().length"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Modal de Confirmación de Pago -->
+<p-dialog
+  header="Confirmar Pago"
+  [visible]="modalPagoVisible()"
+  modal
+  [style]="{ width: '32rem' }"
+  [breakpoints]="{ '640px': '95vw' }"
+  (onHide)="cerrarModalPago()"
+  styleClass="pago-dialog"
+>
+  <ng-container *ngIf="determinacionParaPago() as det">
+    <div class="pago-info">
+      <div class="pago-icon">
+        <i class="pi pi-credit-card"></i>
+      </div>
+      <h3 class="pago-contribucion">{{ det.contribucionInstance?.contribucionNombre || 'Contribución' }}</h3>
+      <p class="pago-periodo">Periodo: {{ det.periodo || 'N/A' }}</p>
+      <div class="pago-monto">
+        <span class="pago-monto-label">Monto a pagar:</span>
+        <strong class="pago-monto-value">{{ formatCurrency(det.monto) }}</strong>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button pButton type="button" label="Cancelar" severity="secondary" outlined (click)="cerrarModalPago()"></button>
+      <button pButton type="button" label="Proceder al Pago" icon="pi pi-check" severity="success" [loading]="procesandoPago()" (click)="confirmarPago()"></button>
+    </div>
+  </ng-container>
+</p-dialog>
+
+<!-- Modal de Orden de Pago Generada -->
+<p-dialog
+  header="¡Orden de Pago Generada!"
+  [visible]="modalOrdenVisible()"
+  modal
+  [style]="{ width: '40rem' }"
+  [breakpoints]="{ '640px': '95vw' }"
+  (onHide)="cerrarModalOrden()"
+  styleClass="orden-dialog"
+>
+  <ng-container *ngIf="ordenGenerada() as orden">
+    <div class="orden-info">
+      <div class="orden-success-icon">
+        <i class="pi pi-check-circle"></i>
+      </div>
+      
+      <div class="orden-detalle">
+        <div class="orden-field">
+          <label>Número de Orden</label>
+          <strong class="orden-numero">{{ orden.numeroOrden }}</strong>
+        </div>
+        
+        <div class="orden-field">
+          <label>Línea de Captura</label>
+          <strong class="orden-linea">{{ orden.lineaCaptura }}</strong>
+        </div>
+        
+        <div class="orden-field">
+          <label>Monto Total</label>
+          <strong class="orden-monto">{{ formatCurrency(orden.montoTotal) }}</strong>
+        </div>
+      </div>
+      
+      <div class="orden-instrucciones">
+        <i class="pi pi-info-circle"></i>
+        <div>
+          <p><strong>Instrucciones de Pago:</strong></p>
+          <ul>
+            <li>Acude a la ventanilla de pagos</li>
+            <li>Proporciona tu línea de captura</li>
+            <li>Conserva tu comprobante de pago</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button pButton type="button" label="Imprimir" icon="pi pi-print" outlined (click)="imprimirOrden()"></button>
+      <button pButton type="button" label="Volver" icon="pi pi-arrow-left" (click)="cerrarModalOrden()"></button>
+    </div>
+  </ng-container>
+</p-dialog>
+
+<!-- Loading Template -->
+<ng-template #loadingTpl>
+  <div class="loading-state">
+    <p-progressSpinner strokeWidth="3" [style]="{ width: '3rem', height: '3rem' }"></p-progressSpinner>
+    <p>Cargando determinaciones…</p>
+  </div>
+</ng-template>
+
+<!-- Empty Template -->
+<ng-template #emptyTpl>
+  <div class="empty-state">
+    <div class="empty-state__icon">
+      <i class="pi pi-inbox"></i>
+    </div>
+    <h3 class="empty-state__title">Sin determinaciones</h3>
+    <p class="empty-state__text">No encontramos determinaciones registradas para tu cuenta.</p>
+  </div>
+</ng-template>
