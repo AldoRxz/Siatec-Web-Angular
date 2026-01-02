@@ -1,29 +1,34 @@
 import { Routes } from '@angular/router';
+import { authGuard, guestGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/dashboard',
+    redirectTo: '/login',
     pathMatch: 'full'
   },
   {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent),
-    title: 'Iniciar Sesión - SIATEC'
+    title: 'Iniciar Sesión - SIATEC',
+    canActivate: [guestGuard]
   },
   {
     path: 'register',
     loadComponent: () => import('./features/auth/register/register.component').then(m => m.RegisterComponent),
-    title: 'Registro - SIATEC'
+    title: 'Registro - SIATEC',
+    canActivate: [guestGuard]
   },
   {
     path: 'forgot',
     loadComponent: () => import('./features/auth/forgot/forgot.component').then(m => m.ForgotComponent),
-    title: 'Recuperar contraseña - SIATEC'
+    title: 'Recuperar contraseña - SIATEC',
+    canActivate: [guestGuard]
   },
   {
     path: 'dashboard',
     loadComponent: () => import('./features/dashboard/layout/dashboard-shell.component').then(m => m.DashboardShellComponent),
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -74,6 +79,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/dashboard'
+    redirectTo: '/login'
   }
 ];

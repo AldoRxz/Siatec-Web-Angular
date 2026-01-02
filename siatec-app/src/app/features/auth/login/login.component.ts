@@ -1,7 +1,7 @@
 import { Component, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { CardModule } from 'primeng/card';
@@ -39,6 +39,7 @@ import { NotificationDialogComponent, NotificationDialogData } from '../../../sh
 export class LoginComponent implements OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private dialogService = inject(DialogService);
 
@@ -69,6 +70,9 @@ export class LoginComponent implements OnDestroy {
       const response = await firstValueFrom(this.authService.login({ email, password }));
       
       if (response.token) {
+        // Obtener URL de retorno o usar dashboard por defecto
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        
         this.openStatusDialog(
           {
             title: 'Inicio de sesión exitoso',
@@ -78,7 +82,7 @@ export class LoginComponent implements OnDestroy {
             severity: 'success'
           },
           {
-            onClose: () => this.router.navigate(['/dashboard']),
+            onClose: () => this.router.navigateByUrl(returnUrl),
             autoCloseMs: 1800
           }
         );
