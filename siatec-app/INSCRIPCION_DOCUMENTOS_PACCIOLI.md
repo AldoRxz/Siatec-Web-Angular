@@ -7,8 +7,9 @@ Se agregó funcionalidad completa de carga de documentos y procesamiento automá
 ## ✨ Características Implementadas
 
 ### 1. Carga de Documentos por Sección
-- ✅ Cada paso del stepper tiene su propia sección de documentos
+- ✅ **Todos los 6 pasos** del stepper tienen sección de carga de documentos
 - ✅ Al cambiar de paso, se cargan automáticamente los documentos de esa sección
+- ✅ **Renderizado condicional**: Solo muestra la sección si hay documentos o está cargando
 - ✅ Indicador visual de "Cargando documentos..."
 
 ### 2. Procesamiento con Paccioli
@@ -23,6 +24,13 @@ Se agregó funcionalidad completa de carga de documentos y procesamiento automá
 - ✅ Actualización automática de FormControls
 - ✅ Notificación de éxito con PrimeNG Toast
 
+### 4. UI Inteligente
+- ✅ **No muestra la sección de carga si no hay documentos**
+- ✅ Muestra la sección solo cuando:
+  - Hay documentos en el backend (una vez implementado el endpoint)
+  - Se está cargando (spinner)
+  - Se está procesando un archivo (spinner)
+
 ## 🗂️ Archivos Modificados
 
 ### TypeScript (`inscripcion.component.ts`)
@@ -35,7 +43,7 @@ readonly documentosPorSeccion = signal<{[seccion: string]: any[]}>({});
 readonly cargandoDocumentos = signal(false);
 readonly subiendoArchivo = signal(false);
 
-// Mapeo de pasos a secciones
+// Mapeo de pasos a secciones (6 pasos)
 private readonly seccionesDocumentos: {[step: number]: string} = {
   0: 'Identificacion',
   1: 'DomicilioFiscal',
@@ -52,6 +60,7 @@ async procesarArchivoConPaccioli(file: File, stepIndex: number)
 private getCurrentFormGroup(stepIndex: number)
 private rellenarCamposDesdeRespuesta(response: any, stepIndex: number)
 async onFileSelected(event: Event, stepIndex: number)
+mostrarSeccionDocumentos(stepIndex: number): boolean  // ⭐ NUEVO
 ```
 
 ### HTML (`inscripcion.component.html`)
@@ -59,27 +68,14 @@ async onFileSelected(event: Event, stepIndex: number)
 <!-- Evento de cambio de paso -->
 <p-stepper [value]="1" [linear]="true" (onActiveStepChange)="onStepChange($event)">
 
-<!-- Sección de carga en cada panel -->
-<div class="document-upload-section">
-  <div class="upload-header">
-    <i class="pi pi-file-pdf"></i>
-    <h3>Documentos de Identificación</h3>
+<!-- Renderizado condicional en TODOS los pasos -->
+@if (mostrarSeccionDocumentos(0) || subiendoArchivo()) {
+  <div class="document-upload-section">
+    <!-- Upload UI -->
   </div>
-  
-  <div class="upload-controls">
-    <label class="upload-button">
-      <i class="pi pi-upload"></i>
-      <span>Subir Documento</span>
-      <input type="file" (change)="onFileSelected($event, 0)" />
-    </label>
-    @if (subiendoArchivo()) {
-      <span class="upload-status">
-        <i class="pi pi-spinner pi-spin"></i>
-        Procesando documento...
-      </span>
-    }
-  </div>
-</div>
+}
+
+<!-- Se repite en los 6 pasos con índices 0-5 -->
 ```
 
 ### SCSS (`inscripcion.component.scss`)
@@ -201,14 +197,18 @@ console.log(this.paccioliService)
   ```typescript
   // TODO en cargarDocumentosSeccion()
   // const documentos = await this.contribuyentesService.getDocumentosPorSeccion(seccion);
+  // if (documentos && documentos.length > 0) {
+  //   this.documentosPorSeccion.update(docs => ({ ...docs, [seccion]: documentos }));
+  // }
   ```
 
 ### Frontend
+- [x] ~~Agregar componentes de carga en todos los pasos (completado)~~
+- [x] ~~Renderizado condicional (solo mostrar si hay documentos)~~
 - [ ] Mostrar lista de documentos ya subidos
 - [ ] Permitir eliminar documentos
 - [ ] Agregar previsualización de documentos
 - [ ] Validar tamaño máximo de archivo (actualmente ilimitado)
-- [ ] Agregar más secciones de carga (steps 2-5)
 
 ### Paccioli
 - [ ] Mejorar mapeo de campos para más tipos de documentos
@@ -263,8 +263,16 @@ async getDocumentosPorSeccion(seccion: string): Promise<any[]>
 - [x] PaccioliService importado correctamente
 - [x] Eventos del stepper conectados
 - [x] Mapeo de campos configurado
+- [x] Componentes de carga en todos los 6 pasos
+- [x] Renderizado condicional implementado
 - [ ] Backend de documentos implementado
 - [ ] Paccioli API disponible en producción
+
+### Commits Realizados
+```bash
+dbe1df9 - Add document upload and Paccioli integration to inscription stepper
+5e0dae5 - Add document upload to all stepper steps with conditional rendering
+```
 
 ## 📖 Referencias
 
