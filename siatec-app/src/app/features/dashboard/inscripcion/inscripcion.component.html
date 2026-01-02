@@ -133,7 +133,7 @@
 
       <!-- Stepper para Persona Física -->
       @if (mostrarFormulario() && tipoPersona() === 'fisica') {
-      <p-stepper [value]="1" [linear]="true">
+      <p-stepper [value]="1" [linear]="true" (onActiveStepChange)="onStepChange($event)">
         <p-step-list>
           <p-step [value]="1">Identificación</p-step>
           <p-step [value]="2">Domicilio Fiscal</p-step>
@@ -148,6 +148,41 @@
           <p-step-panel [value]="1">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content" formGroupName="identificacion">
+                
+                <!-- Componente de carga de documentos -->
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos de Identificación</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 0)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
                 <h3 class="step-title">
                   <i class="pi pi-user"></i> Datos de la Persona Física
                 </h3>
@@ -227,6 +262,42 @@
           <p-step-panel [value]="2">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content" formGroupName="domicilio">
+                
+                <!-- Componente de carga de documentos -->
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Comprobante de Domicilio Fiscal</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 1)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                
                     <h3 class="step-title">
                       <i class="pi pi-map-marker"></i>
                       Dirección Fiscal

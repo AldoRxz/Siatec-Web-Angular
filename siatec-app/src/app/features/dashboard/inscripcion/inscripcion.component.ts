@@ -17,6 +17,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { StepperModule } from 'primeng/stepper';
 import { finalize } from 'rxjs/operators';
 import { AuthService, ContribuyentesService } from '../../../core/services';
+import { PaccioliService } from '../../../core/services/paccioli.service';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
 
 interface InscripcionDraft {
@@ -69,6 +70,7 @@ export class InscripcionComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly contribuyentesService = inject(ContribuyentesService);
+  private readonly paccioliService = inject(PaccioliService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly messageService = inject(MessageService);
   private readonly notificationsService = inject(DashboardNotificationsService);
@@ -79,6 +81,21 @@ export class InscripcionComponent implements OnInit {
   readonly loading = signal(false);
   readonly currentStep = signal(0);
   readonly steps = ['Datos generales', 'Ubicación y contacto', 'Régimen e impuestos', 'Representante', 'Pagos', 'Resumen'];
+  
+  // Signals para documentos por sección
+  readonly documentosPorSeccion = signal<{[seccion: string]: any[]}>({});
+  readonly cargandoDocumentos = signal(false);
+  readonly subiendoArchivo = signal(false);
+  
+  // Map de secciones del stepper a nombres de documentos
+  private readonly seccionesDocumentos: {[step: number]: string} = {
+    0: 'Identificacion',
+    1: 'DomicilioFiscal',
+    2: 'RegimenYActividades',
+    3: 'Impuestos',
+    4: 'RepresentanteLegal',
+    5: 'PersonaEfectuaraPagos'
+  };
 
   // RFC validation signals
   readonly rfcValue = signal('');
@@ -155,6 +172,170 @@ export class InscripcionComponent implements OnInit {
     this.loadDraft();
     this.loadProcessingState();
     this.prefillFromUser();
+  }
+
+  /**
+   * Carga los documentos de una sección específica
+   * Se llama al cambiar de paso en el stepper
+   */
+  async cargarDocumentosSeccion(stepIndex: number): Promise<void> {
+    const seccion = this.seccionesDocumentos[stepIndex];
+    if (!seccion) return;
+
+    this.cargandoDocumentos.set(true);
+    
+    try {
+      // TODO: Implementar endpoint GET para obtener documentos por sección
+      // const documentos = await this.contribuyentesService.getDocumentosPorSeccion(seccion);
+      // this.documentosPorSeccion.update(docs => ({ ...docs, [seccion]: documentos }));
+      
+      console.log(`Cargando documentos de sección: ${seccion}`);
+      
+      // Por ahora, simulamos con un array vacío
+      this.documentosPorSeccion.update(docs => ({ ...docs, [seccion]: [] }));
+    } catch (error: any) {
+      console.error('Error al cargar documentos:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudieron cargar los documentos de esta sección'
+      });
+    } finally {
+      this.cargandoDocumentos.set(false);
+    }
+  }
+
+  /**
+   * Maneja el cambio de paso en el stepper
+   * Carga automáticamente los documentos de la nueva sección
+   */
+  async onStepChange(event: any): Promise<void> {
+    const newStep = event.index;
+    this.currentStep.set(newStep);
+    await this.cargarDocumentosSeccion(newStep);
+  }
+
+  /**
+   * Procesa un archivo subido usando Paccioli
+   * Extrae información y rellena los campos del formulario
+   */
+  async procesarArchivoConPaccioli(file: File, stepIndex: number): Promise<void> {
+    if (!file) return;
+
+    this.subiendoArchivo.set(true);
+    
+    try {
+      // Obtener el objeto del formulario actual para pasarlo como instancia
+      const currentFormValue = this.getCurrentFormGroup(stepIndex)?.value || {};
+      
+      // Procesar con Paccioli
+      const response = await this.paccioliService.procesarArchivos([file], currentFormValue);
+      
+      console.log('Respuesta de Paccioli:', response);
+      
+      // Rellenar campos con la respuesta
+      if (response?.data || response?.extractedFields) {
+        this.rellenarCamposDesdeRespuesta(response, stepIndex);
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Documento procesado',
+          detail: 'Los campos se han rellenado automáticamente con la información extraída'
+        });
+      }
+    } catch (error: any) {
+      console.error('Error al procesar archivo con Paccioli:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error al procesar documento',
+        detail: error.message || 'No se pudo procesar el documento'
+      });
+    } finally {
+      this.subiendoArchivo.set(false);
+    }
+  }
+
+  /**
+   * Obtiene el FormGroup correspondiente al paso actual
+   */
+  private getCurrentFormGroup(stepIndex: number): AbstractControl | null {
+    switch (stepIndex) {
+      case 0: return this.form.controls.identificacion;
+      case 1: return this.form.controls.domicilio;
+      case 2: return null; // Régimen y actividades (tags)
+      case 3: return null; // Impuestos (checkboxes)
+      case 4: return this.form.controls.representante;
+      case 5: return this.form.controls.pagos;
+      default: return null;
+    }
+  }
+
+  /**
+   * Rellena los campos del formulario con la respuesta de Paccioli
+   */
+  private rellenarCamposDesdeRespuesta(response: any, stepIndex: number): void {
+    const data = response?.data || response?.extractedFields || {};
+    const formGroup = this.getCurrentFormGroup(stepIndex);
+    
+    if (!formGroup) return;
+
+    // Mapeo de campos de Paccioli a campos del formulario
+    const fieldMapping: {[key: string]: string} = {
+      // Identificación
+      'nombre': 'nombres',
+      'nombres': 'nombres',
+      'apellido_paterno': 'primerApellido',
+      'primerApellido': 'primerApellido',
+      'apellido_materno': 'segundoApellido',
+      'segundoApellido': 'segundoApellido',
+      'razon_social': 'razonSocial',
+      'razonSocial': 'razonSocial',
+      'rfc': 'rfc',
+      'curp': 'curp',
+      'email': 'email',
+      'correo': 'email',
+      'telefono': 'telefono',
+      
+      // Domicilio
+      'calle': 'calle',
+      'numero_exterior': 'numeroExterior',
+      'numeroExterior': 'numeroExterior',
+      'numero_interior': 'numeroInterior',
+      'numeroInterior': 'numeroInterior',
+      'colonia': 'colonia',
+      'codigo_postal': 'cp',
+      'cp': 'cp',
+      'municipio': 'municipio',
+      'estado': 'estado',
+      'entre_calles': 'entreCalles',
+      'referencias': 'referencias'
+    };
+
+    // Rellenar campos encontrados
+    Object.keys(data).forEach(key => {
+      const mappedField = fieldMapping[key];
+      if (mappedField && formGroup.get(mappedField)) {
+        const value = data[key];
+        if (value !== null && value !== undefined && value !== '') {
+          formGroup.get(mappedField)?.setValue(value);
+          console.log(`Campo ${mappedField} rellenado con: ${value}`);
+        }
+      }
+    });
+  }
+
+  /**
+   * Maneja el evento de selección de archivo
+   */
+  async onFileSelected(event: Event, stepIndex: number): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    
+    if (file) {
+      await this.procesarArchivoConPaccioli(file, stepIndex);
+      // Limpiar el input para permitir subir el mismo archivo de nuevo
+      input.value = '';
+    }
   }
 
   /**
