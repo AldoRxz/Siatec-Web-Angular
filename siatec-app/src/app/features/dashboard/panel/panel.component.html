@@ -43,7 +43,6 @@
           <section class="panel-block">
             <header>
               <h3><i class="pi pi-clock"></i> Actividad reciente</h3>
-              <span class="hint">Ejemplos sincronizados del panel original</span>
             </header>
             <div class="activity-list">
               <article *ngFor="let item of activity" class="activity-item">
@@ -61,7 +60,6 @@
           <section class="panel-block">
             <header>
               <h3><i class="pi pi-hourglass"></i> Solicitud de inscripción</h3>
-              <span class="hint">LocalStorage: inscripcionProcesando</span>
             </header>
             <ng-container *ngIf="inscripcionState(); else inscripcionCta">
               <div class="inscripcion-state">
@@ -95,7 +93,6 @@
         <section class="panel-block quick">
           <header>
             <h3><i class="pi pi-bolt"></i> Acciones rápidas</h3>
-            <span class="hint">Los mismos atajos del dashboard legacy</span>
           </header>
           <div class="quick-grid">
             <button type="button" *ngFor="let action of quickActions" class="quick-action" (click)="navigate(action.route)">
