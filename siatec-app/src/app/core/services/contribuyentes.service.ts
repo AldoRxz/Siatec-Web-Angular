@@ -6,7 +6,8 @@ import {
   ArchivoContribuyente, 
   PaginatedResponse, 
   DocumentType,
-  ContribuyenteDocumentType 
+  ContribuyenteDocumentType,
+  ContribuyenteDashboard
 } from '../models/contribuyente.model';
 
 /**
@@ -38,6 +39,14 @@ export class ContribuyentesService extends BaseApiService {
   getContribuyente(id: number): Observable<Contribuyente> {
     const url = this.buildUrl(this.baseUrl, 'Contribuyentes', id);
     return this.get<Contribuyente>(url);
+  }
+
+  /**
+   * Obtiene el dashboard con estadísticas del contribuyente
+   */
+  getDashboard(id: number): Observable<ContribuyenteDashboard> {
+    const url = this.buildUrl(this.baseUrl, 'Contribuyentes', 'dashboard', id);
+    return this.get<ContribuyenteDashboard>(url);
   }
 
   /**

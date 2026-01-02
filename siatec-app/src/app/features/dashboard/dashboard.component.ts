@@ -375,17 +375,46 @@ export class DashboardComponent {
       return;
     }
 
+    // Usar el endpoint de dashboard para obtener todas las estadísticas
     this.contribuyentesService
-      .getArchivosContribuyente(contribuyenteId, 1, 1)
+      .getDashboard(contribuyenteId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {
-          const total = response?.totalItems ?? response?.items?.length ?? 0;
-          this.documentSummary.set({ total, lastUpdated: new Date() });
-          this.metricCards[3].value = `${total} documentos`;
+        next: (dashboard) => {
+          // Actualizar métrica de Cuenta (estado activo/inactivo)
+          this.metricCards[0].value = dashboard.activo ? 'Usuario activo' : 'Usuario inactivo';
+          this.metricCards[0].severity = dashboard.activo ? 'info' : 'warn';
+          
+          // Actualizar métrica de Citas
+          const citasText = dashboard.cantidadCitas === 1 ? 'próxima' : 'próximas';
+          this.metricCards[1].value = `${dashboard.cantidadCitas} ${citasText}`;
+          this.metricCards[1].hint = dashboard.cantidadCitas > 0 ? 'Agenda confirmada' : 'Agenda abierta';
+          
+          // Actualizar métrica de Determinaciones
+          const determinacionesText = dashboard.cantidadDeterminaciones === 1 ? 'pendiente' : 'pendientes';
+          this.metricCards[2].value = `${dashboard.cantidadDeterminaciones} ${determinacionesText}`;
+          this.metricCards[2].severity = dashboard.cantidadDeterminaciones > 0 ? 'warn' : 'success';
+          
+          // Actualizar métrica de Archivos
+          const archivosText = dashboard.cantidadArchivos === 1 ? 'documento' : 'documentos';
+          this.metricCards[3].value = `${dashboard.cantidadArchivos} ${archivosText}`;
+          
+          // Actualizar resumen de documentos
+          this.documentSummary.set({ 
+            total: dashboard.cantidadArchivos, 
+            lastUpdated: new Date() 
+          });
+          
+          // Si hay solicitud de inscripción, actualizar estado
+          if (dashboard.ultimaSolicitud) {
+            this.updateInscriptionStateFromDashboard(dashboard.ultimaSolicitud);
+          }
+          
           this.setDashboardLoading(false);
         },
-        error: () => {
+        error: (error) => {
+          console.error('[Dashboard] Error al cargar dashboard:', error);
+          // Mantener valores por defecto en caso de error
           this.documentSummary.set({ total: 0 });
           this.metricCards[3].value = '0 documentos';
           this.setDashboardLoading(false);
@@ -395,5 +424,27 @@ export class DashboardComponent {
 
   private setDashboardLoading(state: boolean): void {
     this.isDashboardLoading.set(state);
+  }
+
+  /**
+   * Actualiza el estado de inscripción desde el dashboard del backend
+   */
+  private updateInscriptionStateFromDashboard(solicitud: any): void {
+    const newState: InscriptionState = {
+      id: solicitud.id,
+      status: solicitud.estado,
+      timestamp: solicitud.fechaSolicitud
+    };
+    
+    // Actualizar localStorage si hay cambios
+    try {
+      const currentState = localStorage.getItem('inscripcionProcesando');
+      if (!currentState || JSON.stringify(newState) !== currentState) {
+        localStorage.setItem('inscripcionProcesando', JSON.stringify(newState));
+        this.inscriptionState = newState;
+      }
+    } catch (error) {
+      console.warn('[Dashboard] No se pudo guardar estado de inscripción:', error);
+    }
   }
 }
