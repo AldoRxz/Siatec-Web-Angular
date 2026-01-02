@@ -324,7 +324,7 @@ export class ArchivosComponent implements OnInit {
   private loadCatalog(initial = false): void {
     const contribuyenteId = this.authService.getContribuyenteId();
     if (!contribuyenteId) {
-      this.errorMessage.set('No se pudo identificar al contribuyente activo.');
+      // No mostrar error, simplemente no cargar nada hasta que haya sesión
       return;
     }
     this.loading.set(true);
