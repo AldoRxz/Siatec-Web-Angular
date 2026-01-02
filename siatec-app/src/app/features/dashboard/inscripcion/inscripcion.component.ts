@@ -187,12 +187,13 @@ export class InscripcionComponent implements OnInit {
     try {
       // TODO: Implementar endpoint GET para obtener documentos por sección
       // const documentos = await this.contribuyentesService.getDocumentosPorSeccion(seccion);
-      // this.documentosPorSeccion.update(docs => ({ ...docs, [seccion]: documentos }));
+      // if (documentos && documentos.length > 0) {
+      //   this.documentosPorSeccion.update(docs => ({ ...docs, [seccion]: documentos }));
+      // }
       
       console.log(`Cargando documentos de sección: ${seccion}`);
       
-      // Por ahora, simulamos con un array vacío
-      this.documentosPorSeccion.update(docs => ({ ...docs, [seccion]: [] }));
+      // Por ahora, no almacenamos nada si no hay documentos (no mostrar sección)
     } catch (error: any) {
       console.error('Error al cargar documentos:', error);
       this.messageService.add({
@@ -336,6 +337,22 @@ export class InscripcionComponent implements OnInit {
       // Limpiar el input para permitir subir el mismo archivo de nuevo
       input.value = '';
     }
+  }
+
+  /**
+   * Verifica si debe mostrar la sección de documentos
+   * Solo muestra si está cargando o si hay documentos
+   */
+  mostrarSeccionDocumentos(stepIndex: number): boolean {
+    const seccion = this.seccionesDocumentos[stepIndex];
+    if (!seccion) return false;
+    
+    // Mostrar si está cargando
+    if (this.cargandoDocumentos()) return true;
+    
+    // Mostrar si hay documentos
+    const documentos = this.documentosPorSeccion()[seccion];
+    return documentos && documentos.length > 0;
   }
 
   /**

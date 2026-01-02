@@ -150,6 +150,7 @@
               <div class="step-content" formGroupName="identificacion">
                 
                 <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(0) || subiendoArchivo()) {
                 <div class="document-upload-section">
                   <div class="upload-header">
                     <i class="pi pi-file-pdf"></i>
@@ -183,6 +184,7 @@
                     </div>
                   }
                 </div>
+                }
                 <h3 class="step-title">
                   <i class="pi pi-user"></i> Datos de la Persona Física
                 </h3>
@@ -264,6 +266,7 @@
               <div class="step-content" formGroupName="domicilio">
                 
                 <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(1) || subiendoArchivo()) {
                 <div class="document-upload-section">
                   <div class="upload-header">
                     <i class="pi pi-file-pdf"></i>
@@ -297,6 +300,7 @@
                     </div>
                   }
                 </div>
+                }
                 
                     <h3 class="step-title">
                       <i class="pi pi-map-marker"></i>
@@ -397,6 +401,44 @@
           <p-step-panel [value]="3">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(2) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos de Régimen y Actividades</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 2)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                 <h3 class="step-title">
                       <i class="pi pi-briefcase"></i>
                       Régimen Fiscal y Actividades Económicas
@@ -465,6 +507,44 @@
           <p-step-panel [value]="4">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(3) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos de Impuestos</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 3)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                 <h3 class="step-title">
                       <i class="pi pi-dollar"></i>
                       Selecciona los Impuestos
@@ -498,6 +578,44 @@
           <p-step-panel [value]="5">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content" formGroupName="representante">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(4) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos del Representante Legal</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 4)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                 <h3 class="step-title">
                       <i class="pi pi-user-edit"></i>
                       Datos del Representante Legal (opcional)
@@ -561,6 +679,44 @@
           <p-step-panel [value]="6">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content" formGroupName="pagos">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(5) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos de la Persona que Efectuará Pagos</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 5)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                 <h3 class="step-title">
                   <i class="pi pi-wallet"></i>
                   Persona que efectuará los pagos (opcional)
