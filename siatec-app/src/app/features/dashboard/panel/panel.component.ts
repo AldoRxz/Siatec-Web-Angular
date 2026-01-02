@@ -146,7 +146,42 @@ export class PanelComponent implements OnInit {
     if (!user) {
       return 'Usuario Contribuyente';
     }
-    return [user.nombre, user.apellidos].filter(Boolean).join(' ').trim() || user.email || 'Usuario Contribuyente';
+
+    // Intentar diferentes fuentes de nombre completo
+    const fullName = user.nombreCompleto || user.fullName;
+    if (fullName?.trim()) {
+      return fullName.trim();
+    }
+
+    // Intentar construir desde identityInfo
+    const identityInfo = user.identityInfo as any;
+    if (identityInfo) {
+      const nombres = identityInfo.nombres || identityInfo.Nombres || '';
+      const primerApellido = identityInfo.primerApellido || identityInfo.PrimerApellido || '';
+      const segundoApellido = identityInfo.segundoApellido || identityInfo.SegundoApellido || '';
+      
+      const constructed = [nombres, primerApellido, segundoApellido]
+        .filter(Boolean)
+        .join(' ')
+        .trim();
+      
+      if (constructed) {
+        return constructed;
+      }
+    }
+
+    // Intentar construir desde propiedades individuales
+    const fromProps = [user.nombre, user.apellidos]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+    
+    if (fromProps) {
+      return fromProps;
+    }
+
+    // Usar email como último recurso
+    return user.email?.split('@')[0] || 'Usuario Contribuyente';
   }
 
   navigate(route: string): void {
