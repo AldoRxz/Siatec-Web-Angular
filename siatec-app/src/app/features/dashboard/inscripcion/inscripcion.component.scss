@@ -156,7 +156,7 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
   }
 
   .p-card-body {
-    padding: 0;
+    padding: 0 2.5rem 2.5rem 2.5rem;
   }
 
   .p-card-content {
@@ -1002,15 +1002,26 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    padding: 2rem 3rem 0 3rem !important;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible !important;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   // Step header container
   .p-stepper-header {
-    padding: 1rem !important;
+    padding: 1rem 0.5rem !important;
     background: transparent !important;
     border: none !important;
     margin-bottom: 0.5rem;
     position: relative;
+    flex: 1 1 30% !important;
+    min-width: 180px !important;
 
     &::before {
       content: '';
@@ -1059,7 +1070,9 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 
   // Stepper panels nav
   .p-stepper-panels {
-    padding: 0 !important;
+    padding: 0 3rem !important;
+    width: 100%;
+    box-sizing: border-box;
     background: transparent !important;
   }
 
@@ -1109,10 +1122,48 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
   // Step list container
   .p-stepper-nav {
     display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    padding: 1rem 0 !important;
+    flex-wrap: wrap !important;
+    overflow: hidden !important;
+    padding: 1rem 3rem !important;
+    width: 100%;
+    box-sizing: border-box;
     gap: 0.5rem !important;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 0 0 2.5rem;
+    }
+  }
+
+  // Ensure nav container doesn't force scroll
+  .p-stepper-nav-container {
+    overflow: hidden !important;
+    scrollbar-width: none;
+
+    .p-stepper-nav-content {
+      overflow: hidden !important;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // Hide scroll buttons if rendered
+  .p-stepper-nav-prev,
+  .p-stepper-nav-next {
+    display: none !important;
   }
 
   // Separator between steps
