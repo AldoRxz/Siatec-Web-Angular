@@ -99,9 +99,7 @@ export class AuthService {
   requestPasswordRecovery(payload: PasswordRecoveryRequest): Observable<PasswordRecoveryResponse> {
     const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/password/recovery`;
     const body = {
-      email: payload.email,
-      identifier: payload.identifier,
-      channel: payload.contactPreference || 'email'
+      email: payload.email
     };
 
     return this.http.post<PasswordRecoveryResponse>(url, body).pipe(

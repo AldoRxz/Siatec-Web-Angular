@@ -70,6 +70,8 @@ export class RegisterComponent implements OnDestroy {
   successMessage = '';
   passwordStrength = 0;
   passwordStrengthLabel = '';
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor() {
     this.registerForm = this.fb.group({
@@ -157,8 +159,54 @@ export class RegisterComponent implements OnDestroy {
         }
       );
     } catch (error: any) {
-      this.errorMessage = error?.message || 'Error al registrar usuario. Por favor intenta nuevamente.';
-      console.error('Register error:', error);
+      console.error('Register error - Full object:', error);
+      console.error('Register error - error.error:', error?.error);
+      console.error('Register error - error.error.errors:', error?.error?.errors);
+      
+      // Extraer mensaje de error del backend
+      let finalMessage = 'Error al registrar usuario. Por favor intenta nuevamente.';
+      
+      if (error?.error?.errors && Array.isArray(error.error.errors)) {
+        const errors = error.error.errors;
+        console.log('Errors array:', errors);
+        
+        // Priorizar el error MÁS ESPECÍFICO (el último, o el que tenga más detalles)
+        // Buscar errores específicos de validación (contraseña, email, etc.)
+        const specificErrors = errors.filter((err: string) => 
+          err && err.length > 0 && 
+          !err.toLowerCase().includes('temporal') &&
+          !err.toLowerCase().includes('consistencia') &&
+          !err.toLowerCase().includes('revirtió')
+        );
+        
+        console.log('Specific errors filtered:', specificErrors);
+        
+        if (specificErrors.length > 0) {
+          // Tomar el último error específico (más detallado)
+          finalMessage = specificErrors[specificErrors.length - 1];
+        } else if (errors.length > 0) {
+          // Si no hay específicos, tomar el último disponible
+          finalMessage = errors[errors.length - 1];
+        }
+      } else if (error?.error?.message) {
+        finalMessage = error.error.message;
+      } else if (error?.message) {
+        finalMessage = error.message;
+      }
+      
+      console.log('Final message to display:', finalMessage);
+      this.errorMessage = finalMessage;
+      
+      // Mostrar modal de error
+      this.openStatusDialog(
+        {
+          title: 'Error en el registro',
+          subtitle: 'Portal SIATEC',
+          message: finalMessage,
+          hint: 'Por favor verifica los datos e intenta nuevamente.',
+          severity: 'danger'
+        }
+      );
     } finally {
       this.loading = false;
     }
@@ -185,11 +233,12 @@ export class RegisterComponent implements OnDestroy {
     this.dialogRef?.close();
 
     const ref = this.dialogService.open(NotificationDialogComponent, {
-      header: payload.title || 'Notificación',
+      showHeader: false,
       width: '440px',
       styleClass: 'notification-dialog-shell',
       data: payload,
-      modal: true
+      modal: true,
+      closable: false
     })!;
 
     this.dialogRef = ref;
@@ -201,6 +250,14 @@ export class RegisterComponent implements OnDestroy {
     if (options?.autoCloseMs) {
       setTimeout(() => ref.close(), options.autoCloseMs);
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   ngOnDestroy(): void {

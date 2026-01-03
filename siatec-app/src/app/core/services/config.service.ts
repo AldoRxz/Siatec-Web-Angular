@@ -9,7 +9,7 @@ import { SiatecConfig } from '../models/siatec-config.model';
 })
 export class ConfigService {
   private readonly defaultConfig = {
-    authApiBaseUrl: 'http://localhost:5002/api/auth',
+    authApiBaseUrl: 'http://localhost:5010/api/auth',
     contribuyentesApiBaseUrl: 'http://localhost:5001/api/contribuyentes',
     contribucionesApiBaseUrl: 'http://localhost:5000/api/contribuciones',
     tesoreriaApiBaseUrl: 'http://localhost:5003/api/tesoreria',
