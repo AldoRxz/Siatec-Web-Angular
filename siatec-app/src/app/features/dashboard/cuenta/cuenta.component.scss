@@ -290,9 +290,11 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 
   // Float label animation states
   p-floatlabel:focus-within > label,
+  p-floatlabel.has-value > label,
   p-floatlabel > input:not(:placeholder-shown) + label,
   p-floatlabel:has(input:not(:placeholder-shown)) > label,
-  p-floatlabel:has(input:-webkit-autofill) > label {
+  p-floatlabel:has(input:-webkit-autofill) > label,
+  p-floatlabel:has(input[value]:not([value=""])) > label {
     top: -0.55rem;
     font-size: 0.8rem;
     color: #1d4ed8;
@@ -303,9 +305,11 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
   }
 
   p-floatlabel.with-icon:focus-within > label,
+  p-floatlabel.with-icon.has-value > label,
   p-floatlabel.with-icon > input:not(:placeholder-shown) + label,
   p-floatlabel.with-icon:has(input:not(:placeholder-shown)) > label,
-  p-floatlabel.with-icon:has(input:-webkit-autofill) > label {
+  p-floatlabel.with-icon:has(input:-webkit-autofill) > label,
+  p-floatlabel.with-icon:has(input[value]:not([value=""])) > label {
     left: 1.25rem;
   }
 

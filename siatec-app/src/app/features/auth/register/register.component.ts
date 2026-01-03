@@ -16,6 +16,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { DynamicDialogModule, DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthService } from '../../../core/services';
 import { NotificationDialogComponent, NotificationDialogData } from '../../../shared/components/notification-dialog/notification-dialog.component';
+import { FloatLabelFilledDirective } from '../../../shared/directives';
 
 /**
  * Validador personalizado para confirmar que las contraseñas coincidan
@@ -48,7 +49,8 @@ export function passwordMatchValidator(): ValidatorFn {
     DividerModule,
     MessageModule,
     InputMaskModule,
-    DynamicDialogModule
+    DynamicDialogModule,
+    FloatLabelFilledDirective
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',

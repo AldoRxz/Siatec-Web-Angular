@@ -237,10 +237,13 @@
   }
 
   p-floatlabel:focus-within > label,
+  p-floatlabel.has-value > label,
   p-floatlabel > input:not(:placeholder-shown) + label,
   p-floatlabel:has(.p-password input:not(:placeholder-shown)) > label,
   p-floatlabel:has(.p-password input:-webkit-autofill) > label,
-  p-floatlabel:has(.p-password.p-inputwrapper-filled) > label {
+  p-floatlabel:has(.p-password.p-inputwrapper-filled) > label,
+  p-floatlabel:has(input[value]:not([value=""])) > label,
+  p-floatlabel:has(.p-password input[value]:not([value=""])) > label {
     top: -0.55rem;
     font-size: 0.8rem;
     color: #1d4ed8;
@@ -251,10 +254,13 @@
   }
 
   p-floatlabel.with-icon:focus-within > label,
+  p-floatlabel.with-icon.has-value > label,
   p-floatlabel.with-icon > input:not(:placeholder-shown) + label,
   p-floatlabel.with-icon:has(.p-password input:not(:placeholder-shown)) > label,
   p-floatlabel.with-icon:has(.p-password input:-webkit-autofill) > label,
-  p-floatlabel.with-icon:has(.p-password.p-inputwrapper-filled) > label {
+  p-floatlabel.with-icon:has(.p-password.p-inputwrapper-filled) > label,
+  p-floatlabel.with-icon:has(input[value]:not([value=""])) > label,
+  p-floatlabel.with-icon:has(.p-password input[value]:not([value=""])) > label {
     left: 1.25rem;
   }
 

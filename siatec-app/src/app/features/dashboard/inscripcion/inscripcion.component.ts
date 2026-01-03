@@ -19,6 +19,7 @@ import { finalize } from 'rxjs/operators';
 import { AuthService, ContribuyentesService } from '../../../core/services';
 import { PaccioliService } from '../../../core/services/paccioli.service';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
+import { FloatLabelFilledDirective } from '../../../shared/directives';
 
 interface InscripcionDraft {
   formValue: any;
@@ -60,7 +61,8 @@ interface CatalogOption {
     DividerModule,
     IconFieldModule,
     InputIconModule,
-    StepperModule
+    StepperModule,
+    FloatLabelFilledDirective
   ],
   providers: [MessageService],
   templateUrl: './inscripcion.component.html',

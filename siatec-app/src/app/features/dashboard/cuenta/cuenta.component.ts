@@ -21,6 +21,7 @@ import { MessageService } from 'primeng/api';
 // Services & Models
 import { AuthService } from '../../../core/services';
 import { User, UpdateAccountData } from '../../../core/models/auth.model';
+import { FloatLabelFilledDirective } from '../../../shared/directives';
 
 @Component({
   selector: 'app-dashboard-cuenta',
@@ -39,7 +40,8 @@ import { User, UpdateAccountData } from '../../../core/models/auth.model';
     IconFieldModule,
     InputIconModule,
     MessageModule,
-    SkeletonModule
+    SkeletonModule,
+    FloatLabelFilledDirective
   ],
   providers: [MessageService],
   templateUrl: './cuenta.component.html',

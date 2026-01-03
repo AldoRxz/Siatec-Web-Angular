@@ -459,9 +459,11 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 
   // Float label animation states
   p-floatlabel:focus-within > label,
+  p-floatlabel.has-value > label,
   p-floatlabel:has(input:focus) > label,
   p-floatlabel:has(input:not(:placeholder-shown)) > label,
-  p-floatlabel:has(input:-webkit-autofill) > label {
+  p-floatlabel:has(input:-webkit-autofill) > label,
+  p-floatlabel:has(input[value]:not([value=""])) > label {
     top: -0.625rem;
     left: 0.875rem;
     font-size: 0.75rem;

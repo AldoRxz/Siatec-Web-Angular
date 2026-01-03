@@ -15,6 +15,7 @@ import { MessageModule } from 'primeng/message';
 import { DynamicDialogModule, DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthService } from '../../../core/services';
 import { NotificationDialogComponent, NotificationDialogData } from '../../../shared/components/notification-dialog/notification-dialog.component';
+import { FloatLabelFilledDirective } from '../../../shared/directives';
 
 @Component({
   selector: 'app-forgot-password',
@@ -30,7 +31,8 @@ import { NotificationDialogComponent, NotificationDialogData } from '../../../sh
     InputIconModule,
     DividerModule,
     MessageModule,
-    DynamicDialogModule
+    DynamicDialogModule,
+    FloatLabelFilledDirective
   ],
   templateUrl: './forgot.component.html',
   styleUrl: './forgot.component.scss',

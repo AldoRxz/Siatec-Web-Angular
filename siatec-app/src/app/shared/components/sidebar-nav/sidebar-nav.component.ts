@@ -29,6 +29,11 @@ export class SidebarNavComponent {
     return item.key ?? (item.id as string) ?? item.label ?? String(_);
   };
 
+  getItemId(item: SidebarMenuItem): string {
+    const label = item.label || 'item';
+    return 'sidebar-' + label.toLowerCase().replace(/ /g, '-');
+  }
+
   isActive(item: SidebarMenuItem): boolean {
     if (!this.activeKey) {
       return false;
