@@ -50,6 +50,7 @@ export class LoginComponent implements OnDestroy {
   loginForm: FormGroup;
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -105,6 +106,10 @@ export class LoginComponent implements OnDestroy {
     return this.loginForm.get('password');
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   private openStatusDialog(
     payload: NotificationDialogData,
     options?: { onClose?: () => void; autoCloseMs?: number }
@@ -112,11 +117,12 @@ export class LoginComponent implements OnDestroy {
     this.dialogRef?.close();
 
     const ref = this.dialogService.open(NotificationDialogComponent, {
-      header: payload.title || 'Notificación',
+      showHeader: false,
       width: '420px',
       styleClass: 'notification-dialog-shell',
       data: payload,
-      modal: true
+      modal: true,
+      closable: false
     })!;
 
     this.dialogRef = ref;

@@ -206,3 +206,38 @@
   }
 }
 
+.password-field {
+  position: relative;
+
+  .toggle-password-btn {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+    border-radius: 0.5rem;
+
+    &:hover {
+      color: #2563eb;
+      background: #eff6ff;
+    }
+
+    &:focus {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}

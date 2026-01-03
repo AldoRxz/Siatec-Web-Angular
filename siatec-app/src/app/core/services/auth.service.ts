@@ -193,7 +193,8 @@ export class AuthService {
   private handleAuthSuccess(response: AuthResponse | any): void {
     // Soportar diferentes estructuras de respuesta del backend
     const token = response.token || response.accessToken || response.data?.token;
-    const user = response.user || response.data?.user;
+    // El backend envía el usuario directamente en response.data, NO en response.data.user
+    const user = response.data || response.user || response.data?.user;
 
     console.log('[AuthService] handleAuthSuccess - response:', response);
     console.log('[AuthService] handleAuthSuccess - token:', token);
@@ -211,8 +212,8 @@ export class AuthService {
       console.warn('[AuthService] No se recibió usuario en la respuesta');
     }
 
-    // Guardar contribuyenteId si está disponible
-    const contribId = user?.contribuyenteId || user?.idContribuyente || user?.id;
+    // Guardar contribuyenteId si está disponible - el backend lo envía en identityInfo.id
+    const contribId = user?.identityInfo?.id || user?.contribuyenteId || user?.idContribuyente || user?.id;
     if (contribId) {
       localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribId.toString());
       console.log('[AuthService] contribuyenteId guardado:', contribId);
