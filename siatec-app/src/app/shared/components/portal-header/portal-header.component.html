@@ -2,6 +2,7 @@
   <!-- Left: Menu + Brand -->
   <div class="header-left">
     <button
+      id="header-menu-toggle-btn"
       pButton
       type="button"
       class="menu-toggle-button"
@@ -18,6 +19,7 @@
   <!-- Right: Actions -->
   <div class="header-right">
     <button
+      id="header-notifications-btn"
       pButton
       type="button"
       class="notification-button"
@@ -29,7 +31,7 @@
     </button>
 
     <div class="user-menu-container">
-      <button type="button" class="user-button" pButton (click)="userMenu.toggle($event)" aria-label="Menú de usuario">
+      <button id="header-user-menu-btn" type="button" class="user-button" pButton (click)="userMenu.toggle($event)" aria-label="Menú de usuario">
         <p-avatar [label]="initials" shape="circle" class="user-avatar"></p-avatar>
         <span class="user-name">{{ userName }}</span>
         <i class="pi pi-chevron-down chevron"></i>

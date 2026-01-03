@@ -75,6 +75,7 @@
               <td class="text-center">
                 <button 
                   *ngIf="!tieneMonto(row)"
+                  id="contribuciones-determinar-btn-{{ row.id }}"
                   pButton 
                   type="button" 
                   label="Determinar" 
@@ -84,6 +85,7 @@
                 </button>
                 <button 
                   *ngIf="tieneMonto(row)"
+                  id="contribuciones-pagar-btn-{{ row.id }}"
                   pButton 
                   type="button" 
                   label="Pagar" 

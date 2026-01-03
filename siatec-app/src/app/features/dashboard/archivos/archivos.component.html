@@ -50,6 +50,7 @@
           <div class="input-icon-wrapper">
             <i class="pi pi-search"></i>
             <input
+              id="archivos-buscar-input"
               pInputText
               type="text"
               formControlName="nombre"
@@ -60,11 +61,11 @@
         </div>
         
         <div class="form-group form-group--actions">
-          <button pButton type="submit" class="btn-search">
+          <button id="archivos-buscar-btn" pButton type="submit" class="btn-search">
             <i class="pi pi-search"></i>
             <span>Buscar</span>
           </button>
-          <button pButton type="button" class="btn-clear" (click)="resetFilters()">
+          <button id="archivos-limpiar-btn" pButton type="button" class="btn-clear" (click)="resetFilters()">
             <i class="pi pi-refresh"></i>
             <span>Limpiar</span>
           </button>
@@ -215,16 +216,16 @@
               
               <div class="doc-card__actions">
                 @if (doc.archivos.length > 0) {
-                  <button class="action-btn action-btn--view" title="Ver archivo" (click)="viewFile(doc, doc.archivos[0])">
+                  <button id="archivos-ver-btn-{{ doc.tipoId }}" class="action-btn action-btn--view" title="Ver archivo" (click)="viewFile(doc, doc.archivos[0])">
                     <i class="pi pi-eye"></i>
                   </button>
-                  <button class="action-btn action-btn--download" title="Descargar" (click)="downloadFile(doc, doc.archivos[0])">
+                  <button id="archivos-descargar-btn-{{ doc.tipoId }}" class="action-btn action-btn--download" title="Descargar" (click)="downloadFile(doc, doc.archivos[0])">
                     <i class="pi pi-download"></i>
                   </button>
-                  <button class="action-btn action-btn--edit" title="Renombrar" (click)="openRenameDialog(doc, doc.archivos[0])">
+                  <button id="archivos-renombrar-btn-{{ doc.tipoId }}" class="action-btn action-btn--edit" title="Renombrar" (click)="openRenameDialog(doc, doc.archivos[0])">
                     <i class="pi pi-pencil"></i>
                   </button>
-                  <button class="action-btn action-btn--delete" title="Eliminar" (click)="confirmDelete(doc, doc.archivos[0])">
+                  <button id="archivos-eliminar-btn-{{ doc.tipoId }}" class="action-btn action-btn--delete" title="Eliminar" (click)="confirmDelete(doc, doc.archivos[0])">
                     <i class="pi pi-trash"></i>
                   </button>
                 }
@@ -233,6 +234,7 @@
                 <div class="upload-wrapper">
                   <input
                     #fileInput
+                    id="archivos-upload-input-{{ doc.tipoId }}"
                     type="file"
                     class="hidden-input"
                     (change)="onUploadSelected(doc, $event)"
@@ -240,6 +242,7 @@
                     accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                   />
                   <button 
+                    id="archivos-upload-btn-{{ doc.tipoId }}"
                     class="action-btn action-btn--upload" 
                     [class.action-btn--primary]="doc.archivos.length === 0"
                     title="{{ doc.archivos.length > 0 ? 'Agregar archivo' : 'Subir archivo' }}"
@@ -282,6 +285,7 @@
     <div class="form-group">
       <label class="form-label">Nuevo nombre</label>
       <input 
+        id="archivos-rename-input"
         pInputText 
         type="text" 
         formControlName="nombre" 
@@ -296,10 +300,10 @@
   
   <ng-template pTemplate="footer">
     <div class="dialog-footer">
-      <button pButton type="button" class="btn-cancel" (click)="closeRenameDialog()">
+      <button id="archivos-rename-cancel-btn" pButton type="button" class="btn-cancel" (click)="closeRenameDialog()">
         Cancelar
       </button>
-      <button pButton type="button" class="btn-save" [disabled]="renameForm.invalid" (click)="submitRename()">
+      <button id="archivos-rename-save-btn" pButton type="button" class="btn-save" [disabled]="renameForm.invalid" (click)="submitRename()">
         <i class="pi pi-check"></i>
         Guardar
       </button>
