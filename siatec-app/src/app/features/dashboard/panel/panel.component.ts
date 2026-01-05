@@ -135,6 +135,26 @@ export class PanelComponent implements OnInit {
   readonly notificationsCount = this.notificationsService.unreadCount;
   readonly documentSummary = this.documentsService.summary;
 
+  // Computed para determinar si se debe mostrar la opción de inscripción
+  readonly shouldShowInscripcion = computed(() => {
+    const data = this.dashboardData();
+    if (!data) return true; // Mostrar por defecto mientras carga
+    
+    // No mostrar si el contribuyente ya está activo
+    if (data.activo) return false;
+    
+    // No mostrar si hay una solicitud en estado "Pendiente" o "Enviada"
+    const ultimaSolicitud = data.ultimaSolicitud;
+    if (ultimaSolicitud) {
+      const estado = ultimaSolicitud.estado?.toLowerCase() || '';
+      if (estado === 'pendiente' || estado === 'enviada' || estado === 'procesando') {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+
   private readonly documentCardEffect = computed(() => {
     const summary = this.documentSummary();
     this.updateCardValue('archivos', `${summary.total} asignados`);

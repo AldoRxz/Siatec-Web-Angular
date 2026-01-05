@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, FormControl, FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
@@ -21,6 +22,7 @@ import { AuthService, ContribuyentesService } from '../../../core/services';
 import { PaccioliService } from '../../../core/services/paccioli.service';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
 import { InscripcionDocumentosService, DocumentoRequeridoDto } from '../services/inscripcion-documentos.service';
+import { DashboardService, ContribuyenteDashboard } from '../services/dashboard.service';
 import { FloatLabelFilledDirective } from '../../../shared/directives';
 
 interface InscripcionDraft {
@@ -72,10 +74,12 @@ interface CatalogOption {
 })
 export class InscripcionComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly contribuyentesService = inject(ContribuyentesService);
   private readonly paccioliService = inject(PaccioliService);
   private readonly inscripcionDocumentosService = inject(InscripcionDocumentosService);
+  private readonly dashboardService = inject(DashboardService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly messageService = inject(MessageService);
   private readonly notificationsService = inject(DashboardNotificationsService);
@@ -86,6 +90,30 @@ export class InscripcionComponent implements OnInit {
   readonly loading = signal(false);
   readonly currentStep = signal(0);
   readonly steps = ['Datos generales', 'Ubicación y contacto', 'Régimen e impuestos', 'Representante', 'Pagos', 'Resumen'];
+  
+  // Dashboard data para verificar estado
+  readonly dashboardData = signal<ContribuyenteDashboard | null>(null);
+  readonly loadingDashboard = signal<boolean>(false);
+  
+  // Computed para determinar si debe mostrar el formulario o el mensaje de procesando
+  readonly shouldShowForm = computed(() => {
+    const data = this.dashboardData();
+    if (!data) return true; // Mostrar formulario por defecto mientras carga
+    
+    // Si está activo, no mostrar formulario
+    if (data.activo) return false;
+    
+    // Si hay solicitud en proceso, no mostrar formulario
+    const ultimaSolicitud = data.ultimaSolicitud;
+    if (ultimaSolicitud) {
+      const estado = ultimaSolicitud.estado?.toLowerCase() || '';
+      if (estado === 'pendiente' || estado === 'enviada' || estado === 'procesando') {
+        return false;
+      }
+    }
+    
+    return true;
+  });
   
   // Signals para documentos por sección
   readonly documentosPorSeccion = signal<{[seccion: string]: DocumentoRequeridoDto[]}>({});
@@ -177,6 +205,7 @@ export class InscripcionComponent implements OnInit {
     this.loadDraft();
     this.loadProcessingState();
     this.prefillFromUser();
+    this.loadDashboardData(); // Cargar estado del dashboard
     this.cargarDocumentosSeccion(0); // Cargar documentos del primer paso
   }
 
@@ -527,6 +556,13 @@ export class InscripcionComponent implements OnInit {
    */
   continuarInscripcion(): void {
     this.mostrarFormulario.set(true);
+  }
+
+  /**
+   * Navega a una ruta específica
+   */
+  navigate(route: string): void {
+    this.router.navigateByUrl(route);
   }
 
   /**
@@ -933,6 +969,29 @@ export class InscripcionComponent implements OnInit {
       curp: identificacion.value.curp || identity['curp'] || '',
       email: identificacion.value.email || user.email || identity['correo'] || '',
       telefono: identificacion.value.telefono || identity['telefono'] || ''
+    });
+  }
+
+  private loadDashboardData(): void {
+    const contribuyenteId = this.authService.getContribuyenteId();
+    
+    if (!contribuyenteId) {
+      console.warn('[Inscripcion] No se pudo obtener el ID del contribuyente');
+      return;
+    }
+
+    this.loadingDashboard.set(true);
+    
+    this.dashboardService.getDashboard(contribuyenteId).subscribe({
+      next: (data) => {
+        console.log('[Inscripcion] Dashboard data loaded:', data);
+        this.dashboardData.set(data);
+        this.loadingDashboard.set(false);
+      },
+      error: (error) => {
+        console.error('[Inscripcion] Error loading dashboard data:', error);
+        this.loadingDashboard.set(false);
+      }
     });
   }
 }
