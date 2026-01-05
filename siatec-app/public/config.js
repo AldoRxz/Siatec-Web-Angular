@@ -14,11 +14,11 @@
   // Configuración para desarrollo local
   window.__SIATEC_CONFIG = {
     // URLs de APIs para desarrollo local
-    authApiBaseUrl: 'http://localhost:5010/api/auth',
-    contribuyentesApiBaseUrl: 'http://localhost:5001/api/contribuyentes',
-    contribucionesApiBaseUrl: 'http://localhost:5000/api/contribuciones',
-    tesoreriaApiBaseUrl: 'http://localhost:5003/api/tesoreria',
-    notificacionesApiBaseUrl: 'http://localhost:5005/api/notificaciones',
+    authApiBaseUrl: 'http://localhost:5010/api/v1/auth',
+    contribuyentesApiBaseUrl: 'http://localhost:5001/api/v1/contribuyentes',
+    contribucionesApiBaseUrl: 'http://localhost:5000/api/v1/contribuciones',
+    tesoreriaApiBaseUrl: 'http://localhost:5003/api/v1/tesoreria',
+    notificacionesApiBaseUrl: 'http://localhost:5005/api/v1/notificaciones',
     paccioliApiBaseUrl: 'http://192.168.1.113:8080',
     cajaApiBaseUrl: 'http://localhost:5089/api/v1/ordenes-pago',
 
