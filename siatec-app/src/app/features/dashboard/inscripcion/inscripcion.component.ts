@@ -16,9 +16,11 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { StepperModule } from 'primeng/stepper';
 import { finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 import { AuthService, ContribuyentesService } from '../../../core/services';
 import { PaccioliService } from '../../../core/services/paccioli.service';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
+import { InscripcionDocumentosService, DocumentoRequeridoDto } from '../services/inscripcion-documentos.service';
 import { FloatLabelFilledDirective } from '../../../shared/directives';
 
 interface InscripcionDraft {
@@ -73,6 +75,7 @@ export class InscripcionComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly contribuyentesService = inject(ContribuyentesService);
   private readonly paccioliService = inject(PaccioliService);
+  private readonly inscripcionDocumentosService = inject(InscripcionDocumentosService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly messageService = inject(MessageService);
   private readonly notificationsService = inject(DashboardNotificationsService);
@@ -85,7 +88,7 @@ export class InscripcionComponent implements OnInit {
   readonly steps = ['Datos generales', 'Ubicación y contacto', 'Régimen e impuestos', 'Representante', 'Pagos', 'Resumen'];
   
   // Signals para documentos por sección
-  readonly documentosPorSeccion = signal<{[seccion: string]: any[]}>({});
+  readonly documentosPorSeccion = signal<{[seccion: string]: DocumentoRequeridoDto[]}>({});
   readonly cargandoDocumentos = signal(false);
   readonly subiendoArchivo = signal(false);
   
@@ -174,30 +177,104 @@ export class InscripcionComponent implements OnInit {
     this.loadDraft();
     this.loadProcessingState();
     this.prefillFromUser();
+    this.cargarDocumentosSeccion(0); // Cargar documentos del primer paso
   }
 
   /**
    * Carga los documentos de una sección específica
    * Se llama al cambiar de paso en el stepper
    */
-  async cargarDocumentosSeccion(stepIndex: number): Promise<void> {
+  cargarDocumentosSeccion(stepIndex: number): void {
     const seccion = this.seccionesDocumentos[stepIndex];
-    if (!seccion) return;
+    if (!seccion) {
+      console.log(`No hay sección de documentos para el paso ${stepIndex}`);
+      return;
+    }
 
     this.cargandoDocumentos.set(true);
+    const tipoPersona = this.form.controls.tipoPersona.value;
     
-    try {
-      // TODO: Implementar endpoint GET para obtener documentos por sección
-      // const documentos = await this.contribuyentesService.getDocumentosPorSeccion(seccion);
-      // if (documentos && documentos.length > 0) {
-      //   this.documentosPorSeccion.update(docs => ({ ...docs, [seccion]: documentos }));
-      // }
-      
-      console.log(`Cargando documentos de sección: ${seccion}`);
-      
-      // Por ahora, no almacenamos nada si no hay documentos (no mostrar sección)
-    } catch (error: any) {
-      console.error('Error al cargar documentos:', error);
+    console.log(`Cargando documentos de sección: ${seccion} para ${tipoPersona}`);
+    
+    const request$ = tipoPersona === 'fisica' 
+      ? this.inscripcionDocumentosService.getDocumentosFisica(seccion)
+      : this.inscripcionDocumentosService.getDocumentosMoral(seccion);
+    
+    request$.pipe(
+      finalize(() => this.cargandoDocumentos.set(false))
+    ).subscribe({
+      next: (response) => {
+        console.log(`Documentos cargados para ${seccion}:`, response.documentos);
+        if (response.documentos && response.documentos.length > 0) {
+          this.documentosPorSeccion.update(docs => ({ 
+            ...docs, 
+            [seccion]: response.documentos 
+          }));
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar documentos:', error);
+        this.messageService.add({ 
+          severity: 'warn', 
+          summary: 'Documentos', 
+          detail: 'No se pudieron cargar los documentos requeridos para esta sección.' 
+        });
+      }
+    });
+  }
+
+  /**
+   * Sube un archivo para un documento específico
+   */
+  subirArchivo(event: Event, catalogoDocumentoId: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const contribuyenteId = this.authService.getContribuyenteId();
+    if (!contribuyenteId) {
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'No se pudo identificar el contribuyente.' 
+      });
+      return;
+    }
+
+    this.subiendoArchivo.set(true);
+    
+    this.inscripcionDocumentosService.uploadDocumento(contribuyenteId, file, catalogoDocumentoId)
+      .pipe(finalize(() => this.subiendoArchivo.set(false)))
+      .subscribe({
+        next: (response) => {
+          console.log('Archivo subido:', response);
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Archivo subido', 
+            detail: `${file.name} se subió correctamente.` 
+          });
+          // Limpiar el input
+          input.value = '';
+        },
+        error: (error) => {
+          console.error('Error al subir archivo:', error);
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error al subir', 
+            detail: error?.error?.mensaje || 'No se pudo subir el archivo.' 
+          });
+          input.value = '';
+        }
+      });
+  }
+
+  /**
+   * Obtiene los documentos de la sección actual
+   */
+  getDocumentosSeccionActual(): DocumentoRequeridoDto[] {
+    const seccion = this.seccionesDocumentos[this.currentStep()];
+    return seccion ? (this.documentosPorSeccion()[seccion] || []) : [];
+  }
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -212,10 +289,10 @@ export class InscripcionComponent implements OnInit {
    * Maneja el cambio de paso en el stepper
    * Carga automáticamente los documentos de la nueva sección
    */
-  async onStepChange(event: any): Promise<void> {
+  onStepChange(event: any): void {
     const newStep = event.index;
     this.currentStep.set(newStep);
-    await this.cargarDocumentosSeccion(newStep);
+    this.cargarDocumentosSeccion(newStep);
   }
 
   /**
@@ -574,17 +651,35 @@ export class InscripcionComponent implements OnInit {
 
     const payload = this.buildPayload();
     this.loading.set(true);
-    this.contribuyentesService
-      .actualizarContribuyenteFormulario(contribuyenteId, payload)
+
+    // Llamar a ambos endpoints: actualizar formulario y crear solicitud de inscripción
+    forkJoin({
+      formulario: this.contribuyentesService.actualizarContribuyenteFormulario(contribuyenteId, payload),
+      solicitud: this.contribuyentesService.crearSolicitudInscripcion({
+        contribuyenteId,
+        contribucionIds: [], // Se pueden agregar los IDs de contribuciones si aplica
+        observaciones: 'Solicitud de inscripción generada desde el formulario'
+      })
+    })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: () => {
+        next: (results) => {
           this.persistProcessingState(contribuyenteId, payload);
           this.notificationsService.addNotification('📬 Enviamos tu solicitud de inscripción para validación.');
-          this.messageService.add({ severity: 'success', summary: 'Solicitud enviada', detail: 'Tesorería revisará tu información.' });
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Solicitud enviada', 
+            detail: 'Tesorería revisará tu información.' 
+          });
+          console.log('Formulario actualizado:', results.formulario);
+          console.log('Solicitud creada:', results.solicitud);
         },
         error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'No se pudo enviar', detail: error?.message || 'Intenta nuevamente.' });
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'No se pudo enviar', 
+            detail: error?.message || 'Intenta nuevamente.' 
+          });
         }
       });
   }

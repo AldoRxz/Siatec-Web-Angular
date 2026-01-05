@@ -199,4 +199,24 @@ export class ContribuyentesService extends BaseApiService {
     const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId, documentTypeId);
     return this.patch<any>(url, body);
   }
+
+  // ============================================
+  // Solicitudes de Inscripción
+  // ============================================
+
+  /**
+   * Crea una solicitud de inscripción
+   */
+  crearSolicitudInscripcion(payload: { 
+    contribuyenteId: number; 
+    contribucionIds?: number[]; 
+    observaciones?: string 
+  }): Observable<any> {
+    const url = this.buildUrl(this.baseUrl, 'solicitudes-inscripcion');
+    return this.post<any>(url, {
+      contribuyenteId: payload.contribuyenteId,
+      contribucionIds: payload.contribucionIds || [],
+      observaciones: payload.observaciones
+    });
+  }
 }

@@ -268,36 +268,71 @@
               <div class="step-content" formGroupName="domicilio">
                 
                 <!-- Componente de carga de documentos -->
-                @if (mostrarSeccionDocumentos(1) || subiendoArchivo()) {
+                @if (getDocumentosSeccionActual().length > 0) {
                 <div class="document-upload-section">
                   <div class="upload-header">
                     <i class="pi pi-file-pdf"></i>
-                    <h3>Comprobante de Domicilio Fiscal</h3>
-                  </div>
-                  
-                  <div class="upload-controls">
-                    <label class="upload-button">
-                      <i class="pi pi-upload"></i>
-                      <span>Subir Documento</span>
-                      <input 
-                        type="file" 
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        (change)="onFileSelected($event, 1)"
-                        [disabled]="subiendoArchivo()"
-                        style="display: none;"
-                      />
-                    </label>
-                    @if (subiendoArchivo()) {
-                      <span class="upload-status">
-                        <i class="pi pi-spinner pi-spin"></i>
-                        Procesando documento...
-                      </span>
-                    }
+                    <h3>Documentos Requeridos</h3>
+                    <p class="upload-subtitle">Sube los documentos necesarios para esta sección</p>
                   </div>
                   
                   @if (cargandoDocumentos()) {
                     <div class="loading-docs">
                       <i class="pi pi-spinner pi-spin"></i>
+                      <span>Cargando documentos requeridos...</span>
+                    </div>
+                  } @else {
+                    <div class="documents-list">
+                      @for (documento of getDocumentosSeccionActual(); track documento.id) {
+                        <div class="document-item" [class.document-item--required]="documento.esObligatorio">
+                          <div class="document-info">
+                            <div class="document-icon">
+                              <i class="pi pi-file"></i>
+                            </div>
+                            <div class="document-details">
+                              <h4 class="document-name">
+                                {{ documento.catalogoDocumento?.nombre || 'Documento' }}
+                                @if (documento.esObligatorio) {
+                                  <span class="required-badge">Obligatorio</span>
+                                }
+                              </h4>
+                              @if (documento.catalogoDocumento?.descripcion) {
+                                <p class="document-description">{{ documento.catalogoDocumento.descripcion }}</p>
+                              }
+                            </div>
+                          </div>
+                          <div class="document-actions">
+                            <label class="upload-button-small">
+                              <i class="pi pi-upload"></i>
+                              <span>Subir</span>
+                              <input 
+                                type="file" 
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                (change)="subirArchivo($event, documento.catalogoDocumentoId)"
+                                [disabled]="subiendoArchivo()"
+                                style="display: none;"
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                  
+                  @if (subiendoArchivo()) {
+                    <div class="upload-status-bar">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      <span>Subiendo archivo...</span>
+                    </div>
+                  }
+                </div>
+                }
+                
+                <!-- Formulario original -->
+                <div class="step-header">
+                  <i class="pi pi-map-marker"></i>
+                  <h3>Domicilio Fiscal</h3>
+                </div>
                       Cargando documentos...
                     </div>
                   }
