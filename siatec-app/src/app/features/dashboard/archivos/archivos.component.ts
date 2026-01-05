@@ -271,23 +271,6 @@ export class ArchivosComponent implements OnInit {
     });
   }
 
-  viewFile(doc: DocumentoCatalogo, file: ArchivoResumen): void {
-    this.archivosService.downloadArchivo(file.id).subscribe({
-      next: (blob) => {
-        const url = URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        setTimeout(() => URL.revokeObjectURL(url), 10_000);
-      },
-      error: () => {
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Error de previsualización', 
-          detail: `No se pudo previsualizar ${file.nombre}.` 
-        });
-      }
-    });
-  }
-
   confirmDelete(doc: DocumentoCatalogo, file: ArchivoResumen): void {
     this.confirmationService.confirm({
       header: 'Eliminar archivo',
