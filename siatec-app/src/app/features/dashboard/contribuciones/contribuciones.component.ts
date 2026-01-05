@@ -233,18 +233,28 @@ export class ContribucionesComponent implements OnInit {
   }
 
   private cargarOperaciones(): void {
+    // Intentar obtener UUID del usuario (preferido) o ID numérico (legacy)
+    const usuarioId = this.authService.getUserId();
     const contribuyenteId = this.authService.getContribuyenteId();
-    if (!contribuyenteId) {
+
+    if (!usuarioId && !contribuyenteId) {
       this.messageService.add({ severity: 'warn', summary: 'Sesión', detail: 'Inicia sesión para consultar tus determinaciones.' });
       return;
     }
+
     this.loading.set(true);
-    this.contribucionesService
-      .getDeterminacionesPorContribuyente(contribuyenteId)
+
+    // Usar endpoint por UUID si está disponible, sino usar endpoint legacy por contribuyenteId
+    const request$ = usuarioId
+      ? this.contribucionesService.getDeterminacionesPorUsuario(usuarioId)
+      : this.contribucionesService.getDeterminacionesPorContribuyente(contribuyenteId!);
+
+    request$
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (items) => this.operaciones.set(items ?? []),
         error: (err) => {
+          console.error('[Contribuciones] Error cargando determinaciones:', err);
           this.messageService.add({ severity: 'error', summary: 'No se pudo cargar', detail: err?.message || 'Intenta de nuevo más tarde.' });
         }
       });

@@ -16,6 +16,7 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { AuthService, ContribuyentesService } from '../../../core/services';
 import { ArchivoContribuyente } from '../../../core/models/contribuyente.model';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
+import { ArchivosService, ArchivoDto } from '../services/archivos.service';
 
 type DocCategory = 'OBLIGATORIO' | 'OPCIONAL' | 'INACTIVO';
 
@@ -63,6 +64,7 @@ interface DocumentoCatalogo {
 export class ArchivosComponent implements OnInit {
   private readonly contribuyentesService = inject(ContribuyentesService);
   private readonly authService = inject(AuthService);
+  private readonly archivosService = inject(ArchivosService);
   private readonly fb = inject(FormBuilder);
   private readonly messageService = inject(MessageService);
   private readonly confirmationService = inject(ConfirmationService);
@@ -71,6 +73,7 @@ export class ArchivosComponent implements OnInit {
   private readonly filters = signal<{ tipo: string; nombre: string }>({ tipo: '', nombre: '' });
   private readonly documentsSignal = signal<DocumentoCatalogo[]>([]);
   private readonly expandedDocs = signal<Set<number>>(new Set());
+  private readonly archivosBackend = signal<ArchivoDto[]>([]);
 
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -128,6 +131,7 @@ export class ArchivosComponent implements OnInit {
   private renameContext: { docId: number; fileId: number } | null = null;
 
   ngOnInit(): void {
+    this.loadArchivosFromBackend();
     this.loadCatalog(true);
   }
 
@@ -243,8 +247,7 @@ export class ArchivosComponent implements OnInit {
   }
 
   downloadFile(doc: DocumentoCatalogo, file: ArchivoResumen): void {
-    const contribuyenteId = this.requireContribuyenteId();
-    this.contribuyentesService.descargarArchivo(contribuyenteId, file.id).subscribe({
+    this.archivosService.downloadArchivo(file.id).subscribe({
       next: (blob) => {
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement('a');
@@ -252,9 +255,35 @@ export class ArchivosComponent implements OnInit {
         anchor.download = file.nombreOriginal || file.nombre;
         anchor.click();
         setTimeout(() => URL.revokeObjectURL(url), 10_000);
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Descarga exitosa', 
+          detail: `${file.nombre} descargado correctamente.` 
+        });
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Descarga', detail: `No se pudo descargar ${file.nombre}.` });
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error de descarga', 
+          detail: `No se pudo descargar ${file.nombre}.` 
+        });
+      }
+    });
+  }
+
+  viewFile(doc: DocumentoCatalogo, file: ArchivoResumen): void {
+    this.archivosService.downloadArchivo(file.id).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      },
+      error: () => {
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error de previsualización', 
+          detail: `No se pudo previsualizar ${file.nombre}.` 
+        });
       }
     });
   }
@@ -285,38 +314,52 @@ export class ArchivosComponent implements OnInit {
     if (!this.renameForm.valid || !this.renameContext) {
       return;
     }
-    const contribuyenteId = this.requireContribuyenteId();
     const nuevoNombre = this.renameForm.controls.nombre.value.trim();
     this.loading.set(true);
-    this.contribuyentesService
-      .renombrarArchivo(contribuyenteId, this.renameContext.fileId, nuevoNombre)
+    this.archivosService
+      .renameArchivo(this.renameContext.fileId, nuevoNombre)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Nombre actualizado', detail: 'El archivo fue renombrado.' });
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Nombre actualizado', 
+            detail: 'El archivo fue renombrado correctamente.' 
+          });
           this.closeRenameDialog();
-          this.loadCatalog();
+          this.loadArchivosFromBackend();
         },
         error: (err) => {
-          this.messageService.add({ severity: 'error', summary: 'No se pudo renombrar', detail: err?.message || 'Intenta nuevamente.' });
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'No se pudo renombrar', 
+            detail: err?.message || 'Intenta nuevamente.' 
+          });
         }
       });
   }
 
   private deleteFile(doc: DocumentoCatalogo, file: ArchivoResumen): void {
-    const contribuyenteId = this.requireContribuyenteId();
     this.loading.set(true);
-    this.contribuyentesService
-      .eliminarArchivo(contribuyenteId, file.id)
+    this.archivosService
+      .deleteArchivo(file.id)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'info', summary: 'Archivo eliminado', detail: `${file.nombre} fue eliminado.` });
+          this.messageService.add({ 
+            severity: 'info', 
+            summary: 'Archivo eliminado', 
+            detail: `${file.nombre} fue eliminado correctamente.` 
+          });
           this.notificationsService.addNotification(`🗑️ Eliminaste ${file.nombre} de ${doc.nombre}.`);
-          this.loadCatalog();
+          this.loadArchivosFromBackend();
         },
         error: (err) => {
-          this.messageService.add({ severity: 'error', summary: 'No se pudo eliminar', detail: err?.message || 'Intenta nuevamente.' });
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'No se pudo eliminar', 
+            detail: err?.message || 'Intenta nuevamente.' 
+          });
         }
       });
   }
@@ -324,7 +367,7 @@ export class ArchivosComponent implements OnInit {
   private loadCatalog(initial = false): void {
     const contribuyenteId = this.authService.getContribuyenteId();
     if (!contribuyenteId) {
-      this.errorMessage.set('No se pudo identificar al contribuyente activo.');
+      // No mostrar error, simplemente no cargar nada hasta que haya sesión
       return;
     }
     this.loading.set(true);
@@ -445,6 +488,82 @@ export class ArchivosComponent implements OnInit {
       throw new Error('No se pudo determinar el contribuyente actual.');
     }
     return contribuyenteId;
+  }
+
+  private loadArchivosFromBackend(): void {
+    const contribuyenteId = this.authService.getContribuyenteId();
+    if (!contribuyenteId) {
+      console.warn('[Archivos] No se pudo obtener el ID del contribuyente');
+      return;
+    }
+
+    this.loading.set(true);
+    
+    this.archivosService.getArchivosByContribuyente(contribuyenteId).subscribe({
+      next: (archivos) => {
+        console.log('[Archivos] Archivos cargados desde el backend:', archivos);
+        this.archivosBackend.set(archivos);
+        this.integrarArchivosBackend(archivos);
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('[Archivos] Error al cargar archivos desde el backend:', error);
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error al cargar archivos', 
+          detail: 'No se pudieron cargar los archivos del servidor.' 
+        });
+        this.loading.set(false);
+      }
+    });
+  }
+
+  private integrarArchivosBackend(archivosBackend: ArchivoDto[]): void {
+    // Agrupar archivos por catalogoDocumentoId
+    const grupos = new Map<number, ArchivoDto[]>();
+    
+    archivosBackend.forEach(archivo => {
+      if (!archivo.isActive) return; // Ignorar archivos inactivos
+      
+      const key = archivo.catalogoDocumentoId || 0;
+      if (!grupos.has(key)) {
+        grupos.set(key, []);
+      }
+      grupos.get(key)!.push(archivo);
+    });
+
+    // Actualizar los documentos existentes con los archivos del backend
+    const docsActualizados = this.documentsSignal().map(doc => {
+      const archivosDelDoc = grupos.get(doc.tipoId) || [];
+      return {
+        ...doc,
+        archivos: archivosDelDoc.map(archivo => ({
+          id: archivo.id,
+          nombre: archivo.nombreArchivo,
+          nombreOriginal: archivo.nombreArchivo,
+          tamanoBytes: archivo.tamanioBytes,
+          fechaSubida: archivo.fechaSubida,
+          tipoMime: this.getMimeTypeFromExtension(archivo.nombreArchivo)
+        }))
+      };
+    });
+
+    this.documentsSignal.set(docsActualizados);
+  }
+
+  private getMimeTypeFromExtension(filename: string): string {
+    const ext = filename.split('.').pop()?.toLowerCase();
+    const mimeTypes: Record<string, string> = {
+      'pdf': 'application/pdf',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'xls': 'application/vnd.ms-excel',
+      'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    };
+    return mimeTypes[ext || ''] || 'application/octet-stream';
   }
 
   trackDoc(_: number, doc: DocumentoCatalogo): number {

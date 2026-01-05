@@ -470,3 +470,127 @@ $card-gap: 1.25rem;
     padding: 1rem;
   }
 }
+
+// ============================================
+// Inscripción States
+// ============================================
+
+.inscripcion-success,
+.inscripcion-processing {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.inscripcion-success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+
+  .success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: rgba(16, 185, 129, 0.15);
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    i {
+      font-size: 1.5rem;
+      color: #10b981;
+    }
+  }
+
+  strong {
+    display: block;
+    color: #065f46;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #047857;
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+}
+
+.inscripcion-processing {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(251, 146, 60, 0.05) 100%);
+  border: 1px solid rgba(251, 146, 60, 0.2);
+
+  .processing-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: rgba(251, 146, 60, 0.15);
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    i {
+      font-size: 1.5rem;
+      color: #f59e0b;
+    }
+  }
+
+  strong {
+    display: block;
+    color: #92400e;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #b45309;
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9375rem;
+  }
+
+  small {
+    color: #d97706;
+    font-size: 0.8125rem;
+  }
+}
+
+.inscripcion-summary {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 1.5rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 1rem;
+
+  > div {
+    flex: 1;
+  }
+
+  .label {
+    font-size: 0.8125rem;
+    color: #64748b;
+    margin-bottom: 0.375rem;
+    font-weight: 500;
+  }
+
+  strong {
+    color: #0f172a;
+    font-size: 0.9375rem;
+  }
+}
+
+.inscripcion-empty {
+  text-align: center;
+  padding: 2rem 1.5rem;
+
+  p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    font-size: 0.9375rem;
+  }
+}

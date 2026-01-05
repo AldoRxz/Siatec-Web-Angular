@@ -39,6 +39,28 @@
           </div>
 
           <div class="form-grid">
+            <!-- UserName -->
+            <div class="form-field" [class.form-field--error]="hasError('userName')">
+              <p-floatlabel class="with-icon">
+                <p-iconfield iconPosition="left" class="w-full">
+                  <p-inputicon class="pi pi-at"></p-inputicon>
+                  <input
+                    pInputText
+                    id="cuenta-username"
+                    type="text"
+                    formControlName="userName"
+                    class="w-full"
+                    placeholder=" "
+                    data-testid="cuenta-username"
+                  />
+                </p-iconfield>
+                <label for="cuenta-username">Nombre de Usuario *</label>
+              </p-floatlabel>
+              @if (hasError('userName')) {
+                <small class="form-field__error">{{ getErrorMessage('userName') }}</small>
+              }
+            </div>
+
             <!-- Nombres -->
             <div class="form-field" [class.form-field--error]="hasError('nombres')">
               <p-floatlabel class="with-icon">
@@ -174,18 +196,26 @@
           <div class="form-grid form-grid--security">
             <!-- Current Password -->
             <div class="form-field">
-              <p-floatlabel class="with-icon">
+              <p-floatlabel class="with-icon password-field">
                 <p-iconfield iconPosition="left" class="w-full">
                   <p-inputicon class="pi pi-lock"></p-inputicon>
                   <input
                     pInputText
                     id="cuenta-old-password"
-                    type="password"
+                    [type]="showOldPassword ? 'text' : 'password'"
                     formControlName="oldPassword"
                     class="w-full"
                     placeholder=" "
                     data-testid="cuenta-old-password"
                   />
+                  <button 
+                    type="button" 
+                    class="toggle-password-btn"
+                    (click)="toggleOldPasswordVisibility()"
+                    [attr.aria-label]="showOldPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                  >
+                    <i [class]="showOldPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                  </button>
                 </p-iconfield>
                 <label for="cuenta-old-password">Contraseña Actual</label>
               </p-floatlabel>
@@ -194,18 +224,26 @@
 
             <!-- New Password -->
             <div class="form-field" [class.form-field--error]="hasError('newPassword')">
-              <p-floatlabel class="with-icon">
+              <p-floatlabel class="with-icon password-field">
                 <p-iconfield iconPosition="left" class="w-full">
                   <p-inputicon class="pi pi-key"></p-inputicon>
                   <input
                     pInputText
                     id="cuenta-new-password"
-                    type="password"
+                    [type]="showNewPassword ? 'text' : 'password'"
                     formControlName="newPassword"
                     class="w-full"
                     placeholder=" "
                     data-testid="cuenta-new-password"
                   />
+                  <button 
+                    type="button" 
+                    class="toggle-password-btn"
+                    (click)="toggleNewPasswordVisibility()"
+                    [attr.aria-label]="showNewPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                  >
+                    <i [class]="showNewPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                  </button>
                 </p-iconfield>
                 <label for="cuenta-new-password">Nueva Contraseña</label>
               </p-floatlabel>
@@ -218,18 +256,26 @@
 
             <!-- Confirm Password -->
             <div class="form-field" [class.form-field--error]="hasError('confirmPassword')">
-              <p-floatlabel class="with-icon">
+              <p-floatlabel class="with-icon password-field">
                 <p-iconfield iconPosition="left" class="w-full">
-                  <p-inputicon class="pi pi-check-circle"></p-inputicon>
+                  <p-inputicon class="pi pi-shield"></p-inputicon>
                   <input
                     pInputText
                     id="cuenta-confirm-password"
-                    type="password"
+                    [type]="showConfirmPassword ? 'text' : 'password'"
                     formControlName="confirmPassword"
                     class="w-full"
                     placeholder=" "
                     data-testid="cuenta-confirm-password"
                   />
+                  <button 
+                    type="button" 
+                    class="toggle-password-btn"
+                    (click)="toggleConfirmPasswordVisibility()"
+                    [attr.aria-label]="showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                  >
+                    <i [class]="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                  </button>
                 </p-iconfield>
                 <label for="cuenta-confirm-password">Confirmar Contraseña</label>
               </p-floatlabel>
@@ -238,23 +284,41 @@
               }
             </div>
           </div>
+
+          <!-- Botón de Actualizar -->
+          <div style="margin-top: 2rem; margin-bottom: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <button
+              id="cuenta-submit-btn"
+              type="submit"
+              [disabled]="loading() || accountForm.invalid"
+              style="
+                background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+                color: white;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.95rem;
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+                transition: all 0.2s ease;
+              "
+              [style.opacity]="loading() || accountForm.invalid ? '0.5' : '1'"
+              [style.cursor]="loading() || accountForm.invalid ? 'not-allowed' : 'pointer'"
+              data-testid="cuenta-submit"
+            >
+              @if (loading()) {
+                <i class="pi pi-spin pi-spinner"></i>
+              } @else {
+                <i class="pi pi-save"></i>
+              }
+              <span>Actualizar</span>
+            </button>
+          </div>
         </section>
-
-        <p-divider></p-divider>
-
-        <!-- Form Actions -->
-        <footer class="form-actions">
-          <button
-            pButton
-            type="submit"
-            label="Guardar Cambios"
-            icon="pi pi-check"
-            [loading]="loading()"
-            [disabled]="loading()"
-            class="submit-btn"
-            data-testid="cuenta-submit"
-          ></button>
-        </footer>
       </form>
     </p-card>
   }

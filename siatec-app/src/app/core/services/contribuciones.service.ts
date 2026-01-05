@@ -18,21 +18,59 @@ export class ContribucionesService extends BaseApiService {
   }
 
   /**
-   * Obtiene la lista de determinaciones vinculadas al contribuyente actual.
+   * Obtiene la lista de determinaciones vinculadas al contribuyente actual (ID numérico legacy).
    */
   getDeterminacionesPorContribuyente(contribuyenteId: number): Observable<Determinacion[]> {
-    const url = this.buildUrl(this.baseUrl, 'determinacion', 'contribuyente', contribuyenteId);
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', 'contribuyente', contribuyenteId);
     return this.get<Determinacion[] | { data?: Determinacion[] }>(url).pipe(
-      map(response => {
-        if (Array.isArray(response)) {
-          return response;
-        }
-        if (response && Array.isArray(response.data)) {
-          return response.data;
-        }
-        return [];
-      })
+      map(response => this.normalizeDeterminaciones(response))
     );
+  }
+
+  /**
+   * Obtiene la lista de determinaciones vinculadas al usuario autenticado por UUID.
+   * Este es el método preferido ya que usa el identificador único del usuario.
+   */
+  getDeterminacionesPorUsuario(usuarioId: string): Observable<Determinacion[]> {
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', 'usuario', usuarioId);
+    return this.get<Determinacion[] | { data?: Determinacion[] }>(url).pipe(
+      map(response => this.normalizeDeterminaciones(response))
+    );
+  }
+
+  /**
+   * Normaliza la respuesta de determinaciones (puede venir como array o envuelto en {data: [...]})
+   */
+  private normalizeDeterminaciones(response: Determinacion[] | { data?: Determinacion[] }): Determinacion[] {
+    if (Array.isArray(response)) {
+      return this.mapDeterminaciones(response);
+    }
+    if (response && Array.isArray(response.data)) {
+      return this.mapDeterminaciones(response.data);
+    }
+    return [];
+  }
+
+  /**
+   * Mapea las determinaciones normalizando propiedades PascalCase a camelCase
+   */
+  private mapDeterminaciones(items: any[]): Determinacion[] {
+    return items.map(d => ({
+      id: d.Id ?? d.id,
+      contribucionId: d.ContribucionId ?? d.contribucionId,
+      contribuyenteId: d.ContribuyenteId ?? d.contribuyenteId,
+      versionId: d.VersionId ?? d.versionId,
+      periodo: d.Periodo ?? d.periodo,
+      monto: d.MontoDeterminado ?? d.montoDeterminado ?? d.monto,
+      metadata: d.Metadata ?? d.metadata,
+      fechaCreacion: d.FechaCreacion ?? d.fechaCreacion,
+      contribucionInstance: d.Contribucion ? {
+        id: d.Contribucion.Id ?? d.Contribucion.id,
+        contribucionNombre: d.Contribucion.Nombre ?? d.Contribucion.nombre,
+        tipo: d.Contribucion.Tipo ?? d.Contribucion.tipo,
+        objeto: d.Contribucion.Objeto ?? d.Contribucion.objeto
+      } : (d.contribucionInstance ?? null)
+    }));
   }
 
   /**
@@ -57,7 +95,7 @@ export class ContribucionesService extends BaseApiService {
    * Ejecuta el cálculo de determinación con los datos proporcionados.
    */
   calcularDeterminacionCalculo(payload: DeterminacionCalculoRequest): Observable<DeterminacionCalculoResponse> {
-    const url = this.buildUrl(this.baseUrl, 'determinacion', payload.determinacionId, 'calculo');
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', payload.determinacionId, 'calculo');
     const queryString = this.buildQueryString(payload.data);
     const body = {
       contribucionVersionId: payload.versionId,
@@ -75,7 +113,7 @@ export class ContribucionesService extends BaseApiService {
    * Crea una determinación.
    */
   crearDeterminacion(data: Partial<Determinacion>): Observable<Determinacion> {
-    const url = this.buildUrl(this.baseUrl, 'determinacion');
+    const url = this.buildUrl(this.baseUrl, 'determinaciones');
     return this.post<Determinacion>(url, data);
   }
 
@@ -83,7 +121,7 @@ export class ContribucionesService extends BaseApiService {
    * Actualiza información de una determinación existente.
    */
   actualizarDeterminacion(determinacionId: number, data: Partial<Determinacion>): Observable<Determinacion> {
-    const url = this.buildUrl(this.baseUrl, 'determinacion', determinacionId);
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', determinacionId);
     return this.put<Determinacion>(url, data);
   }
 

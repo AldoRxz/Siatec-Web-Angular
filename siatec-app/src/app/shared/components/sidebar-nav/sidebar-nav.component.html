@@ -9,6 +9,7 @@
 
       <button
         *ngIf="!item.separator"
+        [id]="getItemId(item)"
         type="button"
         class="sidebar-link"
         [class.active]="isActive(item)"

@@ -21,6 +21,7 @@ import { MessageService } from 'primeng/api';
 // Services & Models
 import { AuthService } from '../../../core/services';
 import { User, UpdateAccountData } from '../../../core/models/auth.model';
+import { FloatLabelFilledDirective } from '../../../shared/directives';
 
 @Component({
   selector: 'app-dashboard-cuenta',
@@ -39,7 +40,8 @@ import { User, UpdateAccountData } from '../../../core/models/auth.model';
     IconFieldModule,
     InputIconModule,
     MessageModule,
-    SkeletonModule
+    SkeletonModule,
+    FloatLabelFilledDirective
   ],
   providers: [MessageService],
   templateUrl: './cuenta.component.html',
@@ -56,12 +58,18 @@ export class CuentaComponent implements OnInit {
   /** Loading state for initial data fetch */
   readonly initialLoading = signal(true);
 
+  /** Password visibility toggles */
+  showOldPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
+
   /** Current user data */
   private currentUser: User | null = null;
 
   /** Account form with validation */
   readonly accountForm = this.fb.nonNullable.group({
     // Personal info
+    userName: ['', [Validators.required, Validators.minLength(3)]],
     nombres: ['', [Validators.required, Validators.minLength(2)]],
     primerApellido: [''],
     segundoApellido: [''],
@@ -130,6 +138,7 @@ export class CuentaComponent implements OnInit {
 
     // Build payload matching API contract
     const payload: UpdateAccountData = {
+      userName: formValue.userName.trim(),
       email: formValue.email.trim(),
       nombres: formValue.nombres.trim(),
       primerApellido: formValue.primerApellido?.trim() || '',
@@ -197,17 +206,19 @@ export class CuentaComponent implements OnInit {
       }
 
       // Extract user data with fallbacks
-      const user = this.currentUser;
+      const user = this.currentUser as any;
       const identityInfo: Record<string, unknown> = (user.identityInfo as Record<string, unknown>) || {};
 
-      // Try different property name conventions (camelCase and PascalCase)
-      const nombres = (identityInfo['nombres'] || identityInfo['Nombres'] || user.nombre || '') as string;
-      const primerApellido = (identityInfo['primerApellido'] || identityInfo['PrimerApellido'] || '') as string;
-      const segundoApellido = (identityInfo['segundoApellido'] || identityInfo['SegundoApellido'] || '') as string;
-      const telefono = (identityInfo['telefono'] || identityInfo['Telefono'] || '') as string;
+      // Primero intentar con las propiedades directas del objeto user (respuesta del backend)
+      const userName = user.userName || (identityInfo['userName'] || identityInfo['UserName'] || '') as string;
+      const nombres = user.nombres || (identityInfo['nombres'] || identityInfo['Nombres'] || user.nombre || '') as string;
+      const primerApellido = user.primerApellido || (identityInfo['primerApellido'] || identityInfo['PrimerApellido'] || '') as string;
+      const segundoApellido = user.segundoApellido || (identityInfo['segundoApellido'] || identityInfo['SegundoApellido'] || '') as string;
+      const telefono = user.telefono || (identityInfo['telefono'] || identityInfo['Telefono'] || '') as string;
       const email = (user.email || identityInfo['email'] || identityInfo['Email'] || '') as string;
 
       this.accountForm.patchValue({
+        userName,
         nombres,
         primerApellido,
         segundoApellido,
@@ -246,5 +257,26 @@ export class CuentaComponent implements OnInit {
     if (control.errors['passwordMismatch']) return 'Las contraseñas no coinciden.';
 
     return 'Campo inválido.';
+  }
+
+  /**
+   * Toggle visibility for old password
+   */
+  toggleOldPasswordVisibility(): void {
+    this.showOldPassword = !this.showOldPassword;
+  }
+
+  /**
+   * Toggle visibility for new password
+   */
+  toggleNewPasswordVisibility(): void {
+    this.showNewPassword = !this.showNewPassword;
+  }
+
+  /**
+   * Toggle visibility for confirm password
+   */
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 }

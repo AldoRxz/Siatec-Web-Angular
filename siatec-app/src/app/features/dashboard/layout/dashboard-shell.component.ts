@@ -64,7 +64,15 @@ export class DashboardShellComponent implements OnInit {
     if (!user) {
       return 'Usuario Contribuyente';
     }
-    return [user.nombre, user.apellidos].filter(Boolean).join(' ').trim() || user.email || 'Usuario Contribuyente';
+
+    // Usar el userName directamente del backend
+    const userName = (user as any).userName;
+    if (userName?.trim()) {
+      return userName.trim();
+    }
+
+    // Usar email como fallback
+    return user.email?.split('@')[0] || 'Usuario Contribuyente';
   }
 
   get userEmail(): string {

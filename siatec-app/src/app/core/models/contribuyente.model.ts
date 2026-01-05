@@ -51,3 +51,27 @@ export interface ContribuyenteDocumentType {
   estatus?: string;
   fechaAsignacion?: string;
 }
+
+/**
+ * Dashboard del contribuyente con estadísticas
+ */
+export interface ContribuyenteDashboard {
+  contribuyenteId: number;
+  activo: boolean;
+  cantidadCitas: number;
+  cantidadNotificaciones: number;
+  cantidadDeterminaciones: number;
+  cantidadArchivos: number;
+  ultimaSolicitud?: UltimaSolicitudInscripcion;
+}
+
+/**
+ * Información resumida de la última solicitud de inscripción
+ */
+export interface UltimaSolicitudInscripcion {
+  id: number;
+  estado: string; // 'Enviada' | 'Aprobada' | 'Rechazada'
+  fechaSolicitud: string;
+  fechaRevision?: string;
+  comentario?: string;
+}

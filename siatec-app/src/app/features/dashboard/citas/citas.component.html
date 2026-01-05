@@ -83,6 +83,7 @@
               <td class="text-center">
                 <div class="action-buttons">
                   <button 
+                    id="citas-ver-detalle-btn-{{ cita.id }}"
                     pButton 
                     pRipple
                     type="button" 
@@ -94,6 +95,7 @@
                   </button>
                   @if (cita.status === 'AGENDADA') {
                     <button 
+                      id="citas-cancelar-btn-{{ cita.id }}"
                       pButton 
                       pRipple
                       type="button" 

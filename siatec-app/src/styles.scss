@@ -3,6 +3,40 @@
 @import '@angular/cdk/overlay-prebuilt.css';
 @import '../node_modules/primeicons/primeicons.css';
 
+/* Estilos globales para modales de notificación - Eliminar bordes negros de PrimeNG */
+.notification-dialog-shell {
+  .p-dialog {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .p-dialog-header {
+    display: none !important;
+    background: none !important;
+    border: none !important;
+  }
+
+  .p-dialog-content {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 1.5rem !important;
+  }
+
+  .p-component-overlay {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+/* Sobrescribir cualquier estilo de PrimeNG para este modal específico */
+.p-dialog.notification-dialog-shell,
+.p-dialog-mask .notification-dialog-shell .p-dialog {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

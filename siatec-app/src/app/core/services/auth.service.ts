@@ -99,9 +99,7 @@ export class AuthService {
   requestPasswordRecovery(payload: PasswordRecoveryRequest): Observable<PasswordRecoveryResponse> {
     const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/password/recovery`;
     const body = {
-      email: payload.email,
-      identifier: payload.identifier,
-      channel: payload.contactPreference || 'email'
+      email: payload.email
     };
 
     return this.http.post<PasswordRecoveryResponse>(url, body).pipe(
@@ -133,7 +131,7 @@ export class AuthService {
   }
 
   /**
-   * Obtiene el ID del contribuyente actual
+   * Obtiene el ID del contribuyente actual (numérico para compatibilidad legacy)
    */
   getContribuyenteId(): number | null {
     // Prioridad 1: localStorage
@@ -149,6 +147,19 @@ export class AuthService {
       return contribuyenteId;
     }
     return null;
+  }
+
+  /**
+   * Obtiene el UUID del usuario autenticado actual.
+   * Usado para endpoints que requieren el identificador único del usuario.
+   */
+  getUserId(): string | null {
+    const user = this.userSignal();
+    if (!user) return null;
+
+    // El id puede ser string (UUID) o number
+    const id = user.identityInfo?.id ?? user.id;
+    return id ? String(id) : null;
   }
 
   /**
@@ -179,19 +190,33 @@ export class AuthService {
   /**
    * Maneja el éxito de autenticación
    */
-  private handleAuthSuccess(response: AuthResponse): void {
-    if (response.token) {
-      this.setToken(response.token);
+  private handleAuthSuccess(response: AuthResponse | any): void {
+    // Soportar diferentes estructuras de respuesta del backend
+    const token = response.token || response.accessToken || response.data?.token;
+    // El backend envía el usuario directamente en response.data, NO en response.data.user
+    const user = response.data || response.user || response.data?.user;
+
+    console.log('[AuthService] handleAuthSuccess - response:', response);
+    console.log('[AuthService] handleAuthSuccess - token:', token);
+    console.log('[AuthService] handleAuthSuccess - user:', user);
+
+    if (token) {
+      this.setToken(token);
+    } else {
+      console.warn('[AuthService] No se recibió token en la respuesta');
     }
 
-    if (response.user) {
-      this.setUser(response.user);
+    if (user) {
+      this.setUser(user);
+    } else {
+      console.warn('[AuthService] No se recibió usuario en la respuesta');
     }
 
-    // Guardar contribuyenteId si está disponible
-    const contribId = response.user?.contribuyenteId || response.user?.id;
+    // Guardar contribuyenteId si está disponible - el backend lo envía en identityInfo.id
+    const contribId = user?.identityInfo?.id || user?.contribuyenteId || user?.idContribuyente || user?.id;
     if (contribId) {
       localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribId.toString());
+      console.log('[AuthService] contribuyenteId guardado:', contribId);
     }
   }
 

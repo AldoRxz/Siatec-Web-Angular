@@ -459,9 +459,11 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 
   // Float label animation states
   p-floatlabel:focus-within > label,
+  p-floatlabel.has-value > label,
   p-floatlabel:has(input:focus) > label,
   p-floatlabel:has(input:not(:placeholder-shown)) > label,
-  p-floatlabel:has(input:-webkit-autofill) > label {
+  p-floatlabel:has(input:-webkit-autofill) > label,
+  p-floatlabel:has(input[value]:not([value=""])) > label {
     top: -0.625rem;
     left: 0.875rem;
     font-size: 0.75rem;
@@ -1926,3 +1928,405 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
   }
 }
 
+// ========================================
+// Document Upload Section
+// ========================================
+.document-upload-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 2px dashed $border-color;
+  border-radius: 0.875rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  }
+
+  .upload-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    i {
+      font-size: 1.5rem;
+      color: $primary-color;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: $text-dark;
+    }
+  }
+
+  .upload-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .upload-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+    color: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    i {
+      font-size: 1rem;
+    }
+
+    &[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  .upload-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $primary-color;
+    font-size: 0.875rem;
+    font-weight: 500;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  .loading-docs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $text-medium;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 0.5rem;
+
+    i {
+      font-size: 1rem;
+      color: $primary-color;
+    }
+  }
+}
+
+// ============================================
+// Documents List (New Section)
+// ============================================
+.documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid $border-light;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+  }
+
+  &--required {
+    border-left: 3px solid $warn-color;
+    background: linear-gradient(90deg, rgba(249, 115, 22, 0.05) 0%, rgba(255, 255, 255, 0.9) 100%);
+  }
+}
+
+.document-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.document-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
+  border-radius: 0.5rem;
+  color: $primary-color;
+  flex-shrink: 0;
+
+  i {
+    font-size: 1.25rem;
+  }
+}
+
+.document-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.document-name {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $text-dark;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.required-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  background: $warn-color;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+  border-radius: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.document-description {
+  margin: 0;
+  font-size: 0.75rem;
+  color: $text-light;
+  line-height: 1.4;
+}
+
+.document-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.upload-button-small {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+
+  &:hover {
+    background: $primary-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  i {
+    font-size: 0.875rem;
+  }
+}
+
+.upload-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: $primary-bg;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: 0.5rem;
+  color: $primary-color;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+.upload-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: $text-light;
+  font-weight: normal;
+}
+
+// ============================================
+// Status Cards (Activo / En Proceso)
+// ============================================
+.status-card {
+  margin-bottom: 2rem;
+
+  :host ::ng-deep .p-card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid transparent;
+  }
+
+  &.status-card--success :host ::ng-deep .p-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+
+  &.status-card--processing :host ::ng-deep .p-card {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.05) 0%, rgba(251, 146, 60, 0.02) 100%);
+    border-color: rgba(251, 146, 60, 0.2);
+  }
+}
+
+.status-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  .status-card--success & {
+    background: rgba(16, 185, 129, 0.15);
+    i {
+      font-size: 2rem;
+      color: #10b981;
+    }
+  }
+
+  .status-card--processing & {
+    background: rgba(251, 146, 60, 0.15);
+    i {
+      font-size: 2rem;
+      color: #f59e0b;
+    }
+  }
+}
+
+.status-info {
+  flex: 1;
+
+  h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+
+    .status-card--success & {
+      color: #065f46;
+    }
+
+    .status-card--processing & {
+      color: #92400e;
+    }
+  }
+
+  p {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    line-height: 1.6;
+
+    .status-card--success & {
+      color: #047857;
+    }
+
+    .status-card--processing & {
+      color: #b45309;
+    }
+  }
+
+  .status-detail {
+    font-size: 0.9375rem;
+    opacity: 0.9;
+  }
+}
+
+.status-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  margin-bottom: 1.5rem;
+}
+
+.status-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+
+  .label {
+    font-size: 0.8125rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  strong {
+    color: #0f172a;
+    font-size: 1rem;
+  }
+
+  .comment {
+    margin: 0;
+    color: #475569;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    padding: 0.75rem;
+    background: rgba(241, 245, 249, 0.8);
+    border-radius: 0.5rem;
+    border-left: 3px solid #f59e0b;
+  }
+}
+
+.status-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}

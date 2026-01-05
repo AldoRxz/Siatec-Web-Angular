@@ -211,7 +211,9 @@
   }
 
   p-floatlabel:focus-within > label,
-  p-floatlabel > input:not(:placeholder-shown) + label {
+  p-floatlabel.has-value > label,
+  p-floatlabel > input:not(:placeholder-shown) + label,
+  p-floatlabel:has(input[value]:not([value=""])) > label {
     top: -0.55rem;
     font-size: 0.8rem;
     color: #1d4ed8;

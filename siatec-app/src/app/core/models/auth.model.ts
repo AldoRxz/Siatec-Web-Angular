@@ -55,6 +55,7 @@ export interface CreateAccountData {
  */
 export interface UpdateAccountData {
   id?: number;
+  userName: string;
   email: string;
   nombres: string;
   primerApellido?: string;

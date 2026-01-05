@@ -14,7 +14,60 @@
     <p-tag *ngIf="processingState()" [value]="processingState()?.status || 'Procesando'" severity="warn" class="records-badge"></p-tag>
   </header>
 
-  <!-- Alert de estado procesando -->
+  <!-- Estado: Contribuyente activo -->
+  @if (dashboardData()?.activo && !shouldShowForm()) {
+    <p-card class="status-card status-card--success">
+      <div class="status-content">
+        <div class="status-icon">
+          <i class="pi pi-check-circle"></i>
+        </div>
+        <div class="status-info">
+          <h2>¡Registro completado!</h2>
+          <p>Tu cuenta está activa en el Registro Estatal de Contribuyentes.</p>
+          <p class="status-detail">Ya puedes acceder a todos los servicios disponibles en el portal.</p>
+        </div>
+      </div>
+    </p-card>
+  }
+
+  <!-- Estado: Solicitud en proceso -->
+  @if (!dashboardData()?.activo && !shouldShowForm() && dashboardData()?.ultimaSolicitud) {
+    <p-card class="status-card status-card--processing">
+      <div class="status-content">
+        <div class="status-icon">
+          <i class="pi pi-spin pi-spinner"></i>
+        </div>
+        <div class="status-info">
+          <h2>Solicitud en revisión</h2>
+          <p>Tu solicitud de inscripción está siendo procesada por Tesorería.</p>
+          <p class="status-detail">Te notificaremos cuando haya un cambio en el estado de tu solicitud.</p>
+        </div>
+      </div>
+      
+      <div class="status-details">
+        <div class="status-field">
+          <span class="label">Estado actual</span>
+          <p-tag [value]="dashboardData()?.ultimaSolicitud?.estado || 'Procesando'" severity="warn"></p-tag>
+        </div>
+        <div class="status-field">
+          <span class="label">Fecha de solicitud</span>
+          <strong>{{ dashboardData()?.ultimaSolicitud?.fechaSolicitud | date: 'medium' }}</strong>
+        </div>
+        @if (dashboardData()?.ultimaSolicitud?.comentario) {
+          <div class="status-field status-field--full">
+            <span class="label">Comentarios</span>
+            <p class="comment">{{ dashboardData()?.ultimaSolicitud?.comentario }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="status-actions">
+        <button pButton label="Volver al panel" icon="pi pi-arrow-left" (click)="navigate('/dashboard/panel')" type="button"></button>
+      </div>
+    </p-card>
+  }
+
+  <!-- Alert de estado procesando (Legacy) -->
   <p-card *ngIf="processingState()" class="state-card">
     <div class="state-info">
       <i class="pi pi-info-circle"></i>
@@ -28,6 +81,7 @@
   </p-card>
 
   <!-- Main Form Card -->
+  @if (shouldShowForm()) {
   <p-card class="inscripcion-card">
     <form [formGroup]="form" (ngSubmit)="submitSolicitud()">
       
@@ -65,6 +119,7 @@
               </div>
               
               <button 
+                id="inscripcion-validar-rfc-btn"
                 pButton 
                 label="Validar"
                 icon="pi pi-arrow-right"
@@ -120,6 +175,7 @@
           </div>
 
           <button 
+            id="inscripcion-continuar-btn"
             pButton 
             label="CONTINUAR CON LA INSCRIPCIÓN" 
             icon="pi pi-arrow-right" 
@@ -133,7 +189,7 @@
 
       <!-- Stepper para Persona Física -->
       @if (mostrarFormulario() && tipoPersona() === 'fisica') {
-      <p-stepper [value]="1" [linear]="true">
+      <p-stepper [value]="1" [linear]="true" (onActiveStepChange)="onStepChange($event)">
         <p-step-list>
           <p-step [value]="1">Identificación</p-step>
           <p-step [value]="2">Domicilio Fiscal</p-step>
@@ -148,6 +204,43 @@
           <p-step-panel [value]="1">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content" formGroupName="identificacion">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(0) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos de Identificación</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 0)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
                 <h3 class="step-title">
                   <i class="pi pi-user"></i> Datos de la Persona Física
                 </h3>
@@ -217,7 +310,7 @@
                   </div>
                 </div>
                 <div class="step-actions">
-                  <button pButton label="CONTINUAR" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(2)" type="button" class="step-button-primary"></button>
+                  <button id="inscripcion-step1-continuar-btn" pButton label="CONTINUAR" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(2)" type="button" class="step-button-primary"></button>
                 </div>
               </div>
             </ng-template>
@@ -227,6 +320,79 @@
           <p-step-panel [value]="2">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content" formGroupName="domicilio">
+                
+                <!-- Componente de carga de documentos -->
+                @if (getDocumentosSeccionActual().length > 0) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos Requeridos</h3>
+                    <p class="upload-subtitle">Sube los documentos necesarios para esta sección</p>
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      <span>Cargando documentos requeridos...</span>
+                    </div>
+                  } @else {
+                    <div class="documents-list">
+                      @for (documento of getDocumentosSeccionActual(); track documento.id) {
+                        <div class="document-item" [class.document-item--required]="documento.esObligatorio">
+                          <div class="document-info">
+                            <div class="document-icon">
+                              <i class="pi pi-file"></i>
+                            </div>
+                            <div class="document-details">
+                              <h4 class="document-name">
+                                {{ documento.catalogoDocumento?.nombre || 'Documento' }}
+                                @if (documento.esObligatorio) {
+                                  <span class="required-badge">Obligatorio</span>
+                                }
+                              </h4>
+                              @if (documento.catalogoDocumento?.descripcion) {
+                                <p class="document-description">{{ documento.catalogoDocumento.descripcion }}</p>
+                              }
+                            </div>
+                          </div>
+                          <div class="document-actions">
+                            <label class="upload-button-small">
+                              <i class="pi pi-upload"></i>
+                              <span>Subir</span>
+                              <input 
+                                type="file" 
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                (change)="subirArchivo($event, documento.catalogoDocumentoId)"
+                                [disabled]="subiendoArchivo()"
+                                style="display: none;"
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                  
+                  @if (subiendoArchivo()) {
+                    <div class="upload-status-bar">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      <span>Subiendo archivo...</span>
+                    </div>
+                  }
+                </div>
+                }
+                
+                <!-- Formulario original -->
+                <div class="step-header">
+                  <i class="pi pi-map-marker"></i>
+                  <h3>Domicilio Fiscal</h3>
+                </div>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                     <h3 class="step-title">
                       <i class="pi pi-map-marker"></i>
                       Dirección Fiscal
@@ -315,8 +481,8 @@
                       </div>
                     </div>
                   <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(1)" type="button" class="step-button-secondary"></button>
-                    <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(3)" type="button" class="step-button-primary"></button>
+                    <button id="inscripcion-step2-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(1)" type="button" class="step-button-secondary"></button>
+                    <button id="inscripcion-step2-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(3)" type="button" class="step-button-primary"></button>
                   </div>
               </div>
             </ng-template>
@@ -326,6 +492,44 @@
           <p-step-panel [value]="3">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(2) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos de Régimen y Actividades</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 2)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                 <h3 class="step-title">
                       <i class="pi pi-briefcase"></i>
                       Régimen Fiscal y Actividades Económicas
@@ -348,7 +552,7 @@
                           </p-iconfield>
                           <label for="regimen_input_pf">Descripción del régimen</label>
                         </p-floatlabel>
-                        <button pButton type="button" icon="pi pi-plus" severity="success" (click)="addRegimen()"></button>
+                        <button id="inscripcion-add-regimen-btn" pButton type="button" icon="pi pi-plus" severity="success" (click)="addRegimen()"></button>
                       </div>
                       <div class="tag-section__chips">
                         @for (regimen of regimenes(); track trackByString($index, regimen)) {
@@ -374,7 +578,7 @@
                           </p-iconfield>
                           <label for="actividad_input_pf">Nombre de actividad</label>
                         </p-floatlabel>
-                        <button pButton type="button" icon="pi pi-plus" severity="success" (click)="addActividad()"></button>
+                        <button id="inscripcion-add-actividad-btn" pButton type="button" icon="pi pi-plus" severity="success" (click)="addActividad()"></button>
                       </div>
                       <div class="tag-section__chips">
                         @for (actividad of actividades(); track trackByString($index, actividad)) {
@@ -383,8 +587,8 @@
                       </div>
                     </div>
                   <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(2)" type="button" class="step-button-secondary"></button>
-                    <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" type="button" class="step-button-primary"></button>
+                    <button id="inscripcion-step3-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(2)" type="button" class="step-button-secondary"></button>
+                    <button id="inscripcion-step3-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" type="button" class="step-button-primary"></button>
                   </div>
               </div>
             </ng-template>
@@ -394,6 +598,44 @@
           <p-step-panel [value]="4">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(3) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos de Impuestos</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 3)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                 <h3 class="step-title">
                       <i class="pi pi-dollar"></i>
                       Selecciona los Impuestos
@@ -416,8 +658,8 @@
                       }
                     </div>
                   <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(3)" type="button" class="step-button-secondary"></button>
-                    <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(5)" type="button" class="step-button-primary"></button>
+                    <button id="inscripcion-step4-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(3)" type="button" class="step-button-secondary"></button>
+                    <button id="inscripcion-step4-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(5)" type="button" class="step-button-primary"></button>
                   </div>
               </div>
             </ng-template>
@@ -427,6 +669,44 @@
           <p-step-panel [value]="5">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content" formGroupName="representante">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(4) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos del Representante Legal</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 4)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                 <h3 class="step-title">
                       <i class="pi pi-user-edit"></i>
                       Datos del Representante Legal (opcional)
@@ -479,8 +759,8 @@
                       </div>
                     </div>
                   <div class="step-actions">
-                    <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(4)" type="button" class="step-button-secondary"></button>
-                    <button pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(6)" type="button" class="step-button-primary"></button>
+                    <button id="inscripcion-step5-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(4)" type="button" class="step-button-secondary"></button>
+                    <button id="inscripcion-step5-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(6)" type="button" class="step-button-primary"></button>
                   </div>
               </div>
             </ng-template>
@@ -490,6 +770,44 @@
           <p-step-panel [value]="6">
             <ng-template #content let-activateCallback="activateCallback">
               <div class="step-content" formGroupName="pagos">
+                
+                <!-- Componente de carga de documentos -->
+                @if (mostrarSeccionDocumentos(5) || subiendoArchivo()) {
+                <div class="document-upload-section">
+                  <div class="upload-header">
+                    <i class="pi pi-file-pdf"></i>
+                    <h3>Documentos de la Persona que Efectuará Pagos</h3>
+                  </div>
+                  
+                  <div class="upload-controls">
+                    <label class="upload-button">
+                      <i class="pi pi-upload"></i>
+                      <span>Subir Documento</span>
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onFileSelected($event, 5)"
+                        [disabled]="subiendoArchivo()"
+                        style="display: none;"
+                      />
+                    </label>
+                    @if (subiendoArchivo()) {
+                      <span class="upload-status">
+                        <i class="pi pi-spinner pi-spin"></i>
+                        Procesando documento...
+                      </span>
+                    }
+                  </div>
+                  
+                  @if (cargandoDocumentos()) {
+                    <div class="loading-docs">
+                      <i class="pi pi-spinner pi-spin"></i>
+                      Cargando documentos...
+                    </div>
+                  }
+                </div>
+                }
+                
                 <h3 class="step-title">
                   <i class="pi pi-wallet"></i>
                   Persona que efectuará los pagos (opcional)
@@ -533,8 +851,8 @@
                   </div>
                 </div>
                 <div class="step-actions">
-                  <button pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(5)" type="button" class="step-button-secondary"></button>
-                  <button pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
+                  <button id="inscripcion-step6-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(5)" type="button" class="step-button-secondary"></button>
+                  <button id="inscripcion-submit-btn" pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
                 </div>
               </div>
             </ng-template>
@@ -552,4 +870,5 @@
       }
     </form>
   </p-card>
+  }
 </div>

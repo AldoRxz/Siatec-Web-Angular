@@ -1,7 +1,7 @@
 import { Component, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { CardModule } from 'primeng/card';
@@ -15,6 +15,7 @@ import { MessageModule } from 'primeng/message';
 import { DynamicDialogModule, DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthService } from '../../../core/services';
 import { NotificationDialogComponent, NotificationDialogData } from '../../../shared/components/notification-dialog/notification-dialog.component';
+import { FloatLabelFilledDirective } from '../../../shared/directives';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,8 @@ import { NotificationDialogComponent, NotificationDialogData } from '../../../sh
     InputIconModule,
     DividerModule,
     MessageModule,
-    DynamicDialogModule
+    DynamicDialogModule,
+    FloatLabelFilledDirective
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -39,6 +41,7 @@ import { NotificationDialogComponent, NotificationDialogData } from '../../../sh
 export class LoginComponent implements OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private dialogService = inject(DialogService);
 
@@ -47,6 +50,7 @@ export class LoginComponent implements OnDestroy {
   loginForm: FormGroup;
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -69,6 +73,9 @@ export class LoginComponent implements OnDestroy {
       const response = await firstValueFrom(this.authService.login({ email, password }));
       
       if (response.token) {
+        // Obtener URL de retorno o usar dashboard por defecto
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        
         this.openStatusDialog(
           {
             title: 'Inicio de sesión exitoso',
@@ -78,7 +85,7 @@ export class LoginComponent implements OnDestroy {
             severity: 'success'
           },
           {
-            onClose: () => this.router.navigate(['/dashboard']),
+            onClose: () => this.router.navigateByUrl(returnUrl),
             autoCloseMs: 1800
           }
         );
@@ -99,6 +106,10 @@ export class LoginComponent implements OnDestroy {
     return this.loginForm.get('password');
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   private openStatusDialog(
     payload: NotificationDialogData,
     options?: { onClose?: () => void; autoCloseMs?: number }
@@ -106,11 +117,12 @@ export class LoginComponent implements OnDestroy {
     this.dialogRef?.close();
 
     const ref = this.dialogService.open(NotificationDialogComponent, {
-      header: payload.title || 'Notificación',
+      showHeader: false,
       width: '420px',
       styleClass: 'notification-dialog-shell',
       data: payload,
-      modal: true
+      modal: true,
+      closable: false
     })!;
 
     this.dialogRef = ref;
