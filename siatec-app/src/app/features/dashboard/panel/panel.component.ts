@@ -155,14 +155,8 @@ export class PanelComponent implements OnInit {
     return true;
   });
 
-  private readonly documentCardEffect = computed(() => {
-    const summary = this.documentSummary();
-    this.updateCardValue('archivos', `${summary.total} asignados`);
-    return summary.total;
-  });
-
   ngOnInit(): void {
-    this.documentsService.load();
+    // this.documentsService.load(); // Se actualiza desde el dashboard
     this.loadInscripcionState();
     this.loadDashboardData();
   }
