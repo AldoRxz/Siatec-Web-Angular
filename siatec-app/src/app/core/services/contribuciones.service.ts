@@ -21,7 +21,7 @@ export class ContribucionesService extends BaseApiService {
    * Obtiene la lista de determinaciones vinculadas al contribuyente actual (ID numérico legacy).
    */
   getDeterminacionesPorContribuyente(contribuyenteId: number): Observable<Determinacion[]> {
-    const url = this.buildUrl(this.baseUrl, 'determinacion', 'contribuyente', contribuyenteId);
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', 'contribuyente', contribuyenteId);
     return this.get<Determinacion[] | { data?: Determinacion[] }>(url).pipe(
       map(response => this.normalizeDeterminaciones(response))
     );
@@ -95,7 +95,7 @@ export class ContribucionesService extends BaseApiService {
    * Ejecuta el cálculo de determinación con los datos proporcionados.
    */
   calcularDeterminacionCalculo(payload: DeterminacionCalculoRequest): Observable<DeterminacionCalculoResponse> {
-    const url = this.buildUrl(this.baseUrl, 'determinacion', payload.determinacionId, 'calculo');
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', payload.determinacionId, 'calculo');
     const queryString = this.buildQueryString(payload.data);
     const body = {
       contribucionVersionId: payload.versionId,
@@ -113,7 +113,7 @@ export class ContribucionesService extends BaseApiService {
    * Crea una determinación.
    */
   crearDeterminacion(data: Partial<Determinacion>): Observable<Determinacion> {
-    const url = this.buildUrl(this.baseUrl, 'determinacion');
+    const url = this.buildUrl(this.baseUrl, 'determinaciones');
     return this.post<Determinacion>(url, data);
   }
 
@@ -121,7 +121,7 @@ export class ContribucionesService extends BaseApiService {
    * Actualiza información de una determinación existente.
    */
   actualizarDeterminacion(determinacionId: number, data: Partial<Determinacion>): Observable<Determinacion> {
-    const url = this.buildUrl(this.baseUrl, 'determinacion', determinacionId);
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', determinacionId);
     return this.put<Determinacion>(url, data);
   }
 
