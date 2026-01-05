@@ -224,9 +224,9 @@ export class InscripcionComponent implements OnInit {
   }
 
   /**
-   * Sube un archivo para un documento específico
+   * Sube un archivo para un documento específico y lo procesa con Paccioli
    */
-  subirArchivo(event: Event, catalogoDocumentoId: number): void {
+  async subirArchivo(event: Event, catalogoDocumentoId: number): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
@@ -243,18 +243,25 @@ export class InscripcionComponent implements OnInit {
 
     this.subiendoArchivo.set(true);
     
+    // 1. Subir el archivo al backend
     this.inscripcionDocumentosService.uploadDocumento(contribuyenteId, file, catalogoDocumentoId)
-      .pipe(finalize(() => this.subiendoArchivo.set(false)))
+      .pipe(finalize(() => {
+        // Limpiar el input al final de todo el proceso
+        input.value = '';
+      }))
       .subscribe({
-        next: (response) => {
+        next: async (response) => {
           console.log('Archivo subido:', response);
           this.messageService.add({ 
             severity: 'success', 
             summary: 'Archivo subido', 
             detail: `${file.name} se subió correctamente.` 
           });
-          // Limpiar el input
-          input.value = '';
+          
+          // 2. Procesar con Paccioli para extraer información
+          await this.procesarArchivoConPaccioliEnSeccion(file, this.currentStep());
+          
+          this.subiendoArchivo.set(false);
         },
         error: (error) => {
           console.error('Error al subir archivo:', error);
@@ -263,9 +270,45 @@ export class InscripcionComponent implements OnInit {
             summary: 'Error al subir', 
             detail: error?.error?.mensaje || 'No se pudo subir el archivo.' 
           });
-          input.value = '';
+          this.subiendoArchivo.set(false);
         }
       });
+  }
+
+  /**
+   * Procesa un archivo con Paccioli enviando los campos actuales de la sección
+   */
+  private async procesarArchivoConPaccioliEnSeccion(file: File, stepIndex: number): Promise<void> {
+    if (!file) return;
+
+    try {
+      // Obtener el FormGroup de la sección actual
+      const currentFormGroup = this.getCurrentFormGroup(stepIndex);
+      const currentFormValue = currentFormGroup?.value || {};
+      
+      console.log('Enviando a Paccioli - Archivo:', file.name);
+      console.log('Enviando a Paccioli - Campos actuales:', currentFormValue);
+      
+      // Procesar con Paccioli
+      const response = await this.paccioliService.procesarArchivos([file], currentFormValue);
+      
+      console.log('Respuesta de Paccioli:', response);
+      
+      // Rellenar campos con la respuesta
+      if (response?.data || response?.extractedFields) {
+        this.rellenarCamposDesdeRespuesta(response, stepIndex);
+        
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Campos actualizados',
+          detail: 'Se extrajeron datos del documento y se rellenaron los campos automáticamente'
+        });
+      }
+    } catch (error: any) {
+      console.error('Error al procesar archivo con Paccioli:', error);
+      // No mostramos error crítico aquí ya que el archivo ya se subió exitosamente
+      console.warn('No se pudo procesar con Paccioli, pero el archivo se subió correctamente');
+    }
   }
 
   /**
