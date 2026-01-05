@@ -6,6 +6,7 @@ import { TagModule } from 'primeng/tag';
 import { AuthService } from '../../../core/services';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
 import { DashboardDocumentsService } from '../services/dashboard-documents.service';
+import { DashboardService, ContribuyenteDashboard } from '../services/dashboard.service';
 
 interface PanelCard {
   key: 'cuenta' | 'citas' | 'contribuciones' | 'archivos';
@@ -45,6 +46,10 @@ export class PanelComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly notificationsService = inject(DashboardNotificationsService);
   private readonly documentsService = inject(DashboardDocumentsService);
+  private readonly dashboardService = inject(DashboardService);
+  
+  readonly dashboardData = signal<ContribuyenteDashboard | null>(null);
+  readonly loadingDashboard = signal<boolean>(true);
   readonly cards = signal<PanelCard[]>([
     {
       key: 'cuenta',
@@ -139,6 +144,7 @@ export class PanelComponent implements OnInit {
   ngOnInit(): void {
     this.documentsService.load();
     this.loadInscripcionState();
+    this.loadDashboardData();
   }
 
   get userName(): string {
@@ -254,6 +260,53 @@ export class PanelComponent implements OnInit {
     const regimenes = Array.isArray(payload?.regimenes) ? payload.regimenes.length : 0;
     const impuestos = Array.isArray(payload?.impuestos) ? payload.impuestos.length : 0;
     return `${regimenes} régimen(es) · ${impuestos} impuesto(s)`;
+  }
+
+  private loadDashboardData(): void {
+    const contribuyenteId = this.authService.getContribuyenteId();
+    
+    if (!contribuyenteId) {
+      console.warn('[Panel] No se pudo obtener el ID del contribuyente');
+      this.loadingDashboard.set(false);
+      return;
+    }
+
+    this.loadingDashboard.set(true);
+    
+    this.dashboardService.getDashboard(contribuyenteId).subscribe({
+      next: (data) => {
+        console.log('[Panel] Dashboard data loaded:', data);
+        this.dashboardData.set(data);
+        this.updateCardsWithDashboardData(data);
+        this.loadingDashboard.set(false);
+      },
+      error: (error) => {
+        console.error('[Panel] Error loading dashboard data:', error);
+        this.loadingDashboard.set(false);
+      }
+    });
+  }
+
+  private updateCardsWithDashboardData(data: ContribuyenteDashboard): void {
+    // Actualizar tarjeta de cuenta
+    const cuentaValue = data.activo ? 'Usuario activo' : 'Usuario inactivo';
+    this.updateCardValue('cuenta', cuentaValue);
+
+    // Actualizar tarjeta de citas
+    const citasValue = data.cantidadCitas === 0 
+      ? 'Sin citas' 
+      : `${data.cantidadCitas} ${data.cantidadCitas === 1 ? 'próxima' : 'próximas'}`;
+    this.updateCardValue('citas', citasValue);
+
+    // Actualizar tarjeta de determinaciones
+    const determinacionesValue = data.cantidadDeterminaciones === 0
+      ? 'Sin determinaciones'
+      : `${data.cantidadDeterminaciones} ${data.cantidadDeterminaciones === 1 ? 'pendiente' : 'pendientes'}`;
+    this.updateCardValue('contribuciones', determinacionesValue);
+
+    // Actualizar tarjeta de archivos
+    const archivosValue = `${data.cantidadArchivos} ${data.cantidadArchivos === 1 ? 'asignado' : 'asignados'}`;
+    this.updateCardValue('archivos', archivosValue);
   }
 
 }

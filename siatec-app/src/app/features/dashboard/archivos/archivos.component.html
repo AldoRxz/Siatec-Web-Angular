@@ -144,47 +144,51 @@
               <h3 class="doc-card__title">{{ doc.nombre }}</h3>
               
               @if (doc.archivos.length > 0) {
-                <div class="doc-card__file">
-                  <div class="file-info">
-                    <i class="pi pi-file"></i>
-                    <div class="file-details">
-                      <span class="file-name">{{ doc.archivos[0].nombre }}</span>
-                      <span class="file-size">{{ formatBytes(doc.archivos[0].tamanoBytes) }}</span>
-                    </div>
-                  </div>
-                  @if (doc.archivos.length > 1) {
-                    <button class="more-files-btn" (click)="toggleExpanded(doc)">
-                      <i class="pi" [class.pi-chevron-down]="!isExpanded(doc)" [class.pi-chevron-up]="isExpanded(doc)"></i>
-                      <span>{{ isExpanded(doc) ? 'Ocultar' : '+' + (doc.archivos.length - 1) + ' más' }}</span>
-                    </button>
-                  }
-                </div>
-
-                <!-- Archivos adicionales expandidos -->
-                @if (isExpanded(doc) && doc.archivos.length > 1) {
-                  <div class="extra-files">
-                    @for (file of doc.archivos.slice(1); track file.id) {
-                      <div class="extra-file">
-                        <div class="extra-file__info">
-                          <i class="pi pi-file"></i>
-                          <span>{{ file.nombre }}</span>
-                          <span class="extra-file__size">{{ formatBytes(file.tamanoBytes) }}</span>
-                        </div>
-                        <div class="extra-file__actions">
-                          <button class="icon-btn" title="Ver" (click)="viewFile(doc, file)">
-                            <i class="pi pi-eye"></i>
-                          </button>
-                          <button class="icon-btn" title="Descargar" (click)="downloadFile(doc, file)">
-                            <i class="pi pi-download"></i>
-                          </button>
-                          <button class="icon-btn icon-btn--danger" title="Eliminar" (click)="confirmDelete(doc, file)">
-                            <i class="pi pi-trash"></i>
-                          </button>
+                <div class="files-list">
+                  @for (file of doc.archivos; track file.id) {
+                    <div class="file-item">
+                      <div class="file-item__info">
+                        <i class="pi pi-file-pdf"></i>
+                        <div class="file-item__details">
+                          <span class="file-item__name" [title]="file.nombre">{{ file.nombre }}</span>
+                          <span class="file-item__meta">
+                            {{ formatBytes(file.tamanoBytes) }}
+                            @if (file.fechaSubida) {
+                              <span class="file-item__separator">•</span>
+                              <span>{{ file.fechaSubida | date:'short' }}</span>
+                            }
+                          </span>
                         </div>
                       </div>
-                    }
-                  </div>
-                }
+                      <div class="file-item__actions">
+                        <button 
+                          pButton
+                          type="button"
+                          class="p-button-rounded p-button-text p-button-sm"
+                          icon="pi pi-eye"
+                          title="Previsualizar"
+                          (click)="viewFile(doc, file)"
+                        ></button>
+                        <button 
+                          pButton
+                          type="button"
+                          class="p-button-rounded p-button-text p-button-sm"
+                          icon="pi pi-download"
+                          title="Descargar"
+                          (click)="downloadFile(doc, file)"
+                        ></button>
+                        <button 
+                          pButton
+                          type="button"
+                          class="p-button-rounded p-button-text p-button-sm p-button-danger"
+                          icon="pi pi-trash"
+                          title="Eliminar"
+                          (click)="confirmDelete(doc, file)"
+                        ></button>
+                      </div>
+                    </div>
+                  }
+                </div>
               } @else {
                 <div class="doc-card__pending">
                   <i class="pi pi-clock"></i>
