@@ -347,15 +347,6 @@ export class InscripcionComponent implements OnInit {
     const seccion = this.seccionesDocumentos[this.currentStep()];
     return seccion ? (this.documentosPorSeccion()[seccion] || []) : [];
   }
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'No se pudieron cargar los documentos de esta sección'
-      });
-    } finally {
-      this.cargandoDocumentos.set(false);
-    }
-  }
 
   /**
    * Maneja el cambio de paso en el stepper
