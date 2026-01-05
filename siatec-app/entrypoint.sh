@@ -38,11 +38,11 @@ if [ "$DEPLOYMENT_MODE" = "docker-local" ]; then
   // Configuración fija para Docker local
   window.__SIATEC_CONFIG = {
     // URLs de APIs directas (sin ingress)
-    authApiBaseUrl: 'http://localhost:5002/api/v1/auth',
-    contribuyentesApiBaseUrl: 'http://localhost:5001/api/v1/contribuyentes',
-    contribucionesApiBaseUrl: 'http://localhost:5000/api/v1/contribuciones',
-    tesoreriaApiBaseUrl: 'http://localhost:5003/api/v1/tesoreria',
-    notificacionesApiBaseUrl: 'http://localhost:5005/api/v1/notificaciones',
+    authApiBaseUrl: 'http://localhost:5002/api/auth',
+    contribuyentesApiBaseUrl: 'http://localhost:5001/api/contribuyentes',
+    contribucionesApiBaseUrl: 'http://localhost:5000/api/contribuciones',
+    tesoreriaApiBaseUrl: 'http://localhost:5003/api/tesoreria',
+    notificacionesApiBaseUrl: 'http://localhost:5005/api/notificaciones',
 
     // Información del ambiente
     environment: 'docker-local',
@@ -143,11 +143,11 @@ else
   // Configuración global de APIs
   window.__SIATEC_CONFIG = {
     // URLs de APIs
-    authApiBaseUrl: baseUrl + '/api/v1/auth',
-    contribuyentesApiBaseUrl: baseUrl + '/api/v1/contribuyentes',
-    contribucionesApiBaseUrl: baseUrl + '/api/v1/contribuciones',
-    tesoreriaApiBaseUrl: baseUrl + '/api/v1/tesoreria',
-    notificacionesApiBaseUrl: baseUrl + '/api/v1/notificaciones',
+    authApiBaseUrl: baseUrl + '/api/auth',
+    contribuyentesApiBaseUrl: baseUrl + '/api/contribuyentes',
+    contribucionesApiBaseUrl: baseUrl + '/api/contribuciones',
+    tesoreriaApiBaseUrl: baseUrl + '/api/tesoreria',
+    notificacionesApiBaseUrl: baseUrl + '/api/notificaciones',
 
     // Información del ambiente
     environment: environment,

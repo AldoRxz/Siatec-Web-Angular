@@ -239,11 +239,11 @@ function Start-Container {
         --name $ContainerName `
         -p 4200:80 `
         -e DEPLOYMENT_MODE=local `
-        -e AUTH_API_BASE_URL=http://localhost:5002/api/v1/auth `
-        -e CONTRIBUYENTES_API_BASE_URL=http://localhost:5001/api/v1/contribuyentes `
-        -e CONTRIBUCIONES_API_BASE_URL=http://localhost:5000/api/v1/contribuciones `
-        -e TESORERIA_API_BASE_URL=http://localhost:5003/api/v1/tesoreria `
-        -e NOTIFICACIONES_API_BASE_URL=http://localhost:5004/api/v1/notificaciones `
+        -e AUTH_API_BASE_URL=http://localhost:5010/api/auth `
+        -e CONTRIBUYENTES_API_BASE_URL=http://localhost:5086/api/contribuyentes `
+        -e CONTRIBUCIONES_API_BASE_URL=http://localhost:5087/api/contribuciones `
+        -e TESORERIA_API_BASE_URL=http://localhost:5092/api/tesoreria `
+        -e NOTIFICACIONES_API_BASE_URL=http://localhost:5005/api/notificaciones `
         "$Registry/$ImageName`:$Tag"
 
     if ($LASTEXITCODE -eq 0) {
