@@ -134,18 +134,28 @@ export class AuthService {
    * Obtiene el ID del contribuyente actual (numérico para compatibilidad legacy)
    */
   getContribuyenteId(): number | null {
-    // Prioridad 1: localStorage
+    // Prioridad 1: usuario actual
+    const user = this.userSignal();
+    if (user) {
+      const id = user.contribuyenteId ?? user.idContribuyente;
+      if (typeof id === 'number') {
+        return id;
+      }
+    }
+
+    // Prioridad 2: localStorage
     const storedId = localStorage.getItem(this.CONTRIBUYENTE_ID_KEY);
     if (storedId) {
       const id = Number(storedId);
       if (!isNaN(id)) return id;
     }
 
-    // Prioridad 2: usuario actual
+    // Prioridad 3: computed signal
     const contribuyenteId = this.contribuyenteId();
     if (typeof contribuyenteId === 'number') {
       return contribuyenteId;
     }
+    
     return null;
   }
 
@@ -213,10 +223,13 @@ export class AuthService {
     }
 
     // Guardar contribuyenteId si está disponible
-    // Intentar obtenerlo del token JWT primero (está en el sub claim)
     let contribId = null;
     
-    if (token) {
+    // Intentar obtenerlo del usuario primero (más directo)
+    contribId = user?.contribuyenteId || user?.idContribuyente;
+    
+    // Si no está en el usuario, intentar del token JWT
+    if (!contribId && token) {
       try {
         const payload = this.parseJwt(token);
         // El sub claim contiene el contribuyenteId como GUID
@@ -226,11 +239,6 @@ export class AuthService {
       } catch (error) {
         console.warn('[AuthService] No se pudo decodificar el token JWT', error);
       }
-    }
-    
-    // Si no está en el JWT, intentar obtenerlo del usuario
-    if (!contribId) {
-      contribId = user?.contribuyenteId || user?.identityInfo?.id || user?.idContribuyente;
     }
     
     if (contribId) {

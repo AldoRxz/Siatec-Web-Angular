@@ -292,17 +292,17 @@ export class PanelComponent implements OnInit {
   }
 
   private loadDashboardData(): void {
-    const userId = this.authService.getUserId();
+    const contribuyenteId = this.authService.getContribuyenteId();
     
-    if (!userId) {
-      console.warn('[Panel] No se pudo obtener el ID del usuario');
+    if (!contribuyenteId) {
+      console.warn('[Panel] No se pudo obtener el ID del contribuyente');
       this.loadingDashboard.set(false);
       return;
     }
 
     this.loadingDashboard.set(true);
     
-    this.dashboardService.getDashboard(userId).subscribe({
+    this.dashboardService.getDashboard(contribuyenteId).subscribe({
       next: (data) => {
         console.log('[Panel] Dashboard data loaded:', data);
         this.dashboardData.set(data);
