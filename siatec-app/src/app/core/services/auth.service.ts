@@ -212,11 +212,79 @@ export class AuthService {
       console.warn('[AuthService] No se recibió usuario en la respuesta');
     }
 
-    // Guardar contribuyenteId si está disponible - el backend lo envía en identityInfo.id
-    const contribId = user?.identityInfo?.id || user?.contribuyenteId || user?.idContribuyente || user?.id;
+    // Guardar contribuyenteId si está disponible
+    // Intentar obtenerlo del token JWT primero (está en el sub claim)
+    let contribId = null;
+    
+    if (token) {
+      try {
+        const payload = this.parseJwt(token);
+        // El sub claim contiene el contribuyenteId como GUID
+        // Pero necesitamos buscar si hay un claim específico de contribuyente
+        contribId = payload.contribuyente_id || payload.contribuyenteId;
+        console.log('[AuthService] JWT payload:', payload);
+      } catch (error) {
+        console.warn('[AuthService] No se pudo decodificar el token JWT', error);
+      }
+    }
+    
+    // Si no está en el JWT, intentar obtenerlo del usuario
+    if (!contribId) {
+      contribId = user?.contribuyenteId || user?.identityInfo?.id || user?.idContribuyente;
+    }
+    
     if (contribId) {
       localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribId.toString());
       console.log('[AuthService] contribuyenteId guardado:', contribId);
+    } else {
+      console.warn('[AuthService] No se pudo obtener el contribuyenteId del login');
+    }
+  }
+
+  /**
+   * Obtiene el contribuyenteId desde el backend usando el RFC del usuario
+   */
+  private fetchContribuyenteIdFromBackend(): void {
+    const user = this.getCurrentUser();
+    const rfc = user?.rfc;
+    
+    if (!rfc) {
+      console.warn('[AuthService] No hay RFC disponible para obtener el contribuyenteId');
+      return;
+    }
+
+    // Buscar el contribuyente por RFC
+    this.http.get(`${this.config.getApiUrl('contribuyentes')}/internal/contribuyentes/rfc/${rfc}`)
+      .subscribe({
+        next: (contribuyente: any) => {
+          if (contribuyente?.id) {
+            localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribuyente.id.toString());
+            console.log('[AuthService] contribuyenteId obtenido del backend:', contribuyente.id);
+          }
+        },
+        error: (error) => {
+          console.error('[AuthService] Error al obtener contribuyenteId del backend:', error);
+        }
+      });
+  }
+
+  /**
+   * Decodifica un token JWT sin validar la firma
+   */
+  private parseJwt(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('[AuthService] Error al parsear JWT:', error);
+      return null;
     }
   }
 

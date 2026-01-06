@@ -66,6 +66,11 @@ export const routes: Routes = [
         title: 'Contribuciones - SIATEC'
       },
       {
+        path: 'determinaciones',
+        loadComponent: () => import('./features/dashboard/determinaciones/determinaciones.component').then(m => m.DeterminacionesComponent),
+        title: 'Determinaciones - SIATEC'
+      },
+      {
         path: 'citas',
         loadComponent: () => import('./features/dashboard/citas/citas.component').then(m => m.CitasComponent),
         title: 'Citas - SIATEC'

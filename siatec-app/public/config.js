@@ -15,7 +15,7 @@
   window.__SIATEC_CONFIG = {
     // URLs de APIs para desarrollo local
     authApiBaseUrl: 'http://localhost:5010/internal/auth',
-    contribuyentesApiBaseUrl: 'http://localhost:5086/api/contribuyentes',
+    contribuyentesApiBaseUrl: 'http://localhost:5086',
     contribucionesApiBaseUrl: 'http://localhost:5087/api/contribuciones',
     tesoreriaApiBaseUrl: 'http://localhost:5092/api/tesoreria',
     notificacionesApiBaseUrl: 'http://localhost:5005/api/notificaciones',

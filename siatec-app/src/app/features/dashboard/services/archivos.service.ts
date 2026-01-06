@@ -23,11 +23,10 @@ export class ArchivosService {
 
   /**
    * Obtiene todos los archivos de un contribuyente
-   * Endpoint: GET /api/contribuyentes/archivos/contribuyente/{contribuyenteId}
+   * Endpoint: GET /internal/archivos/contribuyente/{contribuyenteId}
    */
   getArchivosByContribuyente(contribuyenteId: number): Observable<ArchivoDto[]> {
-    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
-    const url = `${baseUrl}/api/contribuyentes/archivos/contribuyente/${contribuyenteId}`;
+    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/contribuyente/${contribuyenteId}`;
     return this.http.get<ArchivoDto[]>(url);
   }
 

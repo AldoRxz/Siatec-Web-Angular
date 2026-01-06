@@ -1,0 +1,120 @@
+<div class="determinaciones-container">
+  <div class="header-section">
+    <div class="header-content">
+      <div class="title-section">
+        <i class="pi pi-calculator text-4xl text-blue-500"></i>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-1">Determinaciones Fiscales</h1>
+          <p class="text-gray-600">Consulta y gestiona tus determinaciones</p>
+        </div>
+      </div>
+      <button
+        pButton
+        label="Actualizar"
+        icon="pi pi-refresh"
+        class="p-button-outlined"
+        (click)="cargarDeterminaciones()"
+        [loading]="loading()"
+      ></button>
+    </div>
+  </div>
+
+  <p-card class="determinaciones-card">
+    @if (loading()) {
+      <div class="loading-container">
+        <p-progressSpinner
+          styleClass="w-16 h-16"
+          strokeWidth="4"
+          animationDuration="1s"
+        ></p-progressSpinner>
+        <p class="text-gray-600 mt-4">Cargando determinaciones...</p>
+      </div>
+    } @else if (hasDeterminaciones()) {
+      <p-table
+        [value]="determinaciones()"
+        [trackBy]="trackByDeterminacion"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} determinaciones"
+        styleClass="p-datatable-sm"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id">
+              ID <p-sortIcon field="id"></p-sortIcon>
+            </th>
+            <th>
+              Contribución
+            </th>
+            <th>
+              Tipo
+            </th>
+            <th pSortableColumn="periodo">
+              Periodo <p-sortIcon field="periodo"></p-sortIcon>
+            </th>
+            <th pSortableColumn="monto">
+              Monto <p-sortIcon field="monto"></p-sortIcon>
+            </th>
+            <th pSortableColumn="fechaCreacion">
+              Fecha <p-sortIcon field="fechaCreacion"></p-sortIcon>
+            </th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-det>
+          <tr>
+            <td>{{ det.id }}</td>
+            <td>
+              <div class="font-semibold">{{ getNombreContribucion(det) }}</div>
+            </td>
+            <td>
+              <p-tag
+                [value]="getTipoContribucion(det)"
+                severity="info"
+              ></p-tag>
+            </td>
+            <td>{{ det.periodo || 'N/A' }}</td>
+            <td class="font-semibold text-blue-600">
+              {{ formatMonto(det.monto) }}
+            </td>
+            <td>{{ formatFecha(det.fechaCreacion) }}</td>
+            <td>
+              <button
+                pButton
+                icon="pi pi-eye"
+                class="p-button-text p-button-sm"
+                pTooltip="Ver detalles"
+                tooltipPosition="top"
+              ></button>
+              <button
+                pButton
+                icon="pi pi-download"
+                class="p-button-text p-button-sm"
+                pTooltip="Descargar"
+                tooltipPosition="top"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="text-center py-8">
+              <i class="pi pi-inbox text-4xl text-gray-400 mb-3 block"></i>
+              <p class="text-gray-600">No se encontraron determinaciones</p>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    } @else {
+      <div class="empty-state">
+        <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay determinaciones</h3>
+        <p class="text-gray-600">Aún no tienes determinaciones fiscales registradas</p>
+      </div>
+    }
+  </p-card>
+</div>
+
+<p-toast position="top-right"></p-toast>
