@@ -31,10 +31,14 @@ export interface LoginCredentials {
  * Respuesta del servidor de autenticación
  */
 export interface AuthResponse {
-  token: string;
+  token?: string;
+  accessToken?: string;
   user?: User;
+  data?: any;
   expiresIn?: number;
   refreshToken?: string;
+  success?: boolean;
+  message?: string;
 }
 
 /**

@@ -307,6 +307,8 @@ export class PanelComponent implements OnInit {
         console.log('[Panel] Dashboard data loaded:', data);
         this.dashboardData.set(data);
         this.updateCardsWithDashboardData(data);
+        // Actualizar el contador de notificaciones desde el backend
+        this.notificationsService.updateUnreadCountFromBackend(data.cantidadNotificaciones);
         this.loadingDashboard.set(false);
       },
       error: (error) => {
