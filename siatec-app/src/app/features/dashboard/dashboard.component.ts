@@ -400,15 +400,16 @@ export class DashboardComponent {
 
   private fetchDocumentSummary(): void {
     this.setDashboardLoading(true);
-    const contribuyenteId = this.authService.getContribuyenteId();
-    if (!contribuyenteId) {
+    const userId = this.authService.getUserId();
+    if (!userId) {
+      console.warn('[Dashboard] No se pudo obtener el ID del usuario');
       this.setDashboardLoading(false);
       return;
     }
 
     // Usar el endpoint de dashboard para obtener todas las estadísticas
     this.contribuyentesService
-      .getDashboard(contribuyenteId)
+      .getDashboard(userId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (dashboard) => {
