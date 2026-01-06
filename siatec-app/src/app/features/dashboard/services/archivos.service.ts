@@ -23,14 +23,17 @@ export class ArchivosService {
 
   /**
    * Obtiene todos los archivos de un contribuyente
+   * Endpoint: GET /api/contribuyentes/archivos/contribuyente/{contribuyenteId}
    */
   getArchivosByContribuyente(contribuyenteId: number): Observable<ArchivoDto[]> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/contribuyente/${contribuyenteId}`;
+    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
+    const url = `${baseUrl}/api/contribuyentes/archivos/contribuyente/${contribuyenteId}`;
     return this.http.get<ArchivoDto[]>(url);
   }
 
   /**
    * Sube un nuevo archivo
+   * Endpoint: POST /api/contribuyentes/archivos/{contribuyenteId}
    */
   uploadArchivo(contribuyenteId: number, file: File, catalogoDocumentoId?: number, descripcion?: string): Observable<ArchivoDto> {
     const formData = new FormData();
@@ -42,31 +45,38 @@ export class ArchivosService {
       formData.append('descripcion', descripcion);
     }
 
-    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${contribuyenteId}`;
+    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
+    const url = `${baseUrl}/api/contribuyentes/archivos/${contribuyenteId}`;
     return this.http.post<ArchivoDto>(url, formData);
   }
 
   /**
    * Descarga un archivo
+   * Endpoint: GET /api/contribuyentes/archivos/{id}/download
    */
   downloadArchivo(id: number): Observable<Blob> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${id}/download`;
+    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
+    const url = `${baseUrl}/api/contribuyentes/archivos/${id}/download`;
     return this.http.get(url, { responseType: 'blob' });
   }
 
   /**
    * Elimina un archivo
+   * Endpoint: DELETE /api/contribuyentes/archivos/{id}
    */
   deleteArchivo(id: number): Observable<void> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${id}`;
+    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
+    const url = `${baseUrl}/api/contribuyentes/archivos/${id}`;
     return this.http.delete<void>(url);
   }
 
   /**
    * Renombra un archivo
+   * Endpoint: PATCH /api/contribuyentes/archivos/{id}/rename
    */
   renameArchivo(id: number, nuevoNombre: string): Observable<ArchivoDto> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${id}/rename`;
+    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
+    const url = `${baseUrl}/api/contribuyentes/archivos/{id}/rename`;
     return this.http.patch<ArchivoDto>(url, { nuevoNombre });
   }
 }

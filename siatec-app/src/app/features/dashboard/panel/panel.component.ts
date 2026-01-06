@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, computed, inject, signal, DestroyRef } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { AuthService } from '../../../core/services';
@@ -47,6 +49,7 @@ export class PanelComponent implements OnInit {
   private readonly notificationsService = inject(DashboardNotificationsService);
   private readonly documentsService = inject(DashboardDocumentsService);
   private readonly dashboardService = inject(DashboardService);
+  private readonly destroyRef = inject(DestroyRef);
   
   readonly dashboardData = signal<ContribuyenteDashboard | null>(null);
   readonly loadingDashboard = signal<boolean>(true);
@@ -159,6 +162,18 @@ export class PanelComponent implements OnInit {
     // this.documentsService.load(); // Se actualiza desde el dashboard
     this.loadInscripcionState();
     this.loadDashboardData();
+
+    // Escuchar cambios de navegación para recargar datos
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        filter(event => event.urlAfterRedirects.includes('/dashboard/panel')),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        console.log('[Panel] Navegación detectada, recargando dashboard...');
+        this.loadDashboardData();
+      });
   }
 
   get userName(): string {
@@ -277,17 +292,17 @@ export class PanelComponent implements OnInit {
   }
 
   private loadDashboardData(): void {
-    const contribuyenteId = this.authService.getContribuyenteId();
+    const userId = this.authService.getUserId();
     
-    if (!contribuyenteId) {
-      console.warn('[Panel] No se pudo obtener el ID del contribuyente');
+    if (!userId) {
+      console.warn('[Panel] No se pudo obtener el ID del usuario');
       this.loadingDashboard.set(false);
       return;
     }
 
     this.loadingDashboard.set(true);
     
-    this.dashboardService.getDashboard(contribuyenteId).subscribe({
+    this.dashboardService.getDashboard(userId).subscribe({
       next: (data) => {
         console.log('[Panel] Dashboard data loaded:', data);
         this.dashboardData.set(data);
