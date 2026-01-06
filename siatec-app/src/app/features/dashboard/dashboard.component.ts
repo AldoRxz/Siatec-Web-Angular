@@ -1,5 +1,5 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -81,7 +81,7 @@ interface InscriptionState {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private contribuyentesService = inject(ContribuyentesService);
   private router = inject(Router);
@@ -230,6 +230,10 @@ export class DashboardComponent {
   constructor() {
     this.loadNavItems();
     this.loadInscriptionState();
+  }
+
+  ngOnInit(): void {
+    // Cargar datos del dashboard cada vez que se entra al componente
     this.fetchDocumentSummary();
   }
 
