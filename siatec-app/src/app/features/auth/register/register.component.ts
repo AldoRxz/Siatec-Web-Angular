@@ -138,8 +138,17 @@ export class RegisterComponent implements OnDestroy {
     this.successMessage = '';
 
     try {
-      const formData = { ...this.registerForm.value };
-      delete formData.confirmPassword; // No enviar confirmación al backend
+      const formData = { 
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password,
+        confirmPassword: this.registerForm.value.confirmPassword,
+        nombres: this.registerForm.value.nombres,
+        primerApellido: this.registerForm.value.primerApellido,
+        segundoApellido: this.registerForm.value.segundoApellido || '',
+        rfc: '', // RFC opcional para registro inicial
+        telefono: this.registerForm.value.telefono || '',
+        userName: this.registerForm.value.userName || this.registerForm.value.email
+      };
 
       await firstValueFrom(this.authService.register(formData));
 
@@ -166,30 +175,36 @@ export class RegisterComponent implements OnDestroy {
       // Extraer mensaje de error del backend
       let finalMessage = 'Error al registrar usuario. Por favor intenta nuevamente.';
       
-      if (error?.error?.errors && Array.isArray(error.error.errors)) {
-        const errors = error.error.errors;
-        console.log('Errors array:', errors);
-        
-        // Priorizar el error MÁS ESPECÍFICO (el último, o el que tenga más detalles)
-        // Buscar errores específicos de validación (contraseña, email, etc.)
-        const specificErrors = errors.filter((err: string) => 
-          err && err.length > 0 && 
-          !err.toLowerCase().includes('temporal') &&
-          !err.toLowerCase().includes('consistencia') &&
-          !err.toLowerCase().includes('revirtió')
-        );
-        
-        console.log('Specific errors filtered:', specificErrors);
-        
-        if (specificErrors.length > 0) {
-          // Tomar el último error específico (más detallado)
-          finalMessage = specificErrors[specificErrors.length - 1];
-        } else if (errors.length > 0) {
-          // Si no hay específicos, tomar el último disponible
-          finalMessage = errors[errors.length - 1];
-        }
+      // Intentar extraer el mensaje de diferentes formatos de error
+      if (error?.error?.mensaje) {
+        finalMessage = error.error.mensaje;
       } else if (error?.error?.message) {
         finalMessage = error.error.message;
+      } else if (error?.error?.errors) {
+        // Manejar errores de validación de FluentValidation o ModelState
+        const errors = error.error.errors;
+        
+        if (typeof errors === 'object') {
+          // Errores de ModelState (objeto con claves)
+          const errorMessages = Object.values(errors).flat() as string[];
+          if (errorMessages.length > 0) {
+            finalMessage = errorMessages.join('. ');
+          }
+        } else if (Array.isArray(errors)) {
+          // Errores de FluentValidation (array)
+          const specificErrors = errors.filter((err: string) => 
+            err && err.length > 0 && 
+            !err.toLowerCase().includes('temporal') &&
+            !err.toLowerCase().includes('consistencia') &&
+            !err.toLowerCase().includes('revirtió')
+          );
+          
+          if (specificErrors.length > 0) {
+            finalMessage = specificErrors[specificErrors.length - 1];
+          } else if (errors.length > 0) {
+            finalMessage = errors[errors.length - 1];
+          }
+        }
       } else if (error?.message) {
         finalMessage = error.message;
       }
@@ -205,6 +220,9 @@ export class RegisterComponent implements OnDestroy {
           message: finalMessage,
           hint: 'Por favor verifica los datos e intenta nuevamente.',
           severity: 'danger'
+        },
+        {
+          autoCloseMs: 5000
         }
       );
     } finally {

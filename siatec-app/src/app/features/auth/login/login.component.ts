@@ -91,8 +91,31 @@ export class LoginComponent implements OnDestroy {
         );
       }
     } catch (error: any) {
-      this.errorMessage = error?.message || 'Error al iniciar sesión. Por favor intenta nuevamente.';
       console.error('Login error:', error);
+      
+      // Extraer mensaje de error del response
+      let errorMsg = 'Error al iniciar sesión. Por favor intenta nuevamente.';
+      if (error?.error?.mensaje) {
+        errorMsg = error.error.mensaje;
+      } else if (error?.message) {
+        errorMsg = error.message;
+      }
+      
+      this.errorMessage = errorMsg;
+      
+      // Mostrar modal de error
+      this.openStatusDialog(
+        {
+          title: 'Error de autenticación',
+          subtitle: 'No se pudo iniciar sesión',
+          message: errorMsg,
+          hint: 'Verifica tus credenciales e intenta nuevamente.',
+          severity: 'danger'
+        },
+        {
+          autoCloseMs: 4000
+        }
+      );
     } finally {
       this.loading = false;
     }

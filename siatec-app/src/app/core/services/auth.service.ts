@@ -55,7 +55,7 @@ export class AuthService {
    * Login de cuenta de contribuyente
    */
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/login`;
+    const url = `${this.config.getApiUrl('auth')}/login`;
 
     return this.http.post<AuthResponse>(url, credentials).pipe(
       tap(response => this.handleAuthSuccess(response)),
@@ -67,7 +67,7 @@ export class AuthService {
    * Crear nueva cuenta de contribuyente
    */
   createAccount(data: CreateAccountData): Observable<AuthResponse> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente`;
+    const url = `${this.config.getApiUrl('auth')}/register`;
 
     return this.http.post<AuthResponse>(url, data).pipe(
       tap(response => this.handleAuthSuccess(response)),
@@ -86,7 +86,7 @@ export class AuthService {
    * Actualizar cuenta de contribuyente
    */
   updateAccount(data: UpdateAccountData): Observable<any> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente`;
+    const url = `${this.config.getApiUrl('auth')}/me`;
 
     return this.http.put(url, data).pipe(
       catchError(error => this.handleAuthError(error))
@@ -97,7 +97,7 @@ export class AuthService {
    * Solicitud de recuperación de contraseña
    */
   requestPasswordRecovery(payload: PasswordRecoveryRequest): Observable<PasswordRecoveryResponse> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/password/recovery`;
+    const url = `${this.config.getApiUrl('auth')}/forgot-password`;
     const body = {
       email: payload.email
     };
@@ -173,7 +173,7 @@ export class AuthService {
    * Refresca el usuario desde el servidor
    */
   refreshUser(): Observable<User> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/me`;
+    const url = `${this.config.getApiUrl('auth')}/me`;
 
     return this.http.get<User>(url).pipe(
       tap(user => {
