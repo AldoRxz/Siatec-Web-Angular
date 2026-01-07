@@ -759,23 +759,22 @@ export class InscripcionComponent implements OnInit {
     if (!user) {
       return;
     }
-    const identity = (user.identityInfo ?? {}) as Record<string, any>;
-    const fullName = [user.nombre, user.apellidos].filter(Boolean).join(' ').trim() || identity['nombres'] || user.email || '';
+    const fullName = [user.nombre, user.apellidos].filter(Boolean).join(' ').trim() || user.email || '';
     if (section === 'representante') {
       const group = this.form.controls.representante;
       group.patchValue({
-        nombres: user.nombre || identity['nombres'] || fullName,
-        primerApellido: user.apellidos?.split(' ')[0] || identity['primerApellido'] || '',
-        segundoApellido: user.apellidos?.split(' ')[1] || identity['segundoApellido'] || '',
-        rfc: identity['rfc'] || '',
-        curp: identity['curp'] || ''
+        nombres: user.nombre || fullName,
+        primerApellido: user.apellidos?.split(' ')[0] || '',
+        segundoApellido: user.apellidos?.split(' ')[1] || '',
+        rfc: '',
+        curp: ''
       });
     } else {
       const group = this.form.controls.pagos;
       group.patchValue({
         nombre: fullName,
-        telefono: identity['telefono'] || '',
-        correo: user.email || identity['correo'] || ''
+        telefono: user.telefono || '',
+        correo: user.email || ''
       });
     }
   }
@@ -950,16 +949,15 @@ export class InscripcionComponent implements OnInit {
     if (!user) {
       return;
     }
-    const identity = (user.identityInfo ?? {}) as Record<string, any>;
     const identificacion = this.form.controls.identificacion;
     identificacion.patchValue({
-      nombres: identificacion.value.nombres || user.nombre || identity['nombres'] || '',
-      primerApellido: identificacion.value.primerApellido || user.apellidos?.split(' ')[0] || identity['primerApellido'] || '',
-      segundoApellido: identificacion.value.segundoApellido || user.apellidos?.split(' ')[1] || identity['segundoApellido'] || '',
-      rfc: identificacion.value.rfc || identity['rfc'] || '',
-      curp: identificacion.value.curp || identity['curp'] || '',
-      email: identificacion.value.email || user.email || identity['correo'] || '',
-      telefono: identificacion.value.telefono || identity['telefono'] || ''
+      nombres: identificacion.value.nombres || user.nombre || '',
+      primerApellido: identificacion.value.primerApellido || user.apellidos?.split(' ')[0] || '',
+      segundoApellido: identificacion.value.segundoApellido || user.apellidos?.split(' ')[1] || '',
+      rfc: identificacion.value.rfc || '',
+      curp: identificacion.value.curp || '',
+      email: identificacion.value.email || user.email || '',
+      telefono: identificacion.value.telefono || user.telefono || ''
     });
   }
 

@@ -244,26 +244,22 @@ export class DashboardComponent implements OnInit {
     }
 
     // Intentar diferentes fuentes de nombre completo
-    const fullName = user.nombreCompleto || user.fullName;
-    if (fullName?.trim()) {
-      return fullName.trim();
+    if (user.nombreCompleto?.trim()) {
+      return user.nombreCompleto.trim();
     }
 
-    // Intentar construir desde identityInfo
-    const identityInfo = user.identityInfo as any;
-    if (identityInfo) {
-      const nombres = identityInfo.nombres || identityInfo.Nombres || '';
-      const primerApellido = identityInfo.primerApellido || identityInfo.PrimerApellido || '';
-      const segundoApellido = identityInfo.segundoApellido || identityInfo.SegundoApellido || '';
-      
-      const constructed = [nombres, primerApellido, segundoApellido]
-        .filter(Boolean)
-        .join(' ')
-        .trim();
-      
-      if (constructed) {
-        return constructed;
-      }
+    // Construir desde propiedades individuales
+    const nombres = user.nombres || '';
+    const primerApellido = user.primerApellido || '';
+    const segundoApellido = user.segundoApellido || '';
+    
+    const constructed = [nombres, primerApellido, segundoApellido]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+    
+    if (constructed) {
+      return constructed;
     }
 
     // Intentar construir desde propiedades individuales

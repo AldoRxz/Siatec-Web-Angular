@@ -35,8 +35,7 @@ export class AuthService {
   readonly currentUser = computed(() => this.userSignal());
   readonly contribuyenteId = computed(() => {
     const user = this.userSignal();
-    if (!user) return null;
-    return user.contribuyenteId || user.idContribuyente || user.id || null;
+    return user?.contribuyenteId || null;
   });
 
   // BehaviorSubject para compatibilidad con RxJS
@@ -136,11 +135,8 @@ export class AuthService {
   getContribuyenteId(): number | null {
     // Prioridad 1: usuario actual
     const user = this.userSignal();
-    if (user) {
-      const id = user.contribuyenteId ?? user.idContribuyente;
-      if (typeof id === 'number') {
-        return id;
-      }
+    if (user?.contribuyenteId) {
+      return user.contribuyenteId;
     }
 
     // Prioridad 2: localStorage
@@ -165,11 +161,7 @@ export class AuthService {
    */
   getUserId(): string | null {
     const user = this.userSignal();
-    if (!user) return null;
-
-    // El id puede ser string (UUID) o number
-    const id = user.identityInfo?.id ?? user.id;
-    return id ? String(id) : null;
+    return user?.id ? String(user.id) : null;
   }
 
   /**
@@ -218,81 +210,17 @@ export class AuthService {
 
     if (user) {
       this.setUser(user);
+      
+      // Guardar contribuyenteId si está disponible (ya normalizado en camelCase)
+      const contribId = user.contribuyenteId;
+      if (contribId) {
+        localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribId.toString());
+        console.log('[AuthService] ✅ contribuyenteId guardado:', contribId);
+      } else {
+        console.warn('[AuthService] ⚠️ No se encontró contribuyenteId en el usuario');
+      }
     } else {
       console.warn('[AuthService] No se recibió usuario en la respuesta');
-    }
-
-    // Guardar contribuyenteId si está disponible
-    let contribId = null;
-    
-    // Intentar obtenerlo del usuario primero (más directo)
-    contribId = user?.contribuyenteId || user?.idContribuyente;
-    
-    // Si no está en el usuario, intentar del token JWT
-    if (!contribId && token) {
-      try {
-        const payload = this.parseJwt(token);
-        // El sub claim contiene el contribuyenteId como GUID
-        // Pero necesitamos buscar si hay un claim específico de contribuyente
-        contribId = payload.contribuyente_id || payload.contribuyenteId;
-        console.log('[AuthService] JWT payload:', payload);
-      } catch (error) {
-        console.warn('[AuthService] No se pudo decodificar el token JWT', error);
-      }
-    }
-    
-    if (contribId) {
-      localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribId.toString());
-      console.log('[AuthService] contribuyenteId guardado:', contribId);
-    } else {
-      console.warn('[AuthService] No se pudo obtener el contribuyenteId del login');
-    }
-  }
-
-  /**
-   * Obtiene el contribuyenteId desde el backend usando el RFC del usuario
-   */
-  private fetchContribuyenteIdFromBackend(): void {
-    const user = this.getCurrentUser();
-    const rfc = user?.rfc;
-    
-    if (!rfc) {
-      console.warn('[AuthService] No hay RFC disponible para obtener el contribuyenteId');
-      return;
-    }
-
-    // Buscar el contribuyente por RFC
-    this.http.get(`${this.config.getApiUrl('contribuyentes')}/internal/contribuyentes/rfc/${rfc}`)
-      .subscribe({
-        next: (contribuyente: any) => {
-          if (contribuyente?.id) {
-            localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribuyente.id.toString());
-            console.log('[AuthService] contribuyenteId obtenido del backend:', contribuyente.id);
-          }
-        },
-        error: (error) => {
-          console.error('[AuthService] Error al obtener contribuyenteId del backend:', error);
-        }
-      });
-  }
-
-  /**
-   * Decodifica un token JWT sin validar la firma
-   */
-  private parseJwt(token: string): any {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error('[AuthService] Error al parsear JWT:', error);
-      return null;
     }
   }
 
@@ -328,9 +256,36 @@ export class AuthService {
    * Guarda el usuario
    */
   private setUser(user: User): void {
-    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-    this.userSignal.set(user);
-    this.userSubject.next(user);
+    // Normalizar el usuario para incluir propiedades computadas
+    const normalizedUser = this.normalizeUser(user);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(normalizedUser));
+    this.userSignal.set(normalizedUser);
+    this.userSubject.next(normalizedUser);
+  }
+  
+  /**
+   * Normaliza un objeto User para incluir todas las propiedades computadas
+   */
+  private normalizeUser(user: User): User {
+    const normalized: any = {};
+    
+    for (const key in user) {
+      const value = (user as any)[key];
+      const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+      normalized[camelKey] = value;
+    }
+    
+    // Propiedades computadas
+    const nombres = normalized.nombres || '';
+    const primerApellido = normalized.primerApellido || '';
+    const segundoApellido = normalized.segundoApellido || '';
+    
+    return {
+      ...normalized,
+      nombre: nombres,
+      apellidos: [primerApellido, segundoApellido].filter(Boolean).join(' '),
+      nombreCompleto: [nombres, primerApellido, segundoApellido].filter(Boolean).join(' ')
+    };
   }
 
   /**
@@ -347,8 +302,9 @@ export class AuthService {
 
       if (userJson) {
         const user = JSON.parse(userJson);
-        this.userSignal.set(user);
-        this.userSubject.next(user);
+        const normalizedUser = this.normalizeUser(user);
+        this.userSignal.set(normalizedUser);
+        this.userSubject.next(normalizedUser);
       }
     } catch (error) {
       console.error('Error loading user from storage:', error);

@@ -55,7 +55,7 @@ export class DeterminacionesComponent implements OnInit {
     this.loading.set(true);
     
     // Convertir el ID a string para usarlo como usuarioId
-    const usuarioId = typeof user.id === 'string' ? user.id : user.id.toString();
+    const usuarioId = user.id ? String(user.id) : '';
     
     this.contribucionesService.getDeterminacionesPorUsuario(usuarioId)
       .subscribe({

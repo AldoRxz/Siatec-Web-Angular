@@ -1,22 +1,22 @@
 /**
  * Modelo de usuario autenticado en SIATEC
+ * Propiedades en camelCase (convención TypeScript)
  */
 export interface User {
-  id: number | string;
-  email: string;
+  id?: string;
+  email?: string;
+  userName?: string;
+  nombres?: string;
+  primerApellido?: string;
+  segundoApellido?: string;
+  telefono?: string;
+  roles?: string[];
   contribuyenteId?: number;
-  idContribuyente?: number;
+  
+  // Propiedades computadas
   nombre?: string;
   apellidos?: string;
   nombreCompleto?: string;
-  fullName?: string;
-  rfc?: string;
-  tipo?: 'fisica' | 'moral';
-  identityInfo?: {
-    id: number | string;
-    email: string;
-    [key: string]: any;
-  };
 }
 
 /**
