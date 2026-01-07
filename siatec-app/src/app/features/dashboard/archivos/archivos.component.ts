@@ -247,7 +247,8 @@ export class ArchivosComponent implements OnInit {
   }
 
   downloadFile(doc: DocumentoCatalogo, file: ArchivoResumen): void {
-    this.archivosService.downloadArchivo(file.id).subscribe({
+    const contribuyenteId = this.requireContribuyenteId();
+    this.archivosService.downloadArchivo(file.id, contribuyenteId).subscribe({
       next: (blob) => {
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement('a');
@@ -298,9 +299,10 @@ export class ArchivosComponent implements OnInit {
       return;
     }
     const nuevoNombre = this.renameForm.controls.nombre.value.trim();
+    const contribuyenteId = this.requireContribuyenteId();
     this.loading.set(true);
     this.archivosService
-      .renameArchivo(this.renameContext.fileId, nuevoNombre)
+      .renameArchivo(this.renameContext.fileId, nuevoNombre, contribuyenteId)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
@@ -323,9 +325,10 @@ export class ArchivosComponent implements OnInit {
   }
 
   private deleteFile(doc: DocumentoCatalogo, file: ArchivoResumen): void {
+    const contribuyenteId = this.requireContribuyenteId();
     this.loading.set(true);
     this.archivosService
-      .deleteArchivo(file.id)
+      .deleteArchivo(file.id, contribuyenteId)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {

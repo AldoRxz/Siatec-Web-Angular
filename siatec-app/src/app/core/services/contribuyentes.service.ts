@@ -101,7 +101,7 @@ export class ContribuyentesService extends BaseApiService {
     page: number = 1, 
     pageSize: number = 20
   ): Observable<PaginatedResponse<ArchivoContribuyente>> {
-    const url = this.buildUrl(this.baseUrl, 'Archivos', contribuyenteId);
+    const url = this.buildUrl(this.baseUrl, 'internal', 'archivos', contribuyenteId);
     const params = { page: page.toString(), pageSize: pageSize.toString() };
     return this.getWithParams<PaginatedResponse<ArchivoContribuyente>>(url, params);
   }
@@ -110,7 +110,7 @@ export class ContribuyentesService extends BaseApiService {
    * Sube un archivo para un contribuyente
    */
   subirArchivo(contribuyenteId: number, formData: FormData): Observable<ArchivoContribuyente> {
-    const url = this.buildUrl(this.baseUrl, 'Archivos', contribuyenteId, 'upload');
+    const url = this.buildUrl(this.baseUrl, 'internal', 'archivos', contribuyenteId, 'upload');
     return this.upload<ArchivoContribuyente>(url, formData);
   }
 
@@ -118,7 +118,7 @@ export class ContribuyentesService extends BaseApiService {
    * Descarga un archivo
    */
   descargarArchivo(contribuyenteId: number, archivoId: number): Observable<Blob> {
-    const url = this.buildUrl(this.baseUrl, 'Archivos', contribuyenteId, 'download', archivoId);
+    const url = this.buildUrl(this.baseUrl, 'internal', 'archivos', contribuyenteId, 'download', archivoId);
     return this.download(url);
   }
 
@@ -126,7 +126,7 @@ export class ContribuyentesService extends BaseApiService {
    * Elimina un archivo
    */
   eliminarArchivo(contribuyenteId: number, archivoId: number): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'Archivos', contribuyenteId, archivoId);
+    const url = this.buildUrl(this.baseUrl, 'internal', 'archivos', contribuyenteId, archivoId);
     return this.delete<any>(url);
   }
 
@@ -134,7 +134,7 @@ export class ContribuyentesService extends BaseApiService {
    * Renombra un archivo
    */
   renombrarArchivo(contribuyenteId: number, archivoId: number, nuevoNombre: string): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'Archivos', contribuyenteId, archivoId);
+    const url = this.buildUrl(this.baseUrl, 'internal', 'archivos', contribuyenteId, archivoId);
     return this.patch<any>(url, { nombre: nuevoNombre });
   }
 

@@ -23,16 +23,16 @@ export class ArchivosService {
 
   /**
    * Obtiene todos los archivos de un contribuyente
-   * Endpoint: GET /internal/archivos/contribuyente/{contribuyenteId}
+   * Endpoint: GET /internal/archivos/{contribuyenteId}
    */
   getArchivosByContribuyente(contribuyenteId: number): Observable<ArchivoDto[]> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/contribuyente/${contribuyenteId}`;
+    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}`;
     return this.http.get<ArchivoDto[]>(url);
   }
 
   /**
    * Sube un nuevo archivo
-   * Endpoint: POST /api/contribuyentes/archivos/{contribuyenteId}
+   * Endpoint: POST /internal/archivos/{contribuyenteId}/upload
    */
   uploadArchivo(contribuyenteId: number, file: File, catalogoDocumentoId?: number, descripcion?: string): Observable<ArchivoDto> {
     const formData = new FormData();
@@ -44,38 +44,38 @@ export class ArchivosService {
       formData.append('descripcion', descripcion);
     }
 
-    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
-    const url = `${baseUrl}/api/contribuyentes/archivos/${contribuyenteId}`;
+    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}/upload`;
     return this.http.post<ArchivoDto>(url, formData);
   }
 
   /**
    * Descarga un archivo
-   * Endpoint: GET /api/contribuyentes/archivos/{id}/download
+   * Endpoint: GET /internal/archivos/{contribuyenteId}/download/{id}
    */
-  downloadArchivo(id: number): Observable<Blob> {
-    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
-    const url = `${baseUrl}/api/contribuyentes/archivos/${id}/download`;
+  downloadArchivo(id: number, contribuyenteId?: number): Observable<Blob> {
+    // Si no se pasa contribuyenteId, intentar obtenerlo del contexto (puede mejorar después)
+    const contribId = contribuyenteId || 0; // Temporal, debería obtenerse del auth service
+    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribId}/download/${id}`;
     return this.http.get(url, { responseType: 'blob' });
   }
 
   /**
    * Elimina un archivo
-   * Endpoint: DELETE /api/contribuyentes/archivos/{id}
+   * Endpoint: DELETE /internal/archivos/{contribuyenteId}/{id}
    */
-  deleteArchivo(id: number): Observable<void> {
-    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
-    const url = `${baseUrl}/api/contribuyentes/archivos/${id}`;
+  deleteArchivo(id: number, contribuyenteId?: number): Observable<void> {
+    const contribId = contribuyenteId || 0;
+    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribId}/${id}`;
     return this.http.delete<void>(url);
   }
 
   /**
    * Renombra un archivo
-   * Endpoint: PATCH /api/contribuyentes/archivos/{id}/rename
+   * Endpoint: PATCH /internal/archivos/{contribuyenteId}/{id}
    */
-  renameArchivo(id: number, nuevoNombre: string): Observable<ArchivoDto> {
-    const baseUrl = this.config.getApiUrl('contribuyentes').replace('/api/contribuyentes', '');
-    const url = `${baseUrl}/api/contribuyentes/archivos/{id}/rename`;
-    return this.http.patch<ArchivoDto>(url, { nuevoNombre });
+  renameArchivo(id: number, nuevoNombre: string, contribuyenteId?: number): Observable<ArchivoDto> {
+    const contribId = contribuyenteId || 0;
+    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribId}/${id}`;
+    return this.http.patch<ArchivoDto>(url, { nombreArchivo: nuevoNombre });
   }
 }
