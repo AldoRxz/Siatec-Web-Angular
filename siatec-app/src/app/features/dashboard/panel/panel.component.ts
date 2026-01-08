@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, computed, inject, signal, DestroyRef } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { AuthService } from '../../../core/services';
@@ -47,6 +49,7 @@ export class PanelComponent implements OnInit {
   private readonly notificationsService = inject(DashboardNotificationsService);
   private readonly documentsService = inject(DashboardDocumentsService);
   private readonly dashboardService = inject(DashboardService);
+  private readonly destroyRef = inject(DestroyRef);
   
   readonly dashboardData = signal<ContribuyenteDashboard | null>(null);
   readonly loadingDashboard = signal<boolean>(true);
@@ -159,6 +162,18 @@ export class PanelComponent implements OnInit {
     // this.documentsService.load(); // Se actualiza desde el dashboard
     this.loadInscripcionState();
     this.loadDashboardData();
+
+    // Escuchar cambios de navegación para recargar datos
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        filter(event => event.urlAfterRedirects.includes('/dashboard/panel')),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        console.log('[Panel] Navegación detectada, recargando dashboard...');
+        this.loadDashboardData();
+      });
   }
 
   get userName(): string {
@@ -168,26 +183,22 @@ export class PanelComponent implements OnInit {
     }
 
     // Intentar diferentes fuentes de nombre completo
-    const fullName = user.nombreCompleto || user.fullName;
-    if (fullName?.trim()) {
-      return fullName.trim();
+    if (user.nombreCompleto?.trim()) {
+      return user.nombreCompleto.trim();
     }
 
-    // Intentar construir desde identityInfo
-    const identityInfo = user.identityInfo as any;
-    if (identityInfo) {
-      const nombres = identityInfo.nombres || identityInfo.Nombres || '';
-      const primerApellido = identityInfo.primerApellido || identityInfo.PrimerApellido || '';
-      const segundoApellido = identityInfo.segundoApellido || identityInfo.SegundoApellido || '';
-      
-      const constructed = [nombres, primerApellido, segundoApellido]
-        .filter(Boolean)
-        .join(' ')
-        .trim();
-      
-      if (constructed) {
-        return constructed;
-      }
+    // Construir desde propiedades individuales
+    const nombres = user.nombres || '';
+    const primerApellido = user.primerApellido || '';
+    const segundoApellido = user.segundoApellido || '';
+    
+    const constructed = [nombres, primerApellido, segundoApellido]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+    
+    if (constructed) {
+      return constructed;
     }
 
     // Intentar construir desde propiedades individuales
@@ -292,6 +303,8 @@ export class PanelComponent implements OnInit {
         console.log('[Panel] Dashboard data loaded:', data);
         this.dashboardData.set(data);
         this.updateCardsWithDashboardData(data);
+        // Actualizar el contador de notificaciones desde el backend
+        this.notificationsService.updateUnreadCountFromBackend(data.cantidadNotificaciones);
         this.loadingDashboard.set(false);
       },
       error: (error) => {

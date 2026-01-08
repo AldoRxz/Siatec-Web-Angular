@@ -196,8 +196,7 @@ export class ContribucionesComponent implements OnInit {
       contribucionId: det.contribucionId,
       usuarioId: user.id,
       contribuyenteId: null,
-      rfcContribuyente: user.rfc || 'RFC',
-      nombreContribuyente: user.nombreCompleto || user.fullName || 'Contribuyente',
+      nombreContribuyente: user.nombreCompleto || 'Contribuyente',
       conceptoCodigo: '3-NOMINA',
       conceptoDescripcion: det.contribucionInstance?.contribucionNombre || 'Contribución',
       periodo: det.periodo || new Date().toISOString().substring(0, 7),
@@ -233,23 +232,17 @@ export class ContribucionesComponent implements OnInit {
   }
 
   private cargarOperaciones(): void {
-    // Intentar obtener UUID del usuario (preferido) o ID numérico (legacy)
-    const usuarioId = this.authService.getUserId();
+    // Usar el contribuyenteId numérico como en los otros endpoints
     const contribuyenteId = this.authService.getContribuyenteId();
 
-    if (!usuarioId && !contribuyenteId) {
+    if (!contribuyenteId) {
       this.messageService.add({ severity: 'warn', summary: 'Sesión', detail: 'Inicia sesión para consultar tus determinaciones.' });
       return;
     }
 
     this.loading.set(true);
 
-    // Usar endpoint por UUID si está disponible, sino usar endpoint legacy por contribuyenteId
-    const request$ = usuarioId
-      ? this.contribucionesService.getDeterminacionesPorUsuario(usuarioId)
-      : this.contribucionesService.getDeterminacionesPorContribuyente(contribuyenteId!);
-
-    request$
+    this.contribucionesService.getDeterminacionesPorContribuyente(contribuyenteId)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (items) => this.operaciones.set(items ?? []),

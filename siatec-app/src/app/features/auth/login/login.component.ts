@@ -70,9 +70,16 @@ export class LoginComponent implements OnDestroy {
 
     try {
       const { email, password } = this.loginForm.value;
+      console.log('[LoginComponent] Enviando login...');
       const response = await firstValueFrom(this.authService.login({ email, password }));
+      console.log('[LoginComponent] Respuesta recibida:', response);
       
-      if (response.token) {
+      // El backend puede devolver token o accessToken
+      const token = response.token || response.accessToken;
+      console.log('[LoginComponent] Token extraído:', token ? 'Sí' : 'No');
+      
+      if (token) {
+        console.log('[LoginComponent] Token encontrado, mostrando diálogo...');
         // Obtener URL de retorno o usar dashboard por defecto
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
         
@@ -86,13 +93,37 @@ export class LoginComponent implements OnDestroy {
           },
           {
             onClose: () => this.router.navigateByUrl(returnUrl),
-            autoCloseMs: 1800
+            autoCloseMs: 1800,
+            redirectUrl: returnUrl
           }
         );
       }
     } catch (error: any) {
-      this.errorMessage = error?.message || 'Error al iniciar sesión. Por favor intenta nuevamente.';
       console.error('Login error:', error);
+      
+      // Extraer mensaje de error del response
+      let errorMsg = 'Error al iniciar sesión. Por favor intenta nuevamente.';
+      if (error?.error?.mensaje) {
+        errorMsg = error.error.mensaje;
+      } else if (error?.message) {
+        errorMsg = error.message;
+      }
+      
+      this.errorMessage = errorMsg;
+      
+      // Mostrar modal de error
+      this.openStatusDialog(
+        {
+          title: 'Error de autenticación',
+          subtitle: 'No se pudo iniciar sesión',
+          message: errorMsg,
+          hint: 'Verifica tus credenciales e intenta nuevamente.',
+          severity: 'danger'
+        },
+        {
+          autoCloseMs: 4000
+        }
+      );
     } finally {
       this.loading = false;
     }
@@ -112,8 +143,9 @@ export class LoginComponent implements OnDestroy {
 
   private openStatusDialog(
     payload: NotificationDialogData,
-    options?: { onClose?: () => void; autoCloseMs?: number }
+    options?: { onClose?: () => void; autoCloseMs?: number; redirectUrl?: string }
   ): void {
+    console.log('Opening dialog with payload:', payload);
     this.dialogRef?.close();
 
     const ref = this.dialogService.open(NotificationDialogComponent, {
@@ -123,8 +155,19 @@ export class LoginComponent implements OnDestroy {
       data: payload,
       modal: true,
       closable: false
-    })!;
+    });
 
+    console.log('Dialog ref created:', ref);
+    
+    if (!ref) {
+      console.error('Failed to create dialog ref');
+      // Si el diálogo no se puede crear, redirigir inmediatamente
+      if (options?.redirectUrl) {
+        setTimeout(() => this.router.navigateByUrl(options.redirectUrl!), 100);
+      }
+      return;
+    }
+    
     this.dialogRef = ref;
 
     if (options?.onClose) {
@@ -132,7 +175,13 @@ export class LoginComponent implements OnDestroy {
     }
 
     if (options?.autoCloseMs) {
-      setTimeout(() => ref.close(), options.autoCloseMs);
+      setTimeout(() => {
+        ref.close();
+        // Si hay una URL de redirección, navegar después de cerrar el diálogo
+        if (options.redirectUrl) {
+          this.router.navigateByUrl(options.redirectUrl);
+        }
+      }, options.autoCloseMs);
     }
   }
 

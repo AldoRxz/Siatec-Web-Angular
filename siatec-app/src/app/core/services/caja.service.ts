@@ -10,7 +10,7 @@ export interface CrearOrdenPagoRequest {
   contribucionId?: number;
   usuarioId?: string | number;
   contribuyenteId?: number | null;
-  rfcContribuyente: string;
+  rfcContribuyente?: string;  // Opcional - campo legacy
   nombreContribuyente: string;
   conceptoCodigo: string;
   conceptoDescripcion: string;

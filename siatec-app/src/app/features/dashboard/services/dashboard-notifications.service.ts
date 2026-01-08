@@ -18,9 +18,18 @@ export class DashboardNotificationsService {
 
   private notificationsSignal = signal<DashboardNotification[]>(this.restoreNotifications());
   private readIdsSignal = signal<number[]>(this.restoreReadIds());
+  private unreadCountOverride = signal<number | null>(null);
 
   readonly notifications = computed(() => this.notificationsSignal().sort((a, b) => +new Date(b.fecha) - +new Date(a.fecha)));
-  readonly unreadCount = computed(() => this.notifications().filter(n => !this.readIdsSignal().includes(n.id)).length);
+  readonly unreadCount = computed(() => {
+    // Si hay un valor del backend, usarlo
+    const override = this.unreadCountOverride();
+    if (override !== null) {
+      return override;
+    }
+    // Si no, calcular del localStorage
+    return this.notifications().filter(n => !this.readIdsSignal().includes(n.id)).length;
+  });
 
   getNotificationsSnapshot(): DashboardNotification[] {
     return this.notifications().map(item => ({ ...item }));
@@ -66,6 +75,13 @@ export class DashboardNotificationsService {
     this.persistNotifications(merged);
     this.readIdsSignal.set([]);
     this.persistReadIds([]);
+  }
+
+  /**
+   * Actualiza el contador de notificaciones no leídas desde el backend
+   */
+  updateUnreadCountFromBackend(count: number): void {
+    this.unreadCountOverride.set(count);
   }
 
   private restoreNotifications(): DashboardNotification[] {

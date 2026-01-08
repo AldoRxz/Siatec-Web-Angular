@@ -35,8 +35,7 @@ export class AuthService {
   readonly currentUser = computed(() => this.userSignal());
   readonly contribuyenteId = computed(() => {
     const user = this.userSignal();
-    if (!user) return null;
-    return user.contribuyenteId || user.idContribuyente || user.id || null;
+    return user?.contribuyenteId || null;
   });
 
   // BehaviorSubject para compatibilidad con RxJS
@@ -55,7 +54,7 @@ export class AuthService {
    * Login de cuenta de contribuyente
    */
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/login`;
+    const url = `${this.config.getApiUrl('auth')}/login`;
 
     return this.http.post<AuthResponse>(url, credentials).pipe(
       tap(response => this.handleAuthSuccess(response)),
@@ -67,7 +66,7 @@ export class AuthService {
    * Crear nueva cuenta de contribuyente
    */
   createAccount(data: CreateAccountData): Observable<AuthResponse> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente`;
+    const url = `${this.config.getApiUrl('auth')}/register`;
 
     return this.http.post<AuthResponse>(url, data).pipe(
       tap(response => this.handleAuthSuccess(response)),
@@ -86,7 +85,7 @@ export class AuthService {
    * Actualizar cuenta de contribuyente
    */
   updateAccount(data: UpdateAccountData): Observable<any> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente`;
+    const url = `${this.config.getApiUrl('auth')}/me`;
 
     return this.http.put(url, data).pipe(
       catchError(error => this.handleAuthError(error))
@@ -97,7 +96,7 @@ export class AuthService {
    * Solicitud de recuperación de contraseña
    */
   requestPasswordRecovery(payload: PasswordRecoveryRequest): Observable<PasswordRecoveryResponse> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/password/recovery`;
+    const url = `${this.config.getApiUrl('auth')}/forgot-password`;
     const body = {
       email: payload.email
     };
@@ -134,18 +133,25 @@ export class AuthService {
    * Obtiene el ID del contribuyente actual (numérico para compatibilidad legacy)
    */
   getContribuyenteId(): number | null {
-    // Prioridad 1: localStorage
+    // Prioridad 1: usuario actual
+    const user = this.userSignal();
+    if (user?.contribuyenteId) {
+      return user.contribuyenteId;
+    }
+
+    // Prioridad 2: localStorage
     const storedId = localStorage.getItem(this.CONTRIBUYENTE_ID_KEY);
     if (storedId) {
       const id = Number(storedId);
       if (!isNaN(id)) return id;
     }
 
-    // Prioridad 2: usuario actual
+    // Prioridad 3: computed signal
     const contribuyenteId = this.contribuyenteId();
     if (typeof contribuyenteId === 'number') {
       return contribuyenteId;
     }
+    
     return null;
   }
 
@@ -155,11 +161,7 @@ export class AuthService {
    */
   getUserId(): string | null {
     const user = this.userSignal();
-    if (!user) return null;
-
-    // El id puede ser string (UUID) o number
-    const id = user.identityInfo?.id ?? user.id;
-    return id ? String(id) : null;
+    return user?.id ? String(user.id) : null;
   }
 
   /**
@@ -173,7 +175,7 @@ export class AuthService {
    * Refresca el usuario desde el servidor
    */
   refreshUser(): Observable<User> {
-    const url = `${this.config.getApiUrl('auth')}/CuentaContribuyente/me`;
+    const url = `${this.config.getApiUrl('auth')}/me`;
 
     return this.http.get<User>(url).pipe(
       tap(user => {
@@ -208,15 +210,17 @@ export class AuthService {
 
     if (user) {
       this.setUser(user);
+      
+      // Guardar contribuyenteId si está disponible (ya normalizado en camelCase)
+      const contribId = user.contribuyenteId;
+      if (contribId) {
+        localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribId.toString());
+        console.log('[AuthService] ✅ contribuyenteId guardado:', contribId);
+      } else {
+        console.warn('[AuthService] ⚠️ No se encontró contribuyenteId en el usuario');
+      }
     } else {
       console.warn('[AuthService] No se recibió usuario en la respuesta');
-    }
-
-    // Guardar contribuyenteId si está disponible - el backend lo envía en identityInfo.id
-    const contribId = user?.identityInfo?.id || user?.contribuyenteId || user?.idContribuyente || user?.id;
-    if (contribId) {
-      localStorage.setItem(this.CONTRIBUYENTE_ID_KEY, contribId.toString());
-      console.log('[AuthService] contribuyenteId guardado:', contribId);
     }
   }
 
@@ -252,9 +256,36 @@ export class AuthService {
    * Guarda el usuario
    */
   private setUser(user: User): void {
-    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-    this.userSignal.set(user);
-    this.userSubject.next(user);
+    // Normalizar el usuario para incluir propiedades computadas
+    const normalizedUser = this.normalizeUser(user);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(normalizedUser));
+    this.userSignal.set(normalizedUser);
+    this.userSubject.next(normalizedUser);
+  }
+  
+  /**
+   * Normaliza un objeto User para incluir todas las propiedades computadas
+   */
+  private normalizeUser(user: User): User {
+    const normalized: any = {};
+    
+    for (const key in user) {
+      const value = (user as any)[key];
+      const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+      normalized[camelKey] = value;
+    }
+    
+    // Propiedades computadas
+    const nombres = normalized.nombres || '';
+    const primerApellido = normalized.primerApellido || '';
+    const segundoApellido = normalized.segundoApellido || '';
+    
+    return {
+      ...normalized,
+      nombre: nombres,
+      apellidos: [primerApellido, segundoApellido].filter(Boolean).join(' '),
+      nombreCompleto: [nombres, primerApellido, segundoApellido].filter(Boolean).join(' ')
+    };
   }
 
   /**
@@ -271,8 +302,9 @@ export class AuthService {
 
       if (userJson) {
         const user = JSON.parse(userJson);
-        this.userSignal.set(user);
-        this.userSubject.next(user);
+        const normalizedUser = this.normalizeUser(user);
+        this.userSignal.set(normalizedUser);
+        this.userSubject.next(normalizedUser);
       }
     } catch (error) {
       console.error('Error loading user from storage:', error);

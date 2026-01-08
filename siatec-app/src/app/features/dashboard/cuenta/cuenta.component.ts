@@ -205,17 +205,16 @@ export class CuentaComponent implements OnInit {
         return;
       }
 
-      // Extract user data with fallbacks
+      // Extract user data from the response - el backend ahora devuelve estos campos directamente
       const user = this.currentUser as any;
-      const identityInfo: Record<string, unknown> = (user.identityInfo as Record<string, unknown>) || {};
 
-      // Primero intentar con las propiedades directas del objeto user (respuesta del backend)
-      const userName = user.userName || (identityInfo['userName'] || identityInfo['UserName'] || '') as string;
-      const nombres = user.nombres || (identityInfo['nombres'] || identityInfo['Nombres'] || user.nombre || '') as string;
-      const primerApellido = user.primerApellido || (identityInfo['primerApellido'] || identityInfo['PrimerApellido'] || '') as string;
-      const segundoApellido = user.segundoApellido || (identityInfo['segundoApellido'] || identityInfo['SegundoApellido'] || '') as string;
-      const telefono = user.telefono || (identityInfo['telefono'] || identityInfo['Telefono'] || '') as string;
-      const email = (user.email || identityInfo['email'] || identityInfo['Email'] || '') as string;
+      // Obtener datos directamente del objeto user (ya vienen del backend)
+      const userName = user.userName || user.UserName || user.email?.split('@')[0] || '';
+      const nombres = user.nombres || user.Nombres || user.nombre || '';
+      const primerApellido = user.primerApellido || user.PrimerApellido || '';
+      const segundoApellido = user.segundoApellido || user.SegundoApellido || '';
+      const telefono = user.telefono || user.Telefono || '';
+      const email = user.email || user.Email || '';
 
       this.accountForm.patchValue({
         userName,

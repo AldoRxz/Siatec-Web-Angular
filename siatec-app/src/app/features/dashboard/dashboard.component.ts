@@ -1,5 +1,5 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -81,7 +81,7 @@ interface InscriptionState {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private contribuyentesService = inject(ContribuyentesService);
   private router = inject(Router);
@@ -230,6 +230,10 @@ export class DashboardComponent {
   constructor() {
     this.loadNavItems();
     this.loadInscriptionState();
+  }
+
+  ngOnInit(): void {
+    // Cargar datos del dashboard cada vez que se entra al componente
     this.fetchDocumentSummary();
   }
 
@@ -240,26 +244,22 @@ export class DashboardComponent {
     }
 
     // Intentar diferentes fuentes de nombre completo
-    const fullName = user.nombreCompleto || user.fullName;
-    if (fullName?.trim()) {
-      return fullName.trim();
+    if (user.nombreCompleto?.trim()) {
+      return user.nombreCompleto.trim();
     }
 
-    // Intentar construir desde identityInfo
-    const identityInfo = user.identityInfo as any;
-    if (identityInfo) {
-      const nombres = identityInfo.nombres || identityInfo.Nombres || '';
-      const primerApellido = identityInfo.primerApellido || identityInfo.PrimerApellido || '';
-      const segundoApellido = identityInfo.segundoApellido || identityInfo.SegundoApellido || '';
-      
-      const constructed = [nombres, primerApellido, segundoApellido]
-        .filter(Boolean)
-        .join(' ')
-        .trim();
-      
-      if (constructed) {
-        return constructed;
-      }
+    // Construir desde propiedades individuales
+    const nombres = user.nombres || '';
+    const primerApellido = user.primerApellido || '';
+    const segundoApellido = user.segundoApellido || '';
+    
+    const constructed = [nombres, primerApellido, segundoApellido]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+    
+    if (constructed) {
+      return constructed;
     }
 
     // Intentar construir desde propiedades individuales
@@ -400,15 +400,16 @@ export class DashboardComponent {
 
   private fetchDocumentSummary(): void {
     this.setDashboardLoading(true);
-    const contribuyenteId = this.authService.getContribuyenteId();
-    if (!contribuyenteId) {
+    const userId = this.authService.getUserId();
+    if (!userId) {
+      console.warn('[Dashboard] No se pudo obtener el ID del usuario');
       this.setDashboardLoading(false);
       return;
     }
 
     // Usar el endpoint de dashboard para obtener todas las estadísticas
     this.contribuyentesService
-      .getDashboard(contribuyenteId)
+      .getDashboard(userId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (dashboard) => {

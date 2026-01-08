@@ -30,9 +30,11 @@ export class DashboardService {
 
   /**
    * Obtiene los datos del dashboard para un contribuyente
+   * Endpoint: GET /internal/contribuyentes/dashboard/{contribuyenteId}
    */
-  getDashboard(contribuyenteId: number): Observable<ContribuyenteDashboard> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/dashboard/${contribuyenteId}`;
+  getDashboard(contribuyenteId: number | string): Observable<ContribuyenteDashboard> {
+    const baseUrl = this.config.getApiUrl('contribuyentes');
+    const url = `${baseUrl}/internal/contribuyentes/dashboard/${contribuyenteId}`;
     return this.http.get<ContribuyenteDashboard>(url);
   }
 }
