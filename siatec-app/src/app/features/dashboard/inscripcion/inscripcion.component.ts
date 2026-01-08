@@ -206,7 +206,7 @@ export class InscripcionComponent implements OnInit {
     this.loadProcessingState();
     this.prefillFromUser();
     this.loadDashboardData(); // Cargar estado del dashboard
-    this.cargarDocumentosSeccion(0); // Cargar documentos del primer paso
+    // NO cargar documentos aquí - esperamos a que el usuario valide su RFC primero
   }
 
   /**
@@ -217,6 +217,12 @@ export class InscripcionComponent implements OnInit {
     const seccion = this.seccionesDocumentos[stepIndex];
     if (!seccion) {
       console.log(`No hay sección de documentos para el paso ${stepIndex}`);
+      return;
+    }
+
+    // NO cargar documentos si aún no se muestra el formulario (RFC no validado)
+    if (!this.mostrarFormulario()) {
+      console.log('Formulario no visible aún, omitiendo carga de documentos');
       return;
     }
 
@@ -353,9 +359,23 @@ export class InscripcionComponent implements OnInit {
    * Carga automáticamente los documentos de la nueva sección
    */
   onStepChange(event: any): void {
-    const newStep = event.index;
+    // PrimeNG stepper usa 'value' (1-based), no 'index' (0-based)
+    const newStep = (event.value || event.index || 1) - 1; // Convertir a 0-based
+    console.log('onStepChange llamado, valor:', event.value || event.index, 'paso calculado:', newStep);
     this.currentStep.set(newStep);
     this.cargarDocumentosSeccion(newStep);
+  }
+
+  /**
+   * Navega a un paso específico y carga sus documentos
+   * Wrapper para activateCallback de PrimeNG
+   */
+  goToStep(stepValue: number, activateCallback: (value: number) => void): void {
+    console.log('goToStep llamado con valor:', stepValue);
+    const stepIndex = stepValue - 1; // Convertir a 0-based
+    this.currentStep.set(stepIndex);
+    activateCallback(stepValue);
+    this.cargarDocumentosSeccion(stepIndex);
   }
 
   /**
@@ -547,6 +567,8 @@ export class InscripcionComponent implements OnInit {
    */
   continuarInscripcion(): void {
     this.mostrarFormulario.set(true);
+    // Ahora sí cargar los documentos de la primera sección, ya que conocemos el tipo de persona
+    this.cargarDocumentosSeccion(0);
   }
 
   /**
@@ -583,14 +605,18 @@ export class InscripcionComponent implements OnInit {
       return;
     }
     if (step < this.steps.length - 1) {
-      this.currentStep.set(step + 1);
+      const newStep = step + 1;
+      this.currentStep.set(newStep);
+      this.cargarDocumentosSeccion(newStep);
     }
   }
 
   prevStep(): void {
     const step = this.currentStep();
     if (step > 0) {
-      this.currentStep.set(step - 1);
+      const newStep = step - 1;
+      this.currentStep.set(newStep);
+      this.cargarDocumentosSeccion(newStep);
     }
   }
 

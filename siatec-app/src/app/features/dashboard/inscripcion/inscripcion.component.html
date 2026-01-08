@@ -310,7 +310,7 @@
                   </div>
                 </div>
                 <div class="step-actions">
-                  <button id="inscripcion-step1-continuar-btn" pButton label="CONTINUAR" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(2)" type="button" class="step-button-primary"></button>
+                  <button id="inscripcion-step1-continuar-btn" pButton label="CONTINUAR" icon="pi pi-arrow-right" iconPos="right" (click)="goToStep(2, activateCallback)" type="button" class="step-button-primary"></button>
                 </div>
               </div>
             </ng-template>
@@ -470,8 +470,8 @@
                       </div>
                     </div>
                   <div class="step-actions">
-                    <button id="inscripcion-step2-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(1)" type="button" class="step-button-secondary"></button>
-                    <button id="inscripcion-step2-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(3)" type="button" class="step-button-primary"></button>
+                    <button id="inscripcion-step2-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="goToStep(1, activateCallback)" type="button" class="step-button-secondary"></button>
+                    <button id="inscripcion-step2-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="goToStep(3, activateCallback)" type="button" class="step-button-primary"></button>
                   </div>
               </div>
             </ng-template>
@@ -576,8 +576,8 @@
                       </div>
                     </div>
                   <div class="step-actions">
-                    <button id="inscripcion-step3-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(2)" type="button" class="step-button-secondary"></button>
-                    <button id="inscripcion-step3-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(4)" type="button" class="step-button-primary"></button>
+                    <button id="inscripcion-step3-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="goToStep(2, activateCallback)" type="button" class="step-button-secondary"></button>
+                    <button id="inscripcion-step3-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="goToStep(4, activateCallback)" type="button" class="step-button-primary"></button>
                   </div>
               </div>
             </ng-template>
@@ -647,8 +647,8 @@
                       }
                     </div>
                   <div class="step-actions">
-                    <button id="inscripcion-step4-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(3)" type="button" class="step-button-secondary"></button>
-                    <button id="inscripcion-step4-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(5)" type="button" class="step-button-primary"></button>
+                    <button id="inscripcion-step4-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="goToStep(3, activateCallback)" type="button" class="step-button-secondary"></button>
+                    <button id="inscripcion-step4-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="goToStep(5, activateCallback)" type="button" class="step-button-primary"></button>
                   </div>
               </div>
             </ng-template>
@@ -748,8 +748,8 @@
                       </div>
                     </div>
                   <div class="step-actions">
-                    <button id="inscripcion-step5-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(4)" type="button" class="step-button-secondary"></button>
-                    <button id="inscripcion-step5-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(6)" type="button" class="step-button-primary"></button>
+                    <button id="inscripcion-step5-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="goToStep(4, activateCallback)" type="button" class="step-button-secondary"></button>
+                    <button id="inscripcion-step5-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="goToStep(6, activateCallback)" type="button" class="step-button-primary"></button>
                   </div>
               </div>
             </ng-template>

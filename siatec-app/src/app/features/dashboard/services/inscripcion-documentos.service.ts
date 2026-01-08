@@ -37,7 +37,7 @@ export class InscripcionDocumentosService {
    * Obtiene los documentos requeridos para inscripción de persona física
    */
   getDocumentosFisica(seccion?: string): Observable<DocumentosInscripcionResponse> {
-    let url = `${this.config.getApiUrl('contribuyentes')}/inscripcion-documentos/fisica`;
+    let url = `${this.config.getApiUrl('contribuyentes')}/internal/inscripcion-documentos/fisica`;
     if (seccion) {
       url += `?seccion=${encodeURIComponent(seccion)}`;
     }
@@ -48,7 +48,7 @@ export class InscripcionDocumentosService {
    * Obtiene los documentos requeridos para inscripción de persona moral
    */
   getDocumentosMoral(seccion?: string): Observable<DocumentosInscripcionResponse> {
-    let url = `${this.config.getApiUrl('contribuyentes')}/inscripcion-documentos/moral`;
+    let url = `${this.config.getApiUrl('contribuyentes')}/internal/inscripcion-documentos/moral`;
     if (seccion) {
       url += `?seccion=${encodeURIComponent(seccion)}`;
     }
