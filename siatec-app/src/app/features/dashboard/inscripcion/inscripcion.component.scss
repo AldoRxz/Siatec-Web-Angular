@@ -2330,3 +2330,107 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
   justify-content: flex-end;
   gap: 1rem;
 }
+
+// ========================================
+// Processing Overlay
+// ========================================
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  border-radius: 1.25rem;
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+.processing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 1.25rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.4s ease-out;
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $primary-color;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1rem;
+    color: $text-medium;
+  }
+
+  :host ::ng-deep .custom-spinner {
+    .p-progress-spinner-circle {
+      stroke: $primary-color;
+      animation: custom-progress-spinner-dash 1.5s ease-in-out infinite;
+    }
+  }
+
+  @keyframes custom-progress-spinner-dash {
+    0% {
+      stroke-dasharray: 1, 200;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90, 200;
+      stroke-dashoffset: -35px;
+    }
+    100% {
+      stroke-dasharray: 90, 200;
+      stroke-dashoffset: -125px;
+    }
+  }
+}
+
+// Make sure the card has position relative
+.inscripcion-card {
+  position: relative;
+
+  :host ::ng-deep .p-card {
+    position: relative;
+  }
+}
+
+// Disabled state for upload button
+.upload-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

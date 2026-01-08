@@ -83,6 +83,21 @@
   <!-- Main Form Card -->
   @if (shouldShowForm()) {
   <p-card class="inscripcion-card">
+    <!-- Overlay de procesamiento -->
+    @if (subiendoArchivo()) {
+      <div class="processing-overlay">
+        <div class="processing-content">
+          <p-progressSpinner 
+            styleClass="custom-spinner" 
+            strokeWidth="3"
+            animationDuration="1s"
+          ></p-progressSpinner>
+          <h3>Procesando documento con IA...</h3>
+          <p>Extrayendo información del archivo</p>
+        </div>
+      </div>
+    }
+    
     <form [formGroup]="form" (ngSubmit)="submitSolicitud()">
       
       <!-- RFC Validation Section -->
@@ -214,7 +229,7 @@
                   </div>
                   
                   <div class="upload-controls">
-                    <label class="upload-button">
+                    <label class="upload-button" [class.disabled]="subiendoArchivo()">
                       <i class="pi pi-upload"></i>
                       <span>Subir Documento</span>
                       <input 
@@ -310,7 +325,17 @@
                   </div>
                 </div>
                 <div class="step-actions">
-                  <button id="inscripcion-step1-continuar-btn" pButton label="CONTINUAR" icon="pi pi-arrow-right" iconPos="right" (click)="goToStep(2, activateCallback)" type="button" class="step-button-primary"></button>
+                  <button 
+                    id="inscripcion-step1-continuar-btn" 
+                    pButton 
+                    label="CONTINUAR" 
+                    icon="pi pi-arrow-right" 
+                    iconPos="right" 
+                    (click)="goToStep(2, activateCallback)" 
+                    type="button" 
+                    class="step-button-primary"
+                    [disabled]="subiendoArchivo()"
+                  ></button>
                 </div>
               </div>
             </ng-template>

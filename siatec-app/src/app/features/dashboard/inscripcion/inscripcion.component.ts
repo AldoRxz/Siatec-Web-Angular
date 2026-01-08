@@ -16,6 +16,7 @@ import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { StepperModule } from 'primeng/stepper';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { AuthService, ContribuyentesService } from '../../../core/services';
@@ -66,6 +67,7 @@ interface CatalogOption {
     IconFieldModule,
     InputIconModule,
     StepperModule,
+    ProgressSpinnerModule,
     FloatLabelFilledDirective
   ],
   providers: [MessageService],
