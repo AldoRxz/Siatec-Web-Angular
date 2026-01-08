@@ -329,8 +329,8 @@ export class InscripcionComponent implements OnInit {
       
       console.log('Respuesta de Paccioli:', response);
       
-      // Rellenar campos con la respuesta
-      if (response?.data || response?.extractedFields) {
+      // Rellenar campos con la respuesta - verificar múltiples estructuras posibles
+      if (response?.payload || response?.data || response?.extractedFields) {
         this.rellenarCamposDesdeRespuesta(response, stepIndex);
         
         this.messageService.add({
@@ -338,6 +338,8 @@ export class InscripcionComponent implements OnInit {
           summary: 'Campos actualizados',
           detail: 'Se extrajeron datos del documento y se rellenaron los campos automáticamente'
         });
+      } else {
+        console.warn('Respuesta de Paccioli sin payload/data/extractedFields');
       }
     } catch (error: any) {
       console.error('Error al procesar archivo con Paccioli:', error);
@@ -396,14 +398,21 @@ export class InscripcionComponent implements OnInit {
       
       console.log('Respuesta de Paccioli:', response);
       
-      // Rellenar campos con la respuesta
-      if (response?.data || response?.extractedFields) {
+      // Rellenar campos con la respuesta - verificar múltiples estructuras posibles
+      if (response?.payload || response?.data || response?.extractedFields) {
         this.rellenarCamposDesdeRespuesta(response, stepIndex);
         
         this.messageService.add({
           severity: 'success',
           summary: 'Documento procesado',
           detail: 'Los campos se han rellenado automáticamente con la información extraída'
+        });
+      } else {
+        console.warn('Respuesta de Paccioli sin payload/data/extractedFields');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Documento procesado',
+          detail: 'El documento se procesó pero no se pudo extraer información'
         });
       }
     } catch (error: any) {
@@ -437,10 +446,17 @@ export class InscripcionComponent implements OnInit {
    * Rellena los campos del formulario con la respuesta de Paccioli
    */
   private rellenarCamposDesdeRespuesta(response: any, stepIndex: number): void {
-    const data = response?.data || response?.extractedFields || {};
+    // La respuesta puede venir en diferentes formatos según la API
+    const data = response?.payload || response?.data || response?.extractedFields || {};
     const formGroup = this.getCurrentFormGroup(stepIndex);
     
-    if (!formGroup) return;
+    console.log('Rellenando campos - Respuesta completa:', response);
+    console.log('Rellenando campos - Data extraída:', data);
+    
+    if (!formGroup) {
+      console.warn('No hay FormGroup para el paso:', stepIndex);
+      return;
+    }
 
     // Mapeo de campos de Paccioli a campos del formulario
     const fieldMapping: {[key: string]: string} = {
@@ -458,6 +474,7 @@ export class InscripcionComponent implements OnInit {
       'email': 'email',
       'correo': 'email',
       'telefono': 'telefono',
+      'telefonoAlterno': 'telefonoAlterno',
       
       // Domicilio
       'calle': 'calle',
@@ -475,16 +492,22 @@ export class InscripcionComponent implements OnInit {
     };
 
     // Rellenar campos encontrados
+    let camposRellenados = 0;
     Object.keys(data).forEach(key => {
       const mappedField = fieldMapping[key];
       if (mappedField && formGroup.get(mappedField)) {
         const value = data[key];
         if (value !== null && value !== undefined && value !== '') {
           formGroup.get(mappedField)?.setValue(value);
-          console.log(`Campo ${mappedField} rellenado con: ${value}`);
+          console.log(`✅ Campo ${mappedField} rellenado con: ${value}`);
+          camposRellenados++;
         }
+      } else if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
+        console.warn(`Campo ${key} no tiene mapeo o no existe en el formulario`);
       }
     });
+    
+    console.log(`Total de campos rellenados: ${camposRellenados}`);
   }
 
   /**
