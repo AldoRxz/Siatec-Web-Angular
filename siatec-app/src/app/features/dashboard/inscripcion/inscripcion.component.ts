@@ -20,7 +20,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
-import { AuthService, ContribuyentesService } from '../../../core/services';
+import { AuthService, ContribuyentesService, ContribucionesService } from '../../../core/services';
 import { PaccioliService } from '../../../core/services/paccioli.service';
 import { DashboardNotificationsService } from '../services/dashboard-notifications.service';
 import { InscripcionDocumentosService, DocumentoRequeridoDto } from '../services/inscripcion-documentos.service';
@@ -81,6 +81,7 @@ export class InscripcionComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly contribuyentesService = inject(ContribuyentesService);
+  private readonly contribucionesService = inject(ContribucionesService);
   private readonly paccioliService = inject(PaccioliService);
   private readonly inscripcionDocumentosService = inject(InscripcionDocumentosService);
   private readonly dashboardService = inject(DashboardService);
@@ -149,15 +150,9 @@ export class InscripcionComponent implements OnInit {
   actividadInput = '';
   readonly regimenes = signal<string[]>([]);
   readonly actividades = signal<string[]>([]);
-  readonly impuestosCatalog: CatalogOption[] = [
-    { code: 'IVA', label: 'Impuesto al Valor Agregado' },
-    { code: 'ISR', label: 'Impuesto Sobre la Renta' },
-    { code: 'ISN', label: 'Impuesto Sobre Nómina' },
-    { code: 'CED', label: 'Impuesto Cedular' },
-    { code: 'HOS', label: 'Impuesto al Hospedaje' },
-    { code: 'ESP', label: 'Impuesto Especial' }
-  ];
-  readonly impuestosSeleccionados = signal<string[]>([]);
+  readonly impuestosCatalog = signal<any[]>([]);
+  readonly impuestosSeleccionados = signal<string[]>([]); // Nombres para mostrar
+  readonly contribucionIds = signal<number[]>([]); // IDs para enviar al backend
 
   readonly form = this.fb.group({
     tipoPersona: this.fb.nonNullable.control<'fisica' | 'moral'>('fisica'),
@@ -205,6 +200,11 @@ export class InscripcionComponent implements OnInit {
   readonly personaDescripcion = computed(() => (this.form.controls.tipoPersona.value === 'fisica' ? 'persona física' : 'persona moral'));
   readonly draftUpdatedAt = signal<Date | null>(null);
   readonly processingState = signal<InscripcionState | null>(null);
+  readonly contribucionesSeleccionadasDetalle = computed(() => {
+    const ids = this.contribucionIds();
+    const catalogo = this.impuestosCatalog();
+    return catalogo.filter(c => ids.includes(c.id));
+  });
 
   ngOnInit(): void {
     this.setupPersonaWatcher();
@@ -212,6 +212,7 @@ export class InscripcionComponent implements OnInit {
     this.loadProcessingState();
     this.prefillFromUser();
     this.loadDashboardData(); // Cargar estado del dashboard
+    this.loadContribuciones(); // Cargar contribuciones desde la API
     // NO cargar documentos aquí - esperamos a que el usuario valide su RFC primero
     
     // Cargar archivos subidos si el usuario ya está autenticado
@@ -598,6 +599,12 @@ export class InscripcionComponent implements OnInit {
     activateCallback(stepValue);
     this.cargarDocumentosSeccion(stepIndex);
     this.cargarArchivosSubidos();
+    
+    // Cargar contribuciones cuando se llega al paso 4 (Selecciona las Contribuciones)
+    if (stepValue === 4) {
+      console.log('📍 Llegando al paso de contribuciones, cargando catálogo...');
+      this.loadContribuciones();
+    }
   }
 
   /**
@@ -805,6 +812,7 @@ export class InscripcionComponent implements OnInit {
     this.regimenes.set([]);
     this.actividades.set([]);
     this.impuestosSeleccionados.set([]);
+    this.contribucionIds.set([]);
     this.currentStep.set(0);
   }
 
@@ -875,30 +883,44 @@ export class InscripcionComponent implements OnInit {
     this.actividades.set([]);
   }
 
-  getImpuestoSeleccionado(code: string): boolean {
-    return this.impuestosSeleccionados().includes(code);
+  getImpuestoSeleccionado(id: number): boolean {
+    return this.contribucionIds().includes(id);
   }
 
-  getImpuestoControl(code: string): FormControl {
-    const control = new FormControl(this.getImpuestoSeleccionado(code));
+  getImpuestoControl(id: number): FormControl {
+    const control = new FormControl(this.getImpuestoSeleccionado(id));
     return control;
   }
 
-  getImpuestoLabel(code: string): string {
-    const impuesto = this.impuestosCatalog.find(i => i.code === code);
-    return impuesto ? `${impuesto.code} - ${impuesto.label}` : code;
+  getImpuestoLabel(id: number): string {
+    const contribucion = this.impuestosCatalog().find(c => c.id === id);
+    return contribucion ? `${contribucion.nombre}` : `ID: ${id}`;
   }
 
-  toggleImpuesto(code: string, checked: boolean): void {
-    this.impuestosSeleccionados.update((list) => {
+  toggleImpuesto(contribucionId: number, checked: boolean): void {
+    this.contribucionIds.update((list) => {
       if (checked) {
-        if (list.includes(code)) {
+        if (list.includes(contribucionId)) {
           return list;
         }
-        return [...list, code];
+        return [...list, contribucionId];
       }
-      return list.filter((item) => item !== code);
+      return list.filter((id) => id !== contribucionId);
     });
+    
+    // También actualizar los nombres para compatibilidad con el draft
+    const contribucion = this.impuestosCatalog().find(c => c.id === contribucionId);
+    if (contribucion) {
+      this.impuestosSeleccionados.update((list) => {
+        if (checked) {
+          if (list.includes(contribucion.nombre)) {
+            return list;
+          }
+          return [...list, contribucion.nombre];
+        }
+        return list.filter((nombre) => nombre !== contribucion.nombre);
+      });
+    }
   }
 
   saveDraft(): void {
@@ -1029,7 +1051,7 @@ export class InscripcionComponent implements OnInit {
   get resumenImpuestos(): string {
     return this.impuestosSeleccionados().length
       ? this.impuestosSeleccionados()
-          .map((clave) => this.impuestosCatalog.find((item) => item.code === clave)?.label || clave)
+          .map((clave: string) => this.impuestosCatalog().find((item: any) => item.code === clave)?.label || clave)
           .join(', ')
       : 'Sin selección';
   }
@@ -1159,13 +1181,50 @@ export class InscripcionComponent implements OnInit {
     this.processingState.set(state);
   }
 
+  private loadContribuciones(): void {
+    console.log('🔵 Iniciando carga de contribuciones...');
+    console.log('🔵 URL base contribuciones:', this.contribucionesService['baseUrl']);
+    
+    this.contribucionesService.getContribuciones()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (contribuciones) => {
+          console.log('✅ Contribuciones recibidas (raw):', contribuciones);
+          
+          // Mapear de PascalCase a camelCase
+          const contribucionesMapeadas = contribuciones.map((c: any) => ({
+            id: c.Id ?? c.id,
+            nombre: c.Nombre ?? c.nombre,
+            sujetoId: c.SujetoId ?? c.sujetoId,
+            objeto: c.Objeto ?? c.objeto,
+            tipo: c.Tipo ?? c.tipo,
+            tipoNombre: c.TipoNombre ?? c.tipoNombre
+          }));
+          
+          console.log('✅ Contribuciones mapeadas:', contribucionesMapeadas);
+          this.impuestosCatalog.set(contribucionesMapeadas);
+          console.log('✅ Signal actualizado, valor actual:', this.impuestosCatalog());
+        },
+        error: (error) => {
+          console.error('❌ Error al cargar contribuciones:', error);
+          console.error('❌ Error status:', error?.status);
+          console.error('❌ Error message:', error?.message);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudieron cargar las contribuciones disponibles'
+          });
+        }
+      });
+  }
+
   private buildPayload(): any {
     const raw = this.form.getRawValue();
     return {
       ...raw,
       regimenes: this.regimenes(),
       actividades: this.actividades(),
-      impuestos: this.impuestosSeleccionados(),
+      contribucionIds: this.contribucionIds(), // Enviar IDs en lugar de nombres
       personaDescripcion: this.personaDescripcion()
     };
   }
@@ -1223,3 +1282,4 @@ export class InscripcionComponent implements OnInit {
     });
   }
 }
+

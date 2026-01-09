@@ -733,22 +733,54 @@
                 
                 <h3 class="step-title">
                       <i class="pi pi-dollar"></i>
-                      Selecciona los Impuestos
+                      Selecciona las Contribuciones
                     </h3>
+                    
+                    <!-- Resumen de contribuciones seleccionadas -->
+                    @if (contribucionesSeleccionadasDetalle().length > 0) {
+                      <div class="contribuciones-seleccionadas-resumen">
+                        <div class="resumen-header">
+                          <span class="resumen-title">
+                            <i class="pi pi-check-circle"></i>
+                            Contribuciones seleccionadas ({{ contribucionesSeleccionadasDetalle().length }})
+                          </span>
+                        </div>
+                        <div class="resumen-chips">
+                          @for (contrib of contribucionesSeleccionadasDetalle(); track contrib.id) {
+                            <div class="contribucion-chip">
+                              <span class="chip-nombre">{{ contrib.nombre }}</span>
+                              <i class="pi pi-times chip-remove" 
+                                 (click)="toggleImpuesto(contrib.id, false)"
+                                 title="Quitar"></i>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                    
                     <div class="impuestos-grid">
-                      @for (impuesto of impuestosCatalog; track trackByCode($index, impuesto)) {
+                      @for (contribucion of impuestosCatalog(); track contribucion.id) {
                         <div class="impuesto-item">
                           <p-checkbox 
-                            [inputId]="'imp_pf_' + impuesto.code"
-                            [value]="impuesto.code"
+                            [inputId]="'contrib_pf_' + contribucion.id"
+                            [value]="contribucion.id"
                             [binary]="true"
-                            [ngModel]="getImpuestoSeleccionado(impuesto.code)"
+                            [ngModel]="getImpuestoSeleccionado(contribucion.id)"
                             [ngModelOptions]="{standalone: true}"
-                            (onChange)="toggleImpuesto(impuesto.code, $event.checked)"
+                            (onChange)="toggleImpuesto(contribucion.id, $event.checked)"
                           ></p-checkbox>
-                          <label [for]="'imp_pf_' + impuesto.code" class="impuesto-label">
-                            <strong>{{ impuesto.code }}</strong> - {{ impuesto.label }}
+                          <label [for]="'contrib_pf_' + contribucion.id" class="impuesto-label">
+                            <strong>{{ contribucion.nombre }}</strong>
+                            @if (contribucion.objeto) {
+                              <span class="contribucion-objeto">{{ contribucion.objeto }}</span>
+                            }
                           </label>
+                        </div>
+                      }
+                      @if (impuestosCatalog().length === 0) {
+                        <div class="empty-state">
+                          <i class="pi pi-info-circle"></i>
+                          <p>No hay contribuciones disponibles</p>
                         </div>
                       }
                     </div>
