@@ -838,6 +838,17 @@
                       <i class="pi pi-user-edit"></i>
                       Datos del Representante Legal (opcional)
                     </h3>
+                    <div class="soy-yo-section">
+                      <button 
+                        pButton 
+                        type="button"
+                        label="Soy yo" 
+                        icon="pi pi-user" 
+                        (click)="copiarDatosARepresentante()"
+                        pTooltip="Usa mis datos personales como representante legal"
+                        tooltipPosition="top"
+                      ></button>
+                    </div>
                     <div class="form-grid">
                       <div class="form-field">
                         <p-floatlabel class="with-icon">
@@ -939,6 +950,17 @@
                   <i class="pi pi-wallet"></i>
                   Persona que efectuará los pagos (opcional)
                 </h3>
+                <div class="soy-yo-section">
+                  <button 
+                    pButton 
+                    type="button"
+                    label="Soy yo" 
+                    icon="pi pi-user" 
+                    (click)="copiarDatosAPagos()"
+                    pTooltip="Usa mis datos personales para realizar los pagos"
+                    tooltipPosition="top"
+                  ></button>
+                </div>
                 <div class="form-grid">
                   <div class="form-field form-field--full">
                     <p-floatlabel class="with-icon">

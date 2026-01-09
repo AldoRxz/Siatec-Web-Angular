@@ -1788,6 +1788,49 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 }
 
 // ========================================
+// Soy Yo Section (Botón para copiar datos)
+// ========================================
+.soy-yo-section {
+  margin-bottom: 1.75rem;
+  display: flex;
+  justify-content: flex-start;
+  
+  button {
+    background: $primary-color !important;
+    border-color: $primary-color !important;
+    color: white !important;
+    padding: 0.75rem 1.75rem !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 2px 8px rgba($primary-color, 0.3) !important;
+    transition: all 0.25s ease !important;
+
+    &:hover {
+      background: darken($primary-color, 8%) !important;
+      border-color: darken($primary-color, 8%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 12px rgba($primary-color, 0.4) !important;
+    }
+
+    &:active {
+      transform: translateY(0) !important;
+    }
+
+    :host ::ng-deep {
+      .p-button-icon {
+        margin-right: 0.5rem;
+        color: white !important;
+      }
+      
+      .p-button-label {
+        color: white !important;
+      }
+    }
+  }
+}
+
+// ========================================
 // Step Actions (Navigation Buttons)
 // ========================================
 .step-actions {

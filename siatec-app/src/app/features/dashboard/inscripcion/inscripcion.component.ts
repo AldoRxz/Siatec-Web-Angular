@@ -1229,6 +1229,46 @@ export class InscripcionComponent implements OnInit {
     };
   }
 
+  /**
+   * Copia los datos de identificación a la sección de representante legal
+   */
+  copiarDatosARepresentante(): void {
+    const identificacion = this.form.controls.identificacion.value;
+    this.form.controls.representante.patchValue({
+      nombres: identificacion.nombres,
+      primerApellido: identificacion.primerApellido,
+      segundoApellido: identificacion.segundoApellido,
+      rfc: identificacion.rfc,
+      curp: identificacion.curp
+    });
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Datos copiados',
+      detail: 'Los datos de identificación se copiaron al representante legal'
+    });
+  }
+
+  /**
+   * Copia los datos de identificación a la sección de pagos
+   */
+  copiarDatosAPagos(): void {
+    const identificacion = this.form.controls.identificacion.value;
+    
+    // Construir nombre completo
+    const nombreCompleto = `${identificacion.nombres || ''} ${identificacion.primerApellido || ''} ${identificacion.segundoApellido || ''}`.trim();
+    
+    this.form.controls.pagos.patchValue({
+      nombre: nombreCompleto,
+      telefono: identificacion.telefono,
+      correo: identificacion.email
+    });
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Datos copiados',
+      detail: 'Los datos de identificación se copiaron a la persona que efectuará pagos'
+    });
+  }
+
   // TrackBy functions para optimizar loops
   trackByIndex(index: number): number {
     return index;
