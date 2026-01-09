@@ -132,7 +132,7 @@ export class ArchivosComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadArchivosFromBackend();
-    this.loadCatalog(true);
+    // No llamar a loadCatalog() ya que loadArchivosFromBackend() crea los documentos desde los archivos
   }
 
   applyFilters(): void {
@@ -248,7 +248,8 @@ export class ArchivosComponent implements OnInit {
 
   downloadFile(doc: DocumentoCatalogo, file: ArchivoResumen): void {
     const contribuyenteId = this.requireContribuyenteId();
-    this.archivosService.downloadArchivo(file.id, contribuyenteId).subscribe({
+    console.log('[Archivos] Descargando archivo:', { archivoId: file.id, contribuyenteId });
+    this.archivosService.downloadArchivo(contribuyenteId, file.id).subscribe({
       next: (blob) => {
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement('a');
@@ -262,7 +263,8 @@ export class ArchivosComponent implements OnInit {
           detail: `${file.nombre} descargado correctamente.` 
         });
       },
-      error: () => {
+      error: (err) => {
+        console.error('[Archivos] Error al descargar archivo:', err);
         this.messageService.add({ 
           severity: 'error', 
           summary: 'Error de descarga', 
@@ -505,36 +507,112 @@ export class ArchivosComponent implements OnInit {
   }
 
   private integrarArchivosBackend(archivosBackend: ArchivoDto[]): void {
-    // Agrupar archivos por catalogoDocumentoId
-    const grupos = new Map<number, ArchivoDto[]>();
+    console.log('[Archivos] Integrando archivos del backend');
+    console.log('[Archivos] Archivos recibidos:', archivosBackend);
+    
+    const nuevosDocumentos: DocumentoCatalogo[] = [];
+    
+    // Agrupar archivos por catalogoDocumentoId (solo los que tienen ID)
+    const gruposPorCatalogo = new Map<number, ArchivoDto[]>();
+    const archivosSinCatalogo: ArchivoDto[] = [];
     
     archivosBackend.forEach(archivo => {
       if (!archivo.isActive) return; // Ignorar archivos inactivos
       
-      const key = archivo.catalogoDocumentoId || 0;
-      if (!grupos.has(key)) {
-        grupos.set(key, []);
+      if (archivo.catalogoDocumentoId === null || archivo.catalogoDocumentoId === undefined) {
+        // Archivos sin catálogo se manejan individualmente
+        archivosSinCatalogo.push(archivo);
+        console.log(`[Archivos] Archivo sin catálogo: ${archivo.nombreArchivo} (ID: ${archivo.id})`);
+      } else {
+        // Archivos con catálogo se agrupan
+        if (!gruposPorCatalogo.has(archivo.catalogoDocumentoId)) {
+          gruposPorCatalogo.set(archivo.catalogoDocumentoId, []);
+        }
+        gruposPorCatalogo.get(archivo.catalogoDocumentoId)!.push(archivo);
+        console.log(`[Archivos] Archivo agrupado en catálogo ${archivo.catalogoDocumentoId}: ${archivo.nombreArchivo}`);
       }
-      grupos.get(key)!.push(archivo);
     });
 
-    // Actualizar los documentos existentes con los archivos del backend
-    const docsActualizados = this.documentsSignal().map(doc => {
-      const archivosDelDoc = grupos.get(doc.tipoId) || [];
-      return {
-        ...doc,
-        archivos: archivosDelDoc.map(archivo => ({
+    // 1. Crear documentos individuales para archivos sin catálogo
+    archivosSinCatalogo.forEach(archivo => {
+      // Extraer un nombre amigable del nombre del archivo
+      // Si el archivo es "CURP_RORA010131HJCDZLA7.pdf", extraer "CURP"
+      const nombreSinExtension = archivo.nombreArchivo.replace(/\.[^/.]+$/, '');
+      const nombreAmigable = nombreSinExtension.includes('_') 
+        ? nombreSinExtension.split('_')[0] // Tomar la parte antes del primer guion bajo
+        : nombreSinExtension; // Si no hay guion bajo, usar el nombre completo sin extensión
+      
+      nuevosDocumentos.push({
+        tipoId: archivo.id, // Usar el ID del archivo como tipoId para que sea único
+        nombre: nombreAmigable,
+        requerido: false,
+        multiple: false,
+        activo: true,
+        categoria: 'OPCIONAL',
+        icono: 'pi pi-file',
+        archivos: [{
           id: archivo.id,
-          nombre: archivo.nombreArchivo,
+          nombre: nombreAmigable,
+          nombreOriginal: archivo.nombreArchivo,
+          tamanoBytes: archivo.tamanioBytes,
+          fechaSubida: archivo.fechaSubida,
+          tipoMime: this.getMimeTypeFromExtension(archivo.nombreArchivo)
+        }]
+      });
+    });
+
+    console.log(`[Archivos] Creados ${archivosSinCatalogo.length} documentos individuales sin catálogo`);
+
+    // 2. Crear documentos para archivos con catálogo (agrupados)
+    gruposPorCatalogo.forEach((archivos, catalogoId) => {
+      const primerArchivo = archivos[0];
+      
+      let nombreCatalogo: string;
+      let descripcionCatalogo: string | undefined;
+      let esObligatorio: boolean;
+      let categoria: DocCategory;
+      
+      if (primerArchivo.catalogoDocumento) {
+        // Usar datos del catálogo del backend
+        nombreCatalogo = primerArchivo.catalogoDocumento.nombre;
+        descripcionCatalogo = primerArchivo.catalogoDocumento.descripcion;
+        esObligatorio = primerArchivo.catalogoDocumento.esObligatorio;
+        categoria = esObligatorio ? 'OBLIGATORIO' : 'OPCIONAL';
+      } else {
+        // Fallback
+        nombreCatalogo = `Documento de catálogo ${catalogoId}`;
+        descripcionCatalogo = undefined;
+        esObligatorio = false;
+        categoria = 'OPCIONAL';
+      }
+      
+      nuevosDocumentos.push({
+        tipoId: catalogoId,
+        nombre: nombreCatalogo,
+        requerido: esObligatorio,
+        multiple: true,
+        activo: true,
+        categoria,
+        icono: this.resolveIcon(nombreCatalogo),
+        archivos: archivos.map((archivo, index) => ({
+          id: archivo.id,
+          // Para archivos con catálogo, mostrar el nombre del catálogo + número si hay múltiples
+          nombre: archivos.length > 1 
+            ? `${nombreCatalogo} (${index + 1})` 
+            : nombreCatalogo,
           nombreOriginal: archivo.nombreArchivo,
           tamanoBytes: archivo.tamanioBytes,
           fechaSubida: archivo.fechaSubida,
           tipoMime: this.getMimeTypeFromExtension(archivo.nombreArchivo)
         }))
-      };
+      });
     });
 
-    this.documentsSignal.set(docsActualizados);
+    console.log(`[Archivos] Creados ${gruposPorCatalogo.size} documentos con catálogo`);
+    console.log('[Archivos] Total de documentos creados:', nuevosDocumentos.length);
+    console.log('[Archivos] Documentos finales:', nuevosDocumentos);
+    
+    this.documentsSignal.set(nuevosDocumentos);
   }
 
   private getMimeTypeFromExtension(filename: string): string {

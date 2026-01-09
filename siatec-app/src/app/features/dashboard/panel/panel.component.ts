@@ -161,6 +161,8 @@ export class PanelComponent implements OnInit {
   ngOnInit(): void {
     // this.documentsService.load(); // Se actualiza desde el dashboard
     this.loadInscripcionState();
+    
+    // Intentar cargar inmediatamente
     this.loadDashboardData();
 
     // Escuchar cambios de navegación para recargar datos
@@ -174,6 +176,19 @@ export class PanelComponent implements OnInit {
         console.log('[Panel] Navegación detectada, recargando dashboard...');
         this.loadDashboardData();
       });
+    
+    // Reintentar carga si no hay contribuyenteId inicialmente (por ejemplo, después de login)
+    const contribuyenteId = this.authService.getContribuyenteId();
+    if (!contribuyenteId) {
+      console.log('[Panel] No hay contribuyenteId inicialmente, reintentando en 500ms...');
+      setTimeout(() => {
+        const retryId = this.authService.getContribuyenteId();
+        if (retryId) {
+          console.log('[Panel] Contribuyente ID encontrado en reintento, cargando dashboard...');
+          this.loadDashboardData();
+        }
+      }, 500);
+    }
   }
 
   get userName(): string {

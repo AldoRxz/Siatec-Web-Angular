@@ -150,7 +150,7 @@
                       <div class="file-item__info">
                         <i class="pi pi-file-pdf"></i>
                         <div class="file-item__details">
-                          <span class="file-item__name" [title]="file.nombre">{{ file.nombre }}</span>
+                          <span class="file-item__name" [title]="file.nombreOriginal">{{ file.nombreOriginal }}</span>
                           <span class="file-item__meta">
                             {{ formatBytes(file.tamanoBytes) }}
                             @if (file.fechaSubida) {
@@ -162,29 +162,29 @@
                       </div>
                       <div class="file-item__actions">
                         <button 
-                          pButton
                           type="button"
-                          class="p-button-rounded p-button-text p-button-sm"
-                          icon="pi pi-eye"
+                          class="file-action-btn file-action-btn--view"
                           title="Previsualizar"
                           (click)="viewFile(doc, file)"
-                        ></button>
+                        >
+                          <i class="pi pi-eye"></i>
+                        </button>
                         <button 
-                          pButton
                           type="button"
-                          class="p-button-rounded p-button-text p-button-sm"
-                          icon="pi pi-download"
+                          class="file-action-btn file-action-btn--download"
                           title="Descargar"
                           (click)="downloadFile(doc, file)"
-                        ></button>
+                        >
+                          <i class="pi pi-download"></i>
+                        </button>
                         <button 
-                          pButton
                           type="button"
-                          class="p-button-rounded p-button-text p-button-sm p-button-danger"
-                          icon="pi pi-trash"
+                          class="file-action-btn file-action-btn--delete"
                           title="Eliminar"
                           (click)="confirmDelete(doc, file)"
-                        ></button>
+                        >
+                          <i class="pi pi-trash"></i>
+                        </button>
                       </div>
                     </div>
                   }

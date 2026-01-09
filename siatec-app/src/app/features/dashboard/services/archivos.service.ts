@@ -3,6 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../../../core/services/config.service';
 
+export interface CatalogoDocumentoDto {
+  id: number;
+  nombre: string;
+  descripcion?: string;
+  esObligatorio: boolean;
+  esActivo: boolean;
+}
+
 export interface ArchivoDto {
   id: number;
   contribuyenteId: number;
@@ -12,6 +20,7 @@ export interface ArchivoDto {
   fechaSubida: string;
   descripcionArchivo?: string;
   isActive: boolean;
+  catalogoDocumento?: CatalogoDocumentoDto;
 }
 
 @Injectable({
@@ -50,12 +59,10 @@ export class ArchivosService {
 
   /**
    * Descarga un archivo
-   * Endpoint: GET /internal/archivos/{contribuyenteId}/download/{id}
+   * Endpoint: GET /internal/archivos/{contribuyenteId}/download/{archivoId}
    */
-  downloadArchivo(id: number, contribuyenteId?: number): Observable<Blob> {
-    // Si no se pasa contribuyenteId, intentar obtenerlo del contexto (puede mejorar después)
-    const contribId = contribuyenteId || 0; // Temporal, debería obtenerse del auth service
-    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribId}/download/${id}`;
+  downloadArchivo(contribuyenteId: number, archivoId: number): Observable<Blob> {
+    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}/download/${archivoId}`;
     return this.http.get(url, { responseType: 'blob' });
   }
 

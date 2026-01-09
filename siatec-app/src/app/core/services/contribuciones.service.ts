@@ -18,6 +18,14 @@ export class ContribucionesService extends BaseApiService {
   }
 
   /**
+   * Obtiene todas las contribuciones disponibles en el sistema.
+   */
+  getContribuciones(): Observable<any[]> {
+    const url = this.buildUrl(this.baseUrl, 'internal', 'contribuciones');
+    return this.get<any[]>(url);
+  }
+
+  /**
    * Obtiene la lista de determinaciones vinculadas al contribuyente actual (ID numérico legacy).
    */
   getDeterminacionesPorContribuyente(contribuyenteId: number): Observable<Determinacion[]> {

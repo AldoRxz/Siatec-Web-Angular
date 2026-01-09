@@ -342,16 +342,52 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 .impuesto-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.625rem;
-  padding: 0.625rem;
+  gap: 0.75rem;
+  padding: 1rem;
   background: #fff;
   border-radius: 0.5rem;
-  border: 1px solid $border-light;
+  border: 2px solid #e5e7eb;
   transition: all 0.2s ease;
+  cursor: pointer;
 
   &:hover {
     border-color: $primary-color;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.15);
+    background: #f8faff;
+  }
+
+  ::ng-deep .p-checkbox {
+    display: flex;
+    align-items: center;
+    
+    .p-checkbox-box {
+      border: 2px solid #d1d5db;
+      border-radius: 0.375rem;
+      width: 1.25rem;
+      height: 1.25rem;
+      background: #fff;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        border-color: $primary-color;
+        background: #eff6ff;
+      }
+      
+      &.p-highlight {
+        background: $primary-color;
+        border-color: $primary-color;
+        
+        .p-checkbox-icon {
+          color: white;
+          font-size: 0.75rem;
+        }
+      }
+      
+      &.p-focus {
+        outline: 2px solid rgba(37, 99, 235, 0.2);
+        outline-offset: 2px;
+      }
+    }
   }
 
   .impuesto-label {
@@ -359,16 +395,117 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
     flex-direction: column;
     gap: 0.25rem;
     cursor: pointer;
+    flex: 1;
 
     strong {
-      font-size: 0.85rem;
+      font-size: 0.9375rem;
       color: $text-dark;
+      font-weight: 600;
     }
 
-    span {
-      font-size: 0.75rem;
+    .contribucion-objeto {
+      font-size: 0.8125rem;
       color: $text-light;
+      line-height: 1.4;
     }
+  }
+}
+
+// ========================================
+// Resumen de Contribuciones Seleccionadas
+// ========================================
+.contribuciones-seleccionadas-resumen {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 2px solid #0ea5e9;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease-out;
+
+  .resumen-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.875rem;
+
+    .resumen-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #0369a1;
+
+      i {
+        font-size: 1.125rem;
+        color: #0ea5e9;
+      }
+    }
+  }
+
+  .resumen-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+
+    .contribucion-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      border: 1.5px solid #0ea5e9;
+      border-radius: 1.25rem;
+      padding: 0.5rem 0.875rem;
+      transition: all 0.2s ease;
+      animation: chipFadeIn 0.2s ease-out;
+
+      .chip-nombre {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #0369a1;
+      }
+
+      .chip-remove {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0.125rem;
+        border-radius: 50%;
+
+        &:hover {
+          color: #dc2626;
+          background: #fee2e2;
+        }
+      }
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+      }
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -2032,6 +2169,73 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
       color: $primary-color;
     }
   }
+
+  // Lista de archivos subidos
+  .uploaded-files {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid $border-light;
+
+    h4 {
+      margin: 0 0 0.75rem 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $text-dark;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem;
+      background: white;
+      border: 1px solid $border-light;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: $primary-color;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+      }
+
+      .file-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex: 1;
+
+        i {
+          font-size: 1.5rem;
+          color: $error-color;
+        }
+
+        .file-details {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .file-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: $text-dark;
+          }
+
+          .file-category {
+            font-size: 0.75rem;
+            color: $text-muted;
+            font-style: italic;
+          }
+        }
+      }
+
+      .file-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+    }
+  }
 }
 
 // ============================================
@@ -2329,4 +2533,388 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+}
+
+// ========================================
+// Processing Overlay
+// ========================================
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  border-radius: 1.25rem;
+  animation: fadeIn 0.2s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+.processing-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.75rem;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease-out;
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .processing-text {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $text-dark;
+    white-space: nowrap;
+  }
+
+  :host ::ng-deep .custom-spinner {
+    width: 2rem;
+    height: 2rem;
+    
+    .p-progress-spinner-circle {
+      stroke: $primary-color;
+      animation: custom-progress-spinner-dash 1.5s ease-in-out infinite;
+    }
+  }
+
+  @keyframes custom-progress-spinner-dash {
+    0% {
+      stroke-dasharray: 1, 200;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90, 200;
+      stroke-dashoffset: -35px;
+    }
+    100% {
+      stroke-dasharray: 90, 200;
+      stroke-dashoffset: -125px;
+    }
+  }
+}
+
+// Make sure the card has position relative
+.inscripcion-card {
+  position: relative;
+
+  :host ::ng-deep .p-card {
+    position: relative;
+  }
+}
+
+// Disabled state for upload button
+.upload-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// ========================================
+// Uploaded Files Section
+// ========================================
+.uploaded-files {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid $border-light;
+
+  h4 {
+    margin: 0 0 1rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $text-medium;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+      content: '\f15c';
+      font-family: 'primeicons';
+      color: $primary-color;
+    }
+  }
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: white;
+  border: 1px solid $border-light;
+  border-radius: 0.625rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    border-color: $primary-color;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+
+  .file-icon {
+    font-size: 1.5rem;
+    color: #dc2626;
+    flex-shrink: 0;
+  }
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.file-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $text-dark;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-category {
+  font-size: 0.75rem;
+  color: $text-medium;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-radius: 0.375rem;
+  border: 1px solid #bfdbfe;
+  max-width: fit-content;
+
+  i {
+    font-size: 0.625rem;
+    color: $primary-color;
+  }
+}
+
+.uploaded-file-name {
+  font-size: 0.75rem;
+  color: $success-color;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+
+  i {
+    font-size: 0.625rem;
+  }
+}
+
+.pending-upload {
+  font-size: 0.75rem;
+  color: $text-muted;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  font-style: italic;
+
+  i {
+    font-size: 0.625rem;
+  }
+}
+
+.uploaded-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+  font-size: 0.625rem;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.optional-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  border: 1px solid #a5b4fc;
+  color: #3730a3;
+  font-size: 0.625rem;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.document-item--uploaded {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #86efac;
+
+  .document-icon i {
+    color: $success-color;
+  }
+}
+
+.file-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-left: auto;
+  flex-shrink: 0;
+
+  .btn-preview,
+  .btn-delete {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1px solid;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    font-size: 1rem;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    i {
+      font-size: 0.875rem;
+    }
+  }
+
+  .btn-preview {
+    border-color: $primary-color;
+    color: $primary-color;
+
+    &:hover:not(:disabled) {
+      background: $primary-color;
+      color: white;
+      transform: scale(1.1);
+    }
+  }
+
+  .btn-delete {
+    border-color: $error-color;
+    color: $error-color;
+
+    &:hover:not(:disabled) {
+      background: $error-color;
+      color: white;
+      transform: scale(1.1);
+    }
+  }
+}
+// ========================================
+// Contribuciones Grid
+// ========================================
+.impuestos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.impuesto-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid $border-light;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $primary-color;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+  }
+
+  :host ::ng-deep .p-checkbox {
+    flex-shrink: 0;
+  }
+}
+
+.impuesto-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  cursor: pointer;
+
+  strong {
+    color: $text-dark;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .contribucion-objeto {
+    color: $text-medium;
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: $text-muted;
+  font-size: 0.875rem;
+
+  i {
+    font-size: 2rem;
+  }
 }
