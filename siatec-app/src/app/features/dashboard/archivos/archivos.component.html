@@ -162,29 +162,29 @@
                       </div>
                       <div class="file-item__actions">
                         <button 
-                          pButton
                           type="button"
-                          class="p-button-rounded p-button-text p-button-sm"
-                          icon="pi pi-eye"
+                          class="file-action-btn file-action-btn--view"
                           title="Previsualizar"
                           (click)="viewFile(doc, file)"
-                        ></button>
+                        >
+                          <i class="pi pi-eye"></i>
+                        </button>
                         <button 
-                          pButton
                           type="button"
-                          class="p-button-rounded p-button-text p-button-sm"
-                          icon="pi pi-download"
+                          class="file-action-btn file-action-btn--download"
                           title="Descargar"
                           (click)="downloadFile(doc, file)"
-                        ></button>
+                        >
+                          <i class="pi pi-download"></i>
+                        </button>
                         <button 
-                          pButton
                           type="button"
-                          class="p-button-rounded p-button-text p-button-sm p-button-danger"
-                          icon="pi pi-trash"
+                          class="file-action-btn file-action-btn--delete"
                           title="Eliminar"
                           (click)="confirmDelete(doc, file)"
-                        ></button>
+                        >
+                          <i class="pi pi-trash"></i>
+                        </button>
                       </div>
                     </div>
                   }

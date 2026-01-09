@@ -1030,3 +1030,66 @@ $radius-xl: 1.5rem;
     }
   }
 }
+
+// ============================================
+// Plain HTML Button Styles
+// ============================================
+.file-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+
+  i {
+    font-size: 0.875rem;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    &:hover {
+      transform: none;
+    }
+  }
+
+  &--view {
+    color: $primary;
+    &:hover {
+      background: rgba($primary, 0.1);
+      color: $primary-dark;
+    }
+  }
+
+  &--download {
+    color: $accent;
+    &:hover {
+      background: rgba($accent, 0.1);
+      color: $accent-dark;
+    }
+  }
+
+  &--delete {
+    color: $danger;
+    &:hover {
+      background: rgba($danger, 0.1);
+      color: darken($danger, 10%);
+    }
+  }
+}

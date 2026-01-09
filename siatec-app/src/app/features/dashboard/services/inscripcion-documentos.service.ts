@@ -64,16 +64,22 @@ export class InscripcionDocumentosService {
     catalogoDocumentoId?: number,
     descripcion?: string
   ): Observable<any> {
+    console.log('📤 uploadDocumento - catalogoDocumentoId recibido:', catalogoDocumentoId);
+    
     const formData = new FormData();
     formData.append('file', file);
     if (catalogoDocumentoId) {
       formData.append('catalogoDocumentoId', catalogoDocumentoId.toString());
+      console.log('✅ catalogoDocumentoId agregado al FormData:', catalogoDocumentoId);
+    } else {
+      console.warn('⚠️  catalogoDocumentoId es null/undefined, no se agregará al FormData');
     }
     if (descripcion) {
       formData.append('descripcion', descripcion);
     }
 
     const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}/upload`;
+    console.log('📍 URL de upload:', url);
     return this.http.post<any>(url, formData);
   }
 

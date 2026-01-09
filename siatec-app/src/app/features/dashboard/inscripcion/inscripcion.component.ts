@@ -17,6 +17,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { StepperModule } from 'primeng/stepper';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TooltipModule } from 'primeng/tooltip';
 import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { AuthService, ContribuyentesService } from '../../../core/services';
@@ -68,6 +69,7 @@ interface CatalogOption {
     InputIconModule,
     StepperModule,
     ProgressSpinnerModule,
+    TooltipModule,
     FloatLabelFilledDirective
   ],
   providers: [MessageService],
@@ -121,6 +123,8 @@ export class InscripcionComponent implements OnInit {
   readonly documentosPorSeccion = signal<{[seccion: string]: DocumentoRequeridoDto[]}>({});
   readonly cargandoDocumentos = signal(false);
   readonly subiendoArchivo = signal(false);
+  readonly archivosSubidos = signal<any[]>([]);
+  readonly cargandoArchivos = signal(false);
   
   // Map de secciones del stepper a nombres de documentos
   private readonly seccionesDocumentos: {[step: number]: string} = {
@@ -209,6 +213,12 @@ export class InscripcionComponent implements OnInit {
     this.prefillFromUser();
     this.loadDashboardData(); // Cargar estado del dashboard
     // NO cargar documentos aquí - esperamos a que el usuario valide su RFC primero
+    
+    // Cargar archivos subidos si el usuario ya está autenticado
+    const contribuyenteId = this.authService.getContribuyenteId();
+    if (contribuyenteId) {
+      this.cargarArchivosSubidos();
+    }
   }
 
   /**
@@ -278,6 +288,7 @@ export class InscripcionComponent implements OnInit {
       return;
     }
 
+    console.log('📤 Subiendo archivo con catalogoDocumentoId:', catalogoDocumentoId);
     this.subiendoArchivo.set(true);
     
     // 1. Subir el archivo al backend
@@ -297,6 +308,9 @@ export class InscripcionComponent implements OnInit {
           
           // 2. Procesar con Paccioli para extraer información
           await this.procesarArchivoConPaccioliEnSeccion(file, this.currentStep());
+          
+          // 3. Recargar lista de archivos
+          this.cargarArchivosSubidos();
           
           this.subiendoArchivo.set(false);
         },
@@ -359,6 +373,208 @@ export class InscripcionComponent implements OnInit {
   }
 
   /**
+   * Determina si se debe mostrar la sección de documentos para un paso dado
+   */
+  mostrarSeccionDocumentos(stepIndex: number): boolean {
+    const seccion = this.seccionesDocumentos[stepIndex];
+    if (!seccion) return false;
+    
+    const documentos = this.documentosPorSeccion()[seccion] || [];
+    return documentos.length > 0;
+  }
+
+  /**
+   * Maneja la selección de un archivo por el usuario
+   * Determina automáticamente el catalogoDocumentoId basado en el stepIndex
+   */
+  onFileSelected(event: Event, stepIndex: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    // Obtener los documentos de la sección actual
+    const seccion = this.seccionesDocumentos[stepIndex];
+    console.log('📁 onFileSelected - Sección:', seccion, 'StepIndex:', stepIndex);
+    
+    if (!seccion) {
+      this.messageService.add({ 
+        severity: 'warn', 
+        summary: 'Sin documentos', 
+        detail: 'Esta sección no tiene documentos configurados.' 
+      });
+      return;
+    }
+
+    const documentos = this.documentosPorSeccion()[seccion] || [];
+    console.log('📋 Documentos de la sección:', documentos);
+    
+    if (documentos.length === 0) {
+      this.messageService.add({ 
+        severity: 'warn', 
+        summary: 'Sin documentos', 
+        detail: 'No hay documentos disponibles para esta sección.' 
+      });
+      return;
+    }
+
+    // Por ahora, usamos el primer documento de la lista
+    // En el futuro, podrías mostrar un selector si hay múltiples documentos
+    const primerDocumento = documentos[0];
+    console.log('📄 Primer documento seleccionado:', primerDocumento);
+    console.log('🆔 catalogoDocumentoId:', primerDocumento.catalogoDocumentoId);
+    
+    // Llamar a subirArchivo con el catalogoDocumentoId
+    this.subirArchivo(event, primerDocumento.catalogoDocumentoId);
+  }
+
+  /**
+   * Carga los archivos subidos del contribuyente
+   */
+  cargarArchivosSubidos(): void {
+    const contribuyenteId = this.authService.getContribuyenteId();
+    if (!contribuyenteId) return;
+
+    this.cargandoArchivos.set(true);
+    this.inscripcionDocumentosService.getArchivos(contribuyenteId)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.cargandoArchivos.set(false))
+      )
+      .subscribe({
+        next: (archivos) => {
+          console.log('✅ Archivos cargados del backend:', archivos);
+          // Enriquecer archivos con nombre del catálogo
+          const archivosConCatalogo = archivos.map(archivo => {
+            const nombreCatalogo = archivo.catalogoDocumento?.nombre || 
+                                  this.obtenerNombreCatalogo(archivo.catalogoDocumentoId) ||
+                                  'Documento';
+            console.log(`📄 Archivo: ${archivo.nombreArchivo}, Catálogo: ${nombreCatalogo}`);
+            return {
+              ...archivo,
+              nombreCatalogo
+            };
+          });
+          console.log('📋 Archivos enriquecidos:', archivosConCatalogo);
+          this.archivosSubidos.set(archivosConCatalogo);
+        },
+        error: (error) => {
+          console.error('❌ Error al cargar archivos:', error);
+        }
+      });
+  }
+
+  /**
+   * Obtiene el nombre del catálogo de documentos por ID
+   */
+  obtenerNombreCatalogo(catalogoDocumentoId: number | null): string {
+    if (!catalogoDocumentoId) return '';
+    
+    // Buscar en todos los documentos por sección
+    const todasSecciones = Object.values(this.documentosPorSeccion());
+    for (const seccion of todasSecciones) {
+      const documento = seccion.find(d => d.catalogoDocumentoId === catalogoDocumentoId);
+      if (documento?.catalogoDocumento?.nombre) {
+        return documento.catalogoDocumento.nombre;
+      }
+    }
+    return '';
+  }
+
+  /**
+   * Busca si existe un archivo subido para un catalogoDocumentoId específico
+   */
+  obtenerArchivoSubidoPorCatalogo(catalogoDocumentoId: number): any | null {
+    const archivos = this.archivosSubidos();
+    return archivos.find(a => a.catalogoDocumentoId === catalogoDocumentoId) || null;
+  }
+
+  /**
+   * Verifica si un documento ya fue subido
+   */
+  documentoYaSubido(catalogoDocumentoId: number): boolean {
+    return this.obtenerArchivoSubidoPorCatalogo(catalogoDocumentoId) !== null;
+  }
+
+  /**
+   * Elimina un archivo subido
+   */
+  eliminarArchivo(archivoId: number): void {
+    const contribuyenteId = this.authService.getContribuyenteId();
+    if (!contribuyenteId) return;
+
+    this.inscripcionDocumentosService.deleteArchivo(contribuyenteId, archivoId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Archivo eliminado', 
+            detail: 'El archivo se eliminó correctamente.' 
+          });
+          this.cargarArchivosSubidos();
+        },
+        error: (error) => {
+          console.error('Error al eliminar archivo:', error);
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error al eliminar', 
+            detail: error?.error?.mensaje || 'No se pudo eliminar el archivo.' 
+          });
+        }
+      });
+  }
+
+  /**
+   * Previsualiza o descarga un archivo
+   */
+  previsualizarArchivo(archivo: any): void {
+    const contribuyenteId = this.authService.getContribuyenteId();
+    if (!contribuyenteId) return;
+
+    this.inscripcionDocumentosService.downloadArchivo(contribuyenteId, archivo.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (blob) => {
+          // Crear URL del blob
+          const url = window.URL.createObjectURL(blob);
+          
+          // Detectar tipo de archivo
+          const extension = archivo.nombreArchivo.split('.').pop()?.toLowerCase();
+          const isPdf = extension === 'pdf';
+          const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension || '');
+          
+          if (isPdf || isImage) {
+            // Abrir en nueva pestaña para previsualizar
+            window.open(url, '_blank');
+          } else {
+            // Descargar archivo
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = archivo.nombreArchivo;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: 'Descarga iniciada', 
+              detail: `Descargando ${archivo.nombreArchivo}` 
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al descargar archivo:', error);
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error al descargar', 
+            detail: error?.error?.mensaje || 'No se pudo descargar el archivo.' 
+          });
+        }
+      });
+  }
+
+  /**
    * Maneja el cambio de paso en el stepper
    * Carga automáticamente los documentos de la nueva sección
    */
@@ -368,6 +584,7 @@ export class InscripcionComponent implements OnInit {
     console.log('onStepChange llamado, valor:', event.value || event.index, 'paso calculado:', newStep);
     this.currentStep.set(newStep);
     this.cargarDocumentosSeccion(newStep);
+    this.cargarArchivosSubidos();
   }
 
   /**
@@ -380,6 +597,7 @@ export class InscripcionComponent implements OnInit {
     this.currentStep.set(stepIndex);
     activateCallback(stepValue);
     this.cargarDocumentosSeccion(stepIndex);
+    this.cargarArchivosSubidos();
   }
 
   /**
@@ -510,36 +728,6 @@ export class InscripcionComponent implements OnInit {
     });
     
     console.log(`Total de campos rellenados: ${camposRellenados}`);
-  }
-
-  /**
-   * Maneja el evento de selección de archivo
-   */
-  async onFileSelected(event: Event, stepIndex: number): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    
-    if (file) {
-      await this.procesarArchivoConPaccioli(file, stepIndex);
-      // Limpiar el input para permitir subir el mismo archivo de nuevo
-      input.value = '';
-    }
-  }
-
-  /**
-   * Verifica si debe mostrar la sección de documentos
-   * Solo muestra si está cargando o si hay documentos
-   */
-  mostrarSeccionDocumentos(stepIndex: number): boolean {
-    const seccion = this.seccionesDocumentos[stepIndex];
-    if (!seccion) return false;
-    
-    // Mostrar si está cargando
-    if (this.cargandoDocumentos()) return true;
-    
-    // Mostrar si hay documentos
-    const documentos = this.documentosPorSeccion()[seccion];
-    return documentos && documentos.length > 0;
   }
 
   /**
