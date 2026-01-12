@@ -16,55 +16,18 @@
 
   <!-- Estado: Contribuyente activo -->
   @if (dashboardData()?.activo && !shouldShowForm()) {
-    <p-card class="status-card status-card--success">
-      <div class="status-content">
-        <div class="status-icon">
-          <i class="pi pi-check-circle"></i>
-        </div>
-        <div class="status-info">
-          <h2>¡Registro completado!</h2>
-          <p>Tu cuenta está activa en el Registro Estatal de Contribuyentes.</p>
-          <p class="status-detail">Ya puedes acceder a todos los servicios disponibles en el portal.</p>
-        </div>
-      </div>
-    </p-card>
+    <app-status-activo 
+      [dashboardData]="dashboardData()"
+      [contribuyenteData]="contribuyenteData()">
+    </app-status-activo>
   }
 
   <!-- Estado: Solicitud en proceso -->
   @if (!dashboardData()?.activo && !shouldShowForm() && dashboardData()?.ultimaSolicitud) {
-    <p-card class="status-card status-card--processing">
-      <div class="status-content">
-        <div class="status-icon">
-          <i class="pi pi-spin pi-spinner"></i>
-        </div>
-        <div class="status-info">
-          <h2>Solicitud en revisión</h2>
-          <p>Tu solicitud de inscripción está siendo procesada por Tesorería.</p>
-          <p class="status-detail">Te notificaremos cuando haya un cambio en el estado de tu solicitud.</p>
-        </div>
-      </div>
-      
-      <div class="status-details">
-        <div class="status-field">
-          <span class="label">Estado actual</span>
-          <p-tag [value]="dashboardData()?.ultimaSolicitud?.estado || 'Procesando'" severity="warn"></p-tag>
-        </div>
-        <div class="status-field">
-          <span class="label">Fecha de solicitud</span>
-          <strong>{{ dashboardData()?.ultimaSolicitud?.fechaSolicitud | date: 'medium' }}</strong>
-        </div>
-        @if (dashboardData()?.ultimaSolicitud?.comentario) {
-          <div class="status-field status-field--full">
-            <span class="label">Comentarios</span>
-            <p class="comment">{{ dashboardData()?.ultimaSolicitud?.comentario }}</p>
-          </div>
-        }
-      </div>
-
-      <div class="status-actions">
-        <button pButton label="Volver al panel" icon="pi pi-arrow-left" (click)="navigate('/dashboard/panel')" type="button"></button>
-      </div>
-    </p-card>
+    <app-status-procesando 
+      [dashboardData]="dashboardData()"
+      [contribuyenteData]="contribuyenteData()">
+    </app-status-procesando>
   }
 
   <!-- Alert de estado procesando (Legacy) -->
@@ -838,6 +801,17 @@
                       <i class="pi pi-user-edit"></i>
                       Datos del Representante Legal (opcional)
                     </h3>
+                    <div class="soy-yo-section">
+                      <button 
+                        pButton 
+                        type="button"
+                        label="Soy yo" 
+                        icon="pi pi-user" 
+                        (click)="copiarDatosARepresentante()"
+                        pTooltip="Usa mis datos personales como representante legal"
+                        tooltipPosition="top"
+                      ></button>
+                    </div>
                     <div class="form-grid">
                       <div class="form-field">
                         <p-floatlabel class="with-icon">
@@ -939,6 +913,17 @@
                   <i class="pi pi-wallet"></i>
                   Persona que efectuará los pagos (opcional)
                 </h3>
+                <div class="soy-yo-section">
+                  <button 
+                    pButton 
+                    type="button"
+                    label="Soy yo" 
+                    icon="pi pi-user" 
+                    (click)="copiarDatosAPagos()"
+                    pTooltip="Usa mis datos personales para realizar los pagos"
+                    tooltipPosition="top"
+                  ></button>
+                </div>
                 <div class="form-grid">
                   <div class="form-field form-field--full">
                     <p-floatlabel class="with-icon">

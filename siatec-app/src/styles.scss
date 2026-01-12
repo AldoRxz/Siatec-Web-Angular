@@ -37,6 +37,41 @@
   box-shadow: none !important;
 }
 
+/* ELIMINAR TODAS LAS LÍNEAS NEGRAS DE LOS COMPONENTES DE INSCRIPCIÓN */
+.status-card {
+  * {
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  .p-card,
+  .p-card-header,
+  .p-card-body,
+  .p-card-content,
+  .p-card-footer {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    
+    &::before,
+    &::after {
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+  
+  // Elementos específicos que podrían tener bordes
+  .status-content,
+  .status-details,
+  .contribuyente-info,
+  .status-actions {
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
