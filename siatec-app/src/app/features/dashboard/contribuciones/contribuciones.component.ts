@@ -136,7 +136,7 @@ export class ContribucionesComponent implements OnInit {
 
     this.calculating.set(true);
     this.contribucionesService
-      .calcularDeterminacionCalculo(payload)
+      .calcularDeterminacion(payload)
       .pipe(finalize(() => this.calculating.set(false)))
       .subscribe({
         next: (response) => {

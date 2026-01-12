@@ -101,20 +101,20 @@ export class ContribucionesService extends BaseApiService {
 
   /**
    * Ejecuta el cálculo de determinación con los datos proporcionados.
+   * Usa POST /internal/determinaciones/calcular para crear y calcular la determinación.
    */
-  calcularDeterminacionCalculo(payload: DeterminacionCalculoRequest): Observable<DeterminacionCalculoResponse> {
-    const url = this.buildUrl(this.baseUrl, 'internal', 'determinaciones', payload.determinacionId, 'calculo');
-    const queryString = this.buildQueryString(payload.data);
+  calcularDeterminacion(payload: DeterminacionCalculoRequest): Observable<DeterminacionCalculoResponse> {
+    const url = this.buildUrl(this.baseUrl, 'internal', 'determinaciones', 'calcular');
     const body = {
-      contribucionVersionId: payload.versionId,
+      determinacionId: payload.determinacionId || null,
       contribucionId: payload.contribucionId,
       contribuyenteId: payload.contribuyenteId,
-      year: payload.year,
-      periodo: payload.periodo ?? 'Mensual',
-      variables: payload.data ?? {}
+      versionId: payload.versionId,
+      anio: payload.year,
+      data: payload.data ?? {}
     };
 
-    return this.put<DeterminacionCalculoResponse>(queryString ? `${url}?${queryString}` : url, body);
+    return this.post<DeterminacionCalculoResponse>(url, body);
   }
 
   /**
