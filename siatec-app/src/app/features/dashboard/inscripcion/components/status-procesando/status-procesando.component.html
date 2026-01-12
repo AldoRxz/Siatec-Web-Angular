@@ -1,0 +1,102 @@
+<p-card class="status-card status-card--processing">
+  <div class="status-content">
+    <div class="status-icon">
+      <i class="pi pi-spin pi-spinner"></i>
+    </div>
+    <div class="status-info">
+      <h2>Solicitud en revisión</h2>
+      <p>Tu solicitud de inscripción está siendo procesada por Tesorería.</p>
+      <p class="status-detail">Te notificaremos cuando haya un cambio en el estado de tu solicitud.</p>
+    </div>
+  </div>
+  
+  <div class="status-details">
+    <h4><i class="pi pi-info-circle"></i> Detalles de la solicitud</h4>
+    <div class="details-grid details-grid--compact">
+      <div class="detail-item">
+        <span class="label">Estado actual</span>
+        <p-tag [value]="dashboardData()?.ultimaSolicitud?.estado || 'Procesando'" severity="warn"></p-tag>
+      </div>
+      <div class="detail-item">
+        <span class="label">Fecha de solicitud</span>
+        <strong>{{ dashboardData()?.ultimaSolicitud?.fechaSolicitud | date: 'dd/MM/yyyy HH:mm' }}</strong>
+      </div>
+      @if (dashboardData()?.ultimaSolicitud?.fechaRevision) {
+        <div class="detail-item">
+          <span class="label">Fecha de revisión</span>
+          <strong>{{ dashboardData()?.ultimaSolicitud?.fechaRevision | date: 'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+      }
+      @if (dashboardData()?.ultimaSolicitud?.comentario) {
+        <div class="detail-item detail-item--full">
+          <span class="label">Comentarios</span>
+          <p class="comment">{{ dashboardData()?.ultimaSolicitud?.comentario }}</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (contribuyenteData()) {
+    <div class="contribuyente-info">
+      <h4><i class="pi pi-user"></i> Información del contribuyente</h4>
+      <div class="info-grid">
+        @if (contribuyenteData()?.personaMoral?.razonSocial) {
+          <div class="info-item">
+            <span class="label">Razón Social</span>
+            <strong>{{ contribuyenteData()?.personaMoral?.razonSocial }}</strong>
+          </div>
+        }
+        @if (contribuyenteData()?.personaFisica) {
+          <div class="info-item">
+            <span class="label">Nombre completo</span>
+            <strong>
+              {{ contribuyenteData()?.personaFisica?.nombres }} 
+              {{ contribuyenteData()?.personaFisica?.primerApellido }} 
+              {{ contribuyenteData()?.personaFisica?.segundoApellido }}
+            </strong>
+          </div>
+        }
+        @if (contribuyenteData()?.personaMoral?.rfc || contribuyenteData()?.personaFisica?.rfc) {
+          <div class="info-item">
+            <span class="label">RFC</span>
+            <strong>{{ contribuyenteData()?.personaMoral?.rfc || contribuyenteData()?.personaFisica?.rfc }}</strong>
+          </div>
+        }
+        @if (contribuyenteData()?.personaFisica?.curp) {
+          <div class="info-item">
+            <span class="label">CURP</span>
+            <strong>{{ contribuyenteData()?.personaFisica?.curp }}</strong>
+          </div>
+        }
+        @if (contribuyenteData()?.correoElectronico) {
+          <div class="info-item">
+            <span class="label">Correo electrónico</span>
+            <strong>{{ contribuyenteData()?.correoElectronico }}</strong>
+          </div>
+        }
+        @if (contribuyenteData()?.ubicacion?.calle) {
+          <div class="info-item info-item--address">
+            <span class="label"><i class="pi pi-map-marker"></i> Domicilio fiscal</span>
+            <strong>
+              {{ contribuyenteData()?.ubicacion?.calle }} 
+              #{{ contribuyenteData()?.ubicacion?.numeroExterior }}
+              @if (contribuyenteData()?.ubicacion?.numeroInterior) {
+                Int. {{ contribuyenteData()?.ubicacion?.numeroInterior }}
+              }
+              <br>
+              {{ contribuyenteData()?.ubicacion?.colonia }}, 
+              C.P. {{ contribuyenteData()?.ubicacion?.codigoPostal }}, 
+              {{ contribuyenteData()?.ubicacion?.municipio }}
+            </strong>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="status-actions">
+    <button pButton label="Volver al panel" icon="pi pi-arrow-left" 
+            (click)="navigate('/dashboard/panel')" 
+            type="button"></button>
+  </div>
+</p-card>

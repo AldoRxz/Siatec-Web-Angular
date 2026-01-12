@@ -37,7 +37,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene un contribuyente por ID
    */
   getContribuyente(id: number): Observable<Contribuyente> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes', id);
+    const url = this.buildUrl(this.baseUrl, 'internal', 'Contribuyentes', id);
     return this.get<Contribuyente>(url);
   }
 

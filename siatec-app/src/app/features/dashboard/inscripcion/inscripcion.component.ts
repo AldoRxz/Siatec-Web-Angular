@@ -26,6 +26,8 @@ import { DashboardNotificationsService } from '../services/dashboard-notificatio
 import { InscripcionDocumentosService, DocumentoRequeridoDto } from '../services/inscripcion-documentos.service';
 import { DashboardService, ContribuyenteDashboard } from '../services/dashboard.service';
 import { FloatLabelFilledDirective } from '../../../shared/directives';
+import { StatusActivoComponent } from './components/status-activo/status-activo.component';
+import { StatusProcesandoComponent } from './components/status-procesando/status-procesando.component';
 
 interface InscripcionDraft {
   formValue: any;
@@ -70,7 +72,9 @@ interface CatalogOption {
     StepperModule,
     ProgressSpinnerModule,
     TooltipModule,
-    FloatLabelFilledDirective
+    FloatLabelFilledDirective,
+    StatusActivoComponent,
+    StatusProcesandoComponent
   ],
   providers: [MessageService],
   templateUrl: './inscripcion.component.html',
@@ -99,6 +103,8 @@ export class InscripcionComponent implements OnInit {
   // Dashboard data para verificar estado
   readonly dashboardData = signal<ContribuyenteDashboard | null>(null);
   readonly loadingDashboard = signal<boolean>(false);
+  readonly contribuyenteData = signal<any | null>(null);
+  readonly loadingContribuyente = signal<boolean>(false);
   
   // Computed para determinar si debe mostrar el formulario o el mensaje de procesando
   readonly shouldShowForm = computed(() => {
@@ -1314,10 +1320,31 @@ export class InscripcionComponent implements OnInit {
         console.log('[Inscripcion] Dashboard data loaded:', data);
         this.dashboardData.set(data);
         this.loadingDashboard.set(false);
+        
+        // Si está activo o tiene solicitud, cargar información detallada del contribuyente
+        if (data.activo || data.ultimaSolicitud) {
+          this.loadContribuyenteData(contribuyenteId);
+        }
       },
       error: (error) => {
         console.error('[Inscripcion] Error loading dashboard data:', error);
         this.loadingDashboard.set(false);
+      }
+    });
+  }
+
+  private loadContribuyenteData(contribuyenteId: number): void {
+    this.loadingContribuyente.set(true);
+    
+    this.contribuyentesService.getContribuyente(contribuyenteId).subscribe({
+      next: (data) => {
+        console.log('[Inscripcion] Contribuyente data loaded:', data);
+        this.contribuyenteData.set(data);
+        this.loadingContribuyente.set(false);
+      },
+      error: (error) => {
+        console.error('[Inscripcion] Error loading contribuyente data:', error);
+        this.loadingContribuyente.set(false);
       }
     });
   }
