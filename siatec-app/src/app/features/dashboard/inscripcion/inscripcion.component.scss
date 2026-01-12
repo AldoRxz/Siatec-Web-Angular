@@ -2439,21 +2439,58 @@ $card-shadow-hover: 0 20px 60px rgba(37, 99, 235, 0.15);
 // ============================================
 .status-card {
   margin-bottom: 2rem;
+  border: none !important;
+  box-shadow: none !important;
+
+  * {
+    border-color: transparent !important;
+  }
 
   :host ::ng-deep .p-card {
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid transparent;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
+
+    &, &::before, &::after {
+      border: none !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+  }
+
+  :host ::ng-deep .p-card-body {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    outline: none !important;
+
+    &, &::before, &::after {
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  :host ::ng-deep .p-card-content {
+    border: none !important;
+    padding: 0 !important;
+    outline: none !important;
+    
+    &, &::before, &::after {
+      border-color: transparent !important;
+    }
   }
 
   &.status-card--success :host ::ng-deep .p-card {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
-    border-color: rgba(16, 185, 129, 0.2);
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 
   &.status-card--processing :host ::ng-deep .p-card {
-    background: linear-gradient(135deg, rgba(251, 146, 60, 0.05) 0%, rgba(251, 146, 60, 0.02) 100%);
-    border-color: rgba(251, 146, 60, 0.2);
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 }
 
