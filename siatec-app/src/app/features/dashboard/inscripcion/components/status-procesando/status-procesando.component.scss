@@ -1,2 +1,337 @@
-// Los estilos están en el componente padre inscripcion.component.scss
-// Este archivo existe solo para cumplir con la convención de Angular
+// Colores principales de la aplicación - Azul claro para procesando
+$primary-color: #2563eb;
+$primary-dark: #1e40af;
+$primary-light: #3b82f6;
+$primary-lighter: #60a5fa;
+$primary-bg: #eff6ff;
+$primary-bg-light: #f0f9ff;
+$info-color: #0ea5e9;
+$info-light: #38bdf8;
+$info-dark: #0284c7;
+
+// Wrapper de la tarjeta principal - Eliminar TODOS los bordes negros
+:host ::ng-deep .status-card.status-card--processing {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  outline: none !important;
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  .p-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+    outline: none !important;
+
+    &, &::before, &::after {
+      border: none !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .p-card-body {
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: transparent !important;
+      outline: none !important;
+      
+      &, &::before, &::after {
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    .p-card-content {
+      border: none !important;
+      box-shadow: none !important;
+      padding: 1.5rem !important;
+      margin: 0 !important;
+      background: transparent !important;
+      border-radius: 0 !important;
+      position: relative;
+      overflow: visible !important;
+      outline: none !important;
+
+      &, &::before, &::after {
+        box-shadow: none !important;
+        border: none !important;
+      }
+    }
+  }
+}
+
+.status-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: white;
+  border: 2px solid rgba(14, 165, 233, 0.1);
+}
+
+.status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, $info-color 0%, $info-light 100%);
+  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3);
+  animation: statusIconPulse 2s ease-in-out infinite;
+
+  i {
+    font-size: 2.5rem;
+    color: white;
+  }
+}
+
+@keyframes statusIconPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 10px 35px rgba(14, 165, 233, 0.4);
+  }
+}
+
+.status-info {
+  flex: 1;
+
+  h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, $info-dark 0%, $info-color 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  p {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-weight: 500;
+    color: $info-dark;
+  }
+
+  .status-detail {
+    font-size: 0.9375rem;
+    opacity: 0.85;
+    font-weight: 400;
+  }
+}
+
+.status-details {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 1rem !important;
+  border: 1px solid rgba(14, 165, 233, 0.15) !important;
+  margin-bottom: 1rem !important;
+  margin-top: 0 !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.08) !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.12) !important;
+  }
+
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $info-color;
+
+    i {
+      color: $info-light;
+      font-size: 1.125rem;
+    }
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+
+    &--compact {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+  }
+
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(14, 165, 233, 0.1);
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(14, 165, 233, 0.3);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+      transform: translateY(-2px);
+    }
+
+    &--full {
+      grid-column: 1 / -1;
+    }
+
+    .label {
+      font-size: 0.8125rem;
+      color: $info-color;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    strong {
+      color: $info-dark;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .comment {
+      margin: 0.5rem 0 0 0;
+      color: $info-dark;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      padding: 1rem;
+      background: $primary-bg-light;
+      border-radius: 0.625rem;
+      border-left: 4px solid $info-color;
+    }
+  }
+}
+
+.contribuyente-info {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 1rem !important;
+  border: 1px solid rgba(14, 165, 233, 0.15) !important;
+  margin-bottom: 1rem !important;
+  margin-top: 0 !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.08) !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.12) !important;
+  }
+  border-top: none !important;
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  box-shadow: none !important;
+
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $info-color;
+
+    i {
+      color: $info-light;
+      font-size: 1.125rem;
+    }
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(14, 165, 233, 0.1);
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(14, 165, 233, 0.3);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+      transform: translateY(-2px);
+    }
+
+    &--address {
+      grid-column: 1 / -1;
+      background: white;
+      border: 2px solid rgba(14, 165, 233, 0.15);
+    }
+
+    .label {
+      font-size: 0.8125rem;
+      color: $info-color;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+
+      i {
+        color: $info-light;
+        font-size: 0.875rem;
+      }
+    }
+
+    strong {
+      color: $info-dark;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.status-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid rgba(14, 165, 233, 0.15) !important;
+  border-radius: 1rem !important;
+  margin: 0 !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.08) !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.12) !important;
+  }
+
+  :host ::ng-deep button {
+    border-radius: 0.75rem;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+  }
+}
