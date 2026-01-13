@@ -29,7 +29,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene todos los contribuyentes
    */
   getContribuyentes(): Observable<Contribuyente[]> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes');
+    const url = this.baseUrl;
     return this.get<Contribuyente[]>(url);
   }
 
@@ -37,7 +37,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene un contribuyente por ID
    */
   getContribuyente(id: number): Observable<Contribuyente> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes', id);
+    const url = this.buildUrl(this.baseUrl, id);
     return this.get<Contribuyente>(url);
   }
 
@@ -45,7 +45,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene el dashboard con estadísticas del contribuyente
    */
   getDashboard(id: number | string): Observable<ContribuyenteDashboard> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes', 'dashboard', id);
+    const url = this.buildUrl(this.baseUrl, 'dashboard', id);
     return this.get<ContribuyenteDashboard>(url);
   }
 
@@ -53,7 +53,7 @@ export class ContribuyentesService extends BaseApiService {
    * Crea un nuevo contribuyente
    */
   crearContribuyente(data: Partial<Contribuyente>): Observable<Contribuyente> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes');
+    const url = this.baseUrl;
     return this.post<Contribuyente>(url, data);
   }
 
@@ -61,7 +61,7 @@ export class ContribuyentesService extends BaseApiService {
    * Actualiza un contribuyente
    */
   actualizarContribuyente(id: number, data: Partial<Contribuyente>): Observable<Contribuyente> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes', id);
+    const url = this.buildUrl(this.baseUrl, id);
     return this.put<Contribuyente>(url, data);
   }
 
@@ -69,7 +69,7 @@ export class ContribuyentesService extends BaseApiService {
    * Actualiza un contribuyente mediante formulario
    */
   actualizarContribuyenteFormulario(id: number, data: any): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes', id, 'formulario');
+    const url = this.buildUrl(this.baseUrl, id, 'formulario');
     return this.post<any>(url, data);
   }
 
@@ -77,7 +77,7 @@ export class ContribuyentesService extends BaseApiService {
    * Activa un contribuyente
    */
   activarContribuyente(id: number): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes', id, 'activar');
+    const url = this.buildUrl(this.baseUrl, id, 'activar');
     return this.put<any>(url, {});
   }
 
@@ -85,7 +85,7 @@ export class ContribuyentesService extends BaseApiService {
    * Elimina un contribuyente
    */
   eliminarContribuyente(id: number): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'Contribuyentes', id);
+    const url = this.buildUrl(this.baseUrl, id);
     return this.delete<any>(url);
   }
 
