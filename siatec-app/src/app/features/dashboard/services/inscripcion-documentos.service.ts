@@ -37,7 +37,7 @@ export class InscripcionDocumentosService {
    * Obtiene los documentos requeridos para inscripción de persona física
    */
   getDocumentosFisica(seccion?: string): Observable<DocumentosInscripcionResponse> {
-    let url = `${this.config.getApiUrl('contribuyentes')}/internal/inscripcion-documentos/fisica`;
+    let url = `${this.config.getApiUrl('contribuyentes')}/inscripcion-documentos/fisica`;
     if (seccion) {
       url += `?seccion=${encodeURIComponent(seccion)}`;
     }
@@ -48,7 +48,7 @@ export class InscripcionDocumentosService {
    * Obtiene los documentos requeridos para inscripción de persona moral
    */
   getDocumentosMoral(seccion?: string): Observable<DocumentosInscripcionResponse> {
-    let url = `${this.config.getApiUrl('contribuyentes')}/internal/inscripcion-documentos/moral`;
+    let url = `${this.config.getApiUrl('contribuyentes')}/inscripcion-documentos/moral`;
     if (seccion) {
       url += `?seccion=${encodeURIComponent(seccion)}`;
     }
@@ -78,7 +78,7 @@ export class InscripcionDocumentosService {
       formData.append('descripcion', descripcion);
     }
 
-    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}/upload`;
+    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${contribuyenteId}/upload`;
     console.log('📍 URL de upload:', url);
     return this.http.post<any>(url, formData);
   }
@@ -87,7 +87,7 @@ export class InscripcionDocumentosService {
    * Obtiene todos los archivos de un contribuyente
    */
   getArchivos(contribuyenteId: number): Observable<any[]> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}`;
+    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${contribuyenteId}`;
     return this.http.get<any[]>(url);
   }
 
@@ -95,7 +95,7 @@ export class InscripcionDocumentosService {
    * Elimina un archivo
    */
   deleteArchivo(contribuyenteId: number, archivoId: number): Observable<void> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}/${archivoId}`;
+    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${contribuyenteId}/${archivoId}`;
     return this.http.delete<void>(url);
   }
 
@@ -103,7 +103,7 @@ export class InscripcionDocumentosService {
    * Actualiza metadata de un archivo
    */
   updateArchivo(contribuyenteId: number, archivoId: number, data: any): Observable<any> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}/${archivoId}`;
+    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${contribuyenteId}/${archivoId}`;
     return this.http.patch<any>(url, data);
   }
 
@@ -111,7 +111,7 @@ export class InscripcionDocumentosService {
    * Descarga un archivo
    */
   downloadArchivo(contribuyenteId: number, archivoId: number): Observable<Blob> {
-    const url = `${this.config.getApiUrl('contribuyentes')}/internal/archivos/${contribuyenteId}/download/${archivoId}`;
+    const url = `${this.config.getApiUrl('contribuyentes')}/archivos/${contribuyenteId}/download/${archivoId}`;
     return this.http.get(url, { responseType: 'blob' });
   }
 }

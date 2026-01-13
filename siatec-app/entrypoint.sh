@@ -38,9 +38,9 @@ if [ "$DEPLOYMENT_MODE" = "docker-local" ]; then
   // Configuración fija para Docker local
   window.__SIATEC_CONFIG = {
     // URLs de APIs directas (sin ingress)
-    authApiBaseUrl: 'http://localhost:5002/api/auth',
-    contribuyentesApiBaseUrl: 'http://localhost:5001/api/contribuyentes',
-    contribucionesApiBaseUrl: 'http://localhost:5000/api/contribuciones',
+    authApiBaseUrl: 'http://localhost:5002/internal/auth',
+    contribuyentesApiBaseUrl: 'http://localhost:5001/internal',
+    contribucionesApiBaseUrl: 'http://localhost:5000/internal',
     tesoreriaApiBaseUrl: 'http://localhost:5003/api/tesoreria',
     notificacionesApiBaseUrl: 'http://localhost:5005/api/notificaciones',
 

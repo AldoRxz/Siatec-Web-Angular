@@ -21,7 +21,7 @@ export class ContribucionesService extends BaseApiService {
    * Obtiene todas las contribuciones disponibles en el sistema.
    */
   getContribuciones(): Observable<any[]> {
-    const url = this.buildUrl(this.baseUrl, 'internal', 'contribuciones');
+    const url = this.buildUrl(this.baseUrl, 'contribuciones');
     return this.get<any[]>(url);
   }
 
@@ -29,7 +29,7 @@ export class ContribucionesService extends BaseApiService {
    * Obtiene la lista de determinaciones vinculadas al contribuyente actual (ID numérico legacy).
    */
   getDeterminacionesPorContribuyente(contribuyenteId: number): Observable<Determinacion[]> {
-    const url = this.buildUrl(this.baseUrl, 'internal', 'determinaciones', 'contribuyente', contribuyenteId);
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', 'contribuyente', contribuyenteId);
     return this.get<Determinacion[] | { data?: Determinacion[] }>(url).pipe(
       map(response => this.normalizeDeterminaciones(response))
     );
@@ -40,7 +40,7 @@ export class ContribucionesService extends BaseApiService {
    * Este es el método preferido ya que usa el identificador único del usuario.
    */
   getDeterminacionesPorUsuario(usuarioId: string): Observable<Determinacion[]> {
-    const url = this.buildUrl(this.baseUrl, 'internal', 'determinaciones', 'usuario', usuarioId);
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', 'usuario', usuarioId);
     return this.get<Determinacion[] | { data?: Determinacion[] }>(url).pipe(
       map(response => this.normalizeDeterminaciones(response))
     );
@@ -85,7 +85,7 @@ export class ContribucionesService extends BaseApiService {
    * Obtiene la versión activa de una contribución.
    */
   getContribucionActiva(contribucionId: number): Observable<ContribucionVersion> {
-    const url = this.buildUrl(this.baseUrl, 'internal', 'versiones', 'contribucion', contribucionId, 'activa');
+    const url = this.buildUrl(this.baseUrl, 'versiones', 'contribucion', contribucionId, 'activa');
     return this.get<ContribucionVersion | { data?: ContribucionVersion }>(url).pipe(
       map(response => {
         if (!response) {
@@ -101,10 +101,10 @@ export class ContribucionesService extends BaseApiService {
 
   /**
    * Ejecuta el cálculo de determinación con los datos proporcionados.
-   * Usa POST /internal/determinaciones/calcular para crear y calcular la determinación.
+   * Usa POST determinaciones/calcular para crear y calcular la determinación.
    */
   calcularDeterminacion(payload: DeterminacionCalculoRequest): Observable<DeterminacionCalculoResponse> {
-    const url = this.buildUrl(this.baseUrl, 'internal', 'determinaciones', 'calcular');
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', 'calcular');
     const body = {
       determinacionId: payload.determinacionId || null,
       contribucionId: payload.contribucionId,
@@ -121,7 +121,7 @@ export class ContribucionesService extends BaseApiService {
    * Crea una determinación.
    */
   crearDeterminacion(data: Partial<Determinacion>): Observable<Determinacion> {
-    const url = this.buildUrl(this.baseUrl, 'internal', 'determinaciones');
+    const url = this.buildUrl(this.baseUrl, 'determinaciones');
     return this.post<Determinacion>(url, data);
   }
 
@@ -129,7 +129,7 @@ export class ContribucionesService extends BaseApiService {
    * Actualiza información de una determinación existente.
    */
   actualizarDeterminacion(determinacionId: number, data: Partial<Determinacion>): Observable<Determinacion> {
-    const url = this.buildUrl(this.baseUrl, 'internal', 'determinaciones', determinacionId);
+    const url = this.buildUrl(this.baseUrl, 'determinaciones', determinacionId);
     return this.put<Determinacion>(url, data);
   }
 
