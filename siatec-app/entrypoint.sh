@@ -106,22 +106,10 @@ else
   CITAS_API="${CITAS_API_BASE_URL:-http://gateway-api:8080/api/v1/citas}"
   ENV="${ENVIRONMENT:-production}"
   
-  echo "=========================================="
   echo "Variables de entorno leídas:"
-  echo "=========================================="
-  echo "  AUTH_API_BASE_URL env: ${AUTH_API_BASE_URL:-NOT SET}"
-  echo "  CONTRIBUYENTES_API_BASE_URL env: ${CONTRIBUYENTES_API_BASE_URL:-NOT SET}"
-  echo "  CONTRIBUCIONES_API_BASE_URL env: ${CONTRIBUCIONES_API_BASE_URL:-NOT SET}"
-  echo "  CAJA_API_BASE_URL env: ${CAJA_API_BASE_URL:-NOT SET}"
-  echo ""
-  echo "Variables procesadas para config.js:"
   echo "  AUTH_API: $AUTH_API"
   echo "  CONTRIB_API: $CONTRIB_API"
-  echo "  CONTRIBUCIONES_API: $CONTRIBUCIONES_API"
   echo "  CAJA_API: $CAJA_API"
-  echo "  PACCIOLI_API: $PACCIOLI_API"
-  echo "  CITAS_API: $CITAS_API"
-  echo "=========================================="
   echo ""
   
   cat > /usr/share/nginx/html/config.js <<EOF
