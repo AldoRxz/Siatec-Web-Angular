@@ -32,12 +32,14 @@ LABEL org.opencontainers.image.title="siatec-angular-app" \
     org.opencontainers.image.created="$BUILD_DATE"
 
 # Variables de entorno para las APIs
-ENV DEPLOYMENT_MODE="auto" \
-    AUTH_API_BASE_URL="http://auth-api-dev:8080/api/auth" \
-    CONTRIBUYENTES_API_BASE_URL="http://contribuyentes-api-dev:8080/api/contribuyentes" \
-    CONTRIBUCIONES_API_BASE_URL="http://contribuciones-api-dev:8080/api/contribuciones" \
-    TESORERIA_API_BASE_URL="http://tesoreria-api-dev:8080/api/tesoreria" \
-    NOTIFICACIONES_API_BASE_URL="http://notificaciones-api-dev:8080/api/notificaciones" \
+ENV DEPLOYMENT_MODE="kubernetes" \
+    AUTH_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/auth" \
+    CONTRIBUYENTES_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/contribuyentes" \
+    CONTRIBUCIONES_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/contribuciones" \
+    TESORERIA_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/tesoreria" \
+    NOTIFICACIONES_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/notificaciones" \
+    CAJA_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/ordenes-pago" \
+    CITAS_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/citas" \
     TZ=UTC
 
 # Copiar configuración nginx y script de arranque
