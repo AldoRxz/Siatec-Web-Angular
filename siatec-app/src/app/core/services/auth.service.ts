@@ -54,7 +54,7 @@ export class AuthService {
    * Login de cuenta de contribuyente
    */
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    const url = `${this.config.getApiUrl('auth')}/internal/auth/login`;
+    const url = `${this.config.getApiUrl('auth')}/login`;
 
     return this.http.post<AuthResponse>(url, credentials).pipe(
       tap(response => this.handleAuthSuccess(response)),
@@ -66,7 +66,7 @@ export class AuthService {
    * Crear nueva cuenta de contribuyente
    */
   createAccount(data: CreateAccountData): Observable<AuthResponse> {
-    const url = `${this.config.getApiUrl('auth')}/internal/auth/register`;
+    const url = `${this.config.getApiUrl('auth')}/register`;
 
     return this.http.post<AuthResponse>(url, data).pipe(
       tap(response => this.handleAuthSuccess(response)),

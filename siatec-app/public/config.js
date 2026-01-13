@@ -14,9 +14,9 @@
   // Configuración para desarrollo local
   window.__SIATEC_CONFIG = {
     // URLs de APIs para desarrollo local
-    authApiBaseUrl: 'http://localhost:5010',
-    contribuyentesApiBaseUrl: 'http://localhost:5086',
-    contribucionesApiBaseUrl: 'http://localhost:5087',
+    authApiBaseUrl: 'http://localhost:5010/internal/auth',
+    contribuyentesApiBaseUrl: 'http://localhost:5086/internal',
+    contribucionesApiBaseUrl: 'http://localhost:5087/internal',
     tesoreriaApiBaseUrl: 'http://localhost:5092/api/tesoreria',
     notificacionesApiBaseUrl: 'http://localhost:5005/api/notificaciones',
     paccioliApiBaseUrl: 'http://ia.192.168.1.223.sslip.io',
