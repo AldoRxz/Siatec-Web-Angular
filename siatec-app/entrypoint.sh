@@ -92,66 +92,51 @@ if [ "$DEPLOYMENT_MODE" = "docker-local" ]; then
 EOF
 
 else
-  # Modo kubernetes o auto - Detección dinámica
-  echo "☸️  Generando config.js para Kubernetes/Auto..."
-  cat > /usr/share/nginx/html/config.js <<'EOF'
+  # Modo kubernetes - Usar variables de entorno
+  echo "☸️  Generando config.js para Kubernetes (usando variables de entorno)..."
+  
+  # Leer variables de entorno con fallbacks
+  AUTH_API="${AUTH_API_BASE_URL:-http://gateway-api:8080/api/v1/auth}"
+  CONTRIB_API="${CONTRIBUYENTES_API_BASE_URL:-http://gateway-api:8080/api/v1/contribuyentes}"
+  CONTRIBUCIONES_API="${CONTRIBUCIONES_API_BASE_URL:-http://gateway-api:8080/api/v1/contribuciones}"
+  TESORERIA_API="${TESORERIA_API_BASE_URL:-http://gateway-api:8080/api/v1/tesoreria}"
+  NOTIF_API="${NOTIFICACIONES_API_BASE_URL:-http://gateway-api:8080/api/v1/notificaciones}"
+  CAJA_API="${CAJA_API_BASE_URL:-http://gateway-api:8080/api/v1/ordenes-pago}"
+  PACCIOLI_API="${PACCIOLI_API_BASE_URL:-}"
+  CITAS_API="${CITAS_API_BASE_URL:-http://gateway-api:8080/api/v1/citas}"
+  ENV="${ENVIRONMENT:-production}"
+  
+  echo "Variables de entorno leídas:"
+  echo "  AUTH_API: $AUTH_API"
+  echo "  CONTRIB_API: $CONTRIB_API"
+  echo "  CAJA_API: $CAJA_API"
+  echo ""
+  
+  cat > /usr/share/nginx/html/config.js <<EOF
 /**
  * SIATEC Angular - Configuración Dinámica de APIs
- * Generado por entrypoint.sh en tiempo de ejecución del contenedor
+ * Generado por entrypoint.sh desde variables de entorno de Kubernetes
  */
 (function (window) {
   'use strict';
 
-  const protocol = window.location.protocol;
-  const host = window.location.host;
-  const hostname = window.location.hostname;
+  console.log('[config.js] ☸️  Modo Kubernetes - Configuración desde variables de entorno');
 
-  // Detectar el entorno actual
-  let baseUrl;
-  let environment = 'development';
-
-  console.log('[config.js] Detectando configuración...');
-  console.log('[config.js] hostname:', hostname);
-  console.log('[config.js] host:', host);
-  console.log('[config.js] protocol:', protocol);
-
-  // Si estamos en localhost o puerto de desarrollo, usar URL base de ingress
-  if (hostname === 'localhost' || 
-      hostname === '127.0.0.1' || 
-      /:\d{4,5}$/.test(host)) {
-    // Desarrollo local - usar primer host de ingress por defecto
-    baseUrl = "https://dev.192.168.1.197.sslip.io";
-    environment = 'development';
-    console.log('[config.js] 🏠 Modo desarrollo local - usando ingress:', baseUrl);
-  } else {
-    // Producción/staging - usar el mismo host desde el que se accede
-    baseUrl = protocol + '//' + host.split(':')[0];
-
-    // Detectar ambiente por hostname
-    if (hostname.includes('dev.')) {
-      environment = 'development';
-    } else if (hostname.includes('staging.')) {
-      environment = 'staging';
-    } else if (hostname.includes('prod.')) {
-      environment = 'production';
-    }
-
-    console.log('[config.js] 🌐 Accediendo desde:', hostname);
-    console.log('[config.js] 🔗 Base URL:', baseUrl);
-  }
-
-  // Configuración global de APIs
+  // Configuración global de APIs (desde variables de entorno)
   window.__SIATEC_CONFIG = {
     // URLs de APIs
-    authApiBaseUrl: baseUrl + '/internal/auth',
-    contribuyentesApiBaseUrl: baseUrl + '/internal',
-    contribucionesApiBaseUrl: baseUrl + '/internal',
-    tesoreriaApiBaseUrl: baseUrl + '/api/tesoreria',
-    notificacionesApiBaseUrl: baseUrl + '/api/notificaciones',
+    authApiBaseUrl: '${AUTH_API}',
+    contribuyentesApiBaseUrl: '${CONTRIB_API}',
+    contribucionesApiBaseUrl: '${CONTRIBUCIONES_API}',
+    tesoreriaApiBaseUrl: '${TESORERIA_API}',
+    notificacionesApiBaseUrl: '${NOTIF_API}',
+    cajaApiBaseUrl: '${CAJA_API}',
+    paccioliApiBaseUrl: '${PACCIOLI_API}',
+    citasApiBaseUrl: '${CITAS_API}',
 
     // Información del ambiente
-    environment: environment,
-    baseUrl: baseUrl,
+    environment: '${ENV}',
+    deploymentMode: 'kubernetes',
 
     // Métodos de utilidad
     getApiUrl: function (service) {
@@ -160,30 +145,36 @@ else
         'contribuyentes': this.contribuyentesApiBaseUrl,
         'contribuciones': this.contribucionesApiBaseUrl,
         'tesoreria': this.tesoreriaApiBaseUrl,
-        'notificaciones': this.notificacionesApiBaseUrl
+        'notificaciones': this.notificacionesApiBaseUrl,
+        'caja': this.cajaApiBaseUrl,
+        'paccioli': this.paccioliApiBaseUrl,
+        'citas': this.citasApiBaseUrl
       };
-      return serviceMap[service] || this.baseUrl;
+      return serviceMap[service] || '';
     },
 
     // Debug helper
     logConfig: function () {
-      console.group('🔧 SIATEC Angular - Configuración de APIs');
+      console.group('🔧 SIATEC Angular - Configuración de APIs (Kubernetes)');
+      console.log('Deployment Mode:', this.deploymentMode);
       console.log('Ambiente:', this.environment);
-      console.log('Base URL:', this.baseUrl);
       console.log('Auth API:', this.authApiBaseUrl);
       console.log('Contribuyentes API:', this.contribuyentesApiBaseUrl);
       console.log('Contribuciones API:', this.contribucionesApiBaseUrl);
       console.log('Tesorería API:', this.tesoreriaApiBaseUrl);
       console.log('Notificaciones API:', this.notificacionesApiBaseUrl);
+      console.log('Caja API:', this.cajaApiBaseUrl);
+      console.log('Paccioli API:', this.paccioliApiBaseUrl);
+      console.log('Citas API:', this.citasApiBaseUrl);
       console.groupEnd();
     }
   };
 
   // Mostrar configuración en desarrollo
-  if (environment === 'development') {
+  if (window.__SIATEC_CONFIG.environment === 'development') {
     window.__SIATEC_CONFIG.logConfig();
   } else {
-    console.log('[config.js] ✅ SIATEC Angular APIs configuradas para:', environment);
+    console.log('[config.js] ✅ SIATEC Angular APIs configuradas para:', window.__SIATEC_CONFIG.environment);
   }
 
   // Hacer la configuración disponible globalmente también como API_CONFIG
@@ -193,6 +184,9 @@ else
     contribucionesApi: window.__SIATEC_CONFIG.contribucionesApiBaseUrl,
     tesoreriaApi: window.__SIATEC_CONFIG.tesoreriaApiBaseUrl,
     notificacionesApi: window.__SIATEC_CONFIG.notificacionesApiBaseUrl,
+    cajaApi: window.__SIATEC_CONFIG.cajaApiBaseUrl,
+    paccioliApi: window.__SIATEC_CONFIG.paccioliApiBaseUrl,
+    citasApi: window.__SIATEC_CONFIG.citasApiBaseUrl,
     environment: window.__SIATEC_CONFIG.environment
   };
 
@@ -200,6 +194,18 @@ else
 
 })(window);
 EOF
+
+  echo "✅ Configuración generada para Kubernetes"
+  echo "🔍 Deployment Mode: kubernetes"
+  echo "🔍 Environment: ${ENV}"
+  echo "🔍 Auth API: ${AUTH_API}"
+  echo "🔍 Contribuyentes API: ${CONTRIB_API}"
+  echo "🔍 Contribuciones API: ${CONTRIBUCIONES_API}"
+  echo "🔍 Tesorería API: ${TESORERIA_API}"
+  echo "🔍 Notificaciones API: ${NOTIFICACIONES_API}"
+  echo "🔍 Caja API: ${CAJA_API}"
+  echo "🔍 Paccioli API: ${PACCIOLI_API}"
+  echo "🔍 Citas API: ${CITAS_API}"
 fi  # Fin del if DEPLOYMENT_MODE
 
 # Verificar que el archivo se generó correctamente

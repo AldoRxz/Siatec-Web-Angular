@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, map } from 'rxjs/operators';
 import { ConfigService } from './config.service';
-import { 
-  User, 
-  LoginCredentials, 
-  AuthResponse, 
-  CreateAccountData, 
+import {
+  User,
+  LoginCredentials,
+  AuthResponse,
+  CreateAccountData,
   UpdateAccountData,
   PasswordRecoveryRequest,
   PasswordRecoveryResponse
@@ -151,7 +151,7 @@ export class AuthService {
     if (typeof contribuyenteId === 'number') {
       return contribuyenteId;
     }
-    
+
     return null;
   }
 
@@ -210,7 +210,7 @@ export class AuthService {
 
     if (user) {
       this.setUser(user);
-      
+
       // Guardar contribuyenteId si está disponible (ya normalizado en camelCase)
       const contribId = user.contribuyenteId;
       if (contribId) {
@@ -235,9 +235,9 @@ export class AuthService {
       errorMessage = `Error: ${error.error.message}`;
     } else {
       // Error del lado del servidor
-      errorMessage = error.error?.message || 
-                     error.error?.error || 
-                     `Error ${error.status}: ${error.statusText}`;
+      errorMessage = error.error?.message ||
+        error.error?.error ||
+        `Error ${error.status}: ${error.statusText}`;
     }
 
     console.error('[AuthService]', errorMessage, error);
@@ -262,24 +262,24 @@ export class AuthService {
     this.userSignal.set(normalizedUser);
     this.userSubject.next(normalizedUser);
   }
-  
+
   /**
    * Normaliza un objeto User para incluir todas las propiedades computadas
    */
   private normalizeUser(user: User): User {
     const normalized: any = {};
-    
+
     for (const key in user) {
       const value = (user as any)[key];
       const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
       normalized[camelKey] = value;
     }
-    
+
     // Propiedades computadas
     const nombres = normalized.nombres || '';
     const primerApellido = normalized.primerApellido || '';
     const segundoApellido = normalized.segundoApellido || '';
-    
+
     return {
       ...normalized,
       nombre: nombres,
