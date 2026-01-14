@@ -3,14 +3,12 @@
 <div class="inscripcion-page">
   <!-- Page Header -->
   <header class="page-header">
-    <div class="page-header__logos">
-      <img src="assets/img/gobierno-de-jalisco-seeklogo.png" alt="Gobierno de Jalisco" class="page-header__logo" />
-      <img src="assets/img/Servicio-tributario.png" alt="Servicio Tributario" class="page-header__logo-servicio" />
-    </div>
+    <img src="assets/img/gobierno-de-jalisco-seeklogo.png" alt="Gobierno de Jalisco" class="page-header__logo" />
     <div class="page-header__content">
       <h1 class="page-header__title">Inscripción al Padrón</h1>
       <p class="page-header__subtitle">Registro Estatal de Contribuyentes</p>
     </div>
+    <img src="assets/img/Servicio-tributario.png" alt="Servicio Tributario" class="page-header__logo-servicio" />
     <p-tag *ngIf="processingState()" [value]="processingState()?.status || 'Procesando'" severity="warn" class="records-badge"></p-tag>
   </header>
 
