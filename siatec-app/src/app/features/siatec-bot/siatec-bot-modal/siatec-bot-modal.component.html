@@ -1,0 +1,122 @@
+<!-- Overlay (fondo oscuro) -->
+<div 
+  *ngIf="isOpen()" 
+  class="modal-overlay"
+  (click)="closeChat()"
+></div>
+
+<!-- Modal del chat -->
+<div 
+  class="siatec-bot-modal"
+  [class.open]="isOpen()"
+>
+  <!-- Header del chat -->
+  <div class="chat-header">
+    <div class="header-content">
+      <div class="bot-info">
+        <img src="assets/img/SiatecBot.png" alt="SiatecBot" class="bot-avatar" />
+        <div class="bot-details">
+          <h3 class="bot-name">SiatecBot</h3>
+          <span class="bot-status">En línea</span>
+        </div>
+      </div>
+      <button 
+        pButton 
+        type="button" 
+        icon="pi pi-times" 
+        class="p-button-text p-button-rounded close-button"
+        (click)="closeChat()"
+        aria-label="Cerrar chat"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Cuerpo del chat con mensajes -->
+  <div class="chat-body" #messagesContainer>
+    <!-- Estado vacío: Logo grande en el centro -->
+    <div class="empty-state" *ngIf="messages().length === 0">
+      <img src="assets/img/SiatecBot.png" alt="SiatecBot" class="empty-state-logo" />
+      <h2 class="empty-state-title">Buenas, ¿en qué te voy a ayudar hoy?</h2>
+    </div>
+
+    <!-- Mensajes de la conversación -->
+    <div class="messages-container" *ngIf="messages().length > 0">
+      <div 
+        *ngFor="let message of messages()"
+        class="message"
+        [class.message-user]="message.sender === 'user'"
+        [class.message-bot]="message.sender === 'bot'"
+      >
+        <div class="message-avatar" *ngIf="message.sender === 'bot'">
+          <img src="assets/img/SiatecBot.png" alt="Bot" />
+        </div>
+        <div class="message-content">
+          <div class="message-bubble">
+            <p>{{ message.text }}</p>
+          </div>
+          <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer con recomendaciones flotantes e input -->
+  <div class="chat-footer">
+    <!-- Recomendaciones flotantes (solo cuando no hay mensajes) -->
+    <div class="floating-recommendations" *ngIf="messages().length === 0">
+      <button 
+        pButton 
+        type="button" 
+        label="Quiero agregar una nueva contribución a mi cuenta" 
+        class="p-button-text p-button-sm quick-action"
+        icon="pi pi-plus-circle"
+        (click)="sendQuickMessage('Quiero agregar una nueva contribución a mi cuenta')"
+      ></button>
+      <button 
+        pButton 
+        type="button" 
+        label="Quiero agendar una cita" 
+        class="p-button-text p-button-sm quick-action"
+        icon="pi pi-calendar-plus"
+        (click)="sendQuickMessage('Quiero agendar una cita')"
+      ></button>
+      <button 
+        pButton 
+        type="button" 
+        label="Quiero consultar mis notificaciones" 
+        class="p-button-text p-button-sm quick-action"
+        icon="pi pi-bell"
+        (click)="sendQuickMessage('Quiero consultar mis notificaciones')"
+      ></button>
+      <button 
+        pButton 
+        type="button" 
+        label="¿Qué impuesto tengo que pagar?" 
+        class="p-button-text p-button-sm quick-action"
+        icon="pi pi-question-circle"
+        (click)="sendQuickMessage('¿Qué impuesto tengo que pagar?')"
+      ></button>
+    </div>
+
+    <!-- Input de mensaje siempre abajo -->
+    <div class="input-container">
+      <input 
+        type="text" 
+        pInputText 
+        [(ngModel)]="messageText"
+        (keypress)="onKeyPress($event)"
+        placeholder="Escribe tu mensaje..."
+        class="message-input"
+      />
+      <button 
+        pButton 
+        type="button" 
+        icon="pi pi-send" 
+        class="p-button-rounded send-button"
+        (click)="sendMessage()"
+        [disabled]="!messageText.trim()"
+        aria-label="Enviar mensaje"
+      ></button>
+    </div>
+  </div>
+</div>

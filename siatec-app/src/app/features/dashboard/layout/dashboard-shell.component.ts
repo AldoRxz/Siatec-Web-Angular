@@ -10,11 +10,12 @@ import { DashboardNotificationsService } from '../services/dashboard-notificatio
 import { DashboardDocumentsService } from '../services/dashboard-documents.service';
 import { DrawerModule } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
+import { SiatecBotService, SiatecBotModalComponent } from '../../siatec-bot';
 
 @Component({
   selector: 'app-dashboard-shell',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, PortalHeaderComponent, SidebarNavComponent, DrawerModule, ButtonModule],
+  imports: [CommonModule, RouterOutlet, PortalHeaderComponent, SidebarNavComponent, DrawerModule, ButtonModule, SiatecBotModalComponent],
   templateUrl: './dashboard-shell.component.html',
   styleUrl: './dashboard-shell.component.scss'
 })
@@ -24,6 +25,7 @@ export class DashboardShellComponent implements OnInit {
   private readonly notificationsService = inject(DashboardNotificationsService);
   private readonly documentsService = inject(DashboardDocumentsService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly siatecBotService = inject(SiatecBotService);
 
   readonly activeKey = signal<string>('panel');
   readonly navItems = signal<SidebarMenuItem[]>(this.buildNavItems());
@@ -105,6 +107,10 @@ export class DashboardShellComponent implements OnInit {
   onNotificationsClick(): void {
     this.notificationsService.markAllAsRead();
     this.router.navigateByUrl('/dashboard/notificaciones');
+  }
+
+  onSiatecBotClick(): void {
+    this.siatecBotService.toggleChat();
   }
 
   private syncActiveKeyWithRoute(url: string): void {

@@ -88,6 +88,45 @@ $header-height: 4rem;
     white-space: nowrap;
   }
 
+  .siatecbot-button {
+    position: relative;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem;
+    transition: all 0.3s ease;
+    overflow: hidden;
+
+    .bot-icon {
+      width: 120%;
+      height: 120%;
+      object-fit: cover;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      border-radius: 4px;
+    }
+
+    &:hover {
+      background: rgba(29, 78, 216, 0.2);
+      border-color: rgba(29, 78, 216, 0.5);
+      transform: scale(1.05);
+
+      .bot-icon {
+        filter: drop-shadow(0 4px 8px rgba(29, 78, 216, 0.4));
+      }
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
   .notification-button {
     position: relative;
     color: #fff;

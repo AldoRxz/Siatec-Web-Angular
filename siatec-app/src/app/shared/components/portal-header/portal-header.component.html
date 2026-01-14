@@ -19,6 +19,17 @@
   <!-- Right: Actions -->
   <div class="header-right">
     <button
+      id="header-siatecbot-btn"
+      pButton
+      type="button"
+      class="siatecbot-button"
+      (click)="onSiatecBotClick()"
+      aria-label="SiatecBot - Asistente Virtual"
+    >
+      <img src="assets/img/SiatecBot.png" alt="SiatecBot" class="bot-icon" />
+    </button>
+
+    <button
       id="header-notifications-btn"
       pButton
       type="button"
