@@ -60,7 +60,7 @@ export class PanelComponent implements OnInit {
       title: 'Cuenta',
       value: 'Usuario activo',
       action: 'Ver perfil',
-      route: '/dashboard/cuenta',
+      route: '/contribuyentes/dashboard/cuenta',
       accent: 'blue'
     },
     {
@@ -69,7 +69,7 @@ export class PanelComponent implements OnInit {
       title: 'Citas',
       value: '2 próximas',
       action: 'Agendar',
-      route: '/dashboard/citas',
+      route: '/contribuyentes/dashboard/citas',
       accent: 'purple'
     },
     {
@@ -78,7 +78,7 @@ export class PanelComponent implements OnInit {
       title: 'Determinaciones',
       value: '3 pendientes',
       action: 'Revisar',
-      route: '/dashboard/contribuciones',
+      route: '/contribuyentes/dashboard/contribuciones',
       accent: 'emerald'
     },
     {
@@ -87,7 +87,7 @@ export class PanelComponent implements OnInit {
       title: 'Archivos',
       value: '0 asignados',
       action: 'Gestionar',
-      route: '/dashboard/archivos',
+      route: '/contribuyentes/dashboard/archivos',
       accent: 'amber'
     }
   ]);
@@ -118,19 +118,19 @@ export class PanelComponent implements OnInit {
       label: 'Iniciar inscripción',
       description: 'Completa tu registro estatal',
       icon: 'pi pi-shield',
-      route: '/dashboard/inscripcion'
+      route: '/contribuyentes/dashboard/inscripcion'
     },
     {
       label: 'Subir documentos',
       description: 'Entrega comprobantes y anexos',
       icon: 'pi pi-upload',
-      route: '/dashboard/archivos'
+      route: '/contribuyentes/dashboard/archivos'
     },
     {
       label: 'Explorar contribuciones',
       description: 'Calcula determinaciones',
       icon: 'pi pi-calculator',
-      route: '/dashboard/contribuciones'
+      route: '/contribuyentes/dashboard/contribuciones'
     }
   ];
 
@@ -169,7 +169,7 @@ export class PanelComponent implements OnInit {
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        filter(event => event.urlAfterRedirects.includes('/dashboard/panel')),
+        filter(event => event.urlAfterRedirects.includes('/contribuyentes/dashboard/panel')),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {

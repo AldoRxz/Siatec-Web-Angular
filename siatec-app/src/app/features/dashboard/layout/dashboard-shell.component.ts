@@ -93,11 +93,11 @@ export class DashboardShellComponent implements OnInit {
   }
 
   onProfile(): void {
-    this.router.navigateByUrl('/dashboard/cuenta');
+    this.router.navigateByUrl('/contribuyentes/dashboard/cuenta');
   }
 
   onSettings(): void {
-    this.router.navigateByUrl('/dashboard/resumen');
+    this.router.navigateByUrl('/contribuyentes/dashboard/resumen');
   }
 
   onLogout(): void {
@@ -106,7 +106,7 @@ export class DashboardShellComponent implements OnInit {
 
   onNotificationsClick(): void {
     this.notificationsService.markAllAsRead();
-    this.router.navigateByUrl('/dashboard/notificaciones');
+    this.router.navigateByUrl('/contribuyentes/dashboard/notificaciones');
   }
 
   onSiatecBotClick(): void {
@@ -117,12 +117,10 @@ export class DashboardShellComponent implements OnInit {
     if (!url) {
       return;
     }
-    const [, base, segment = 'panel'] = url.split('/');
-    if (base !== 'dashboard') {
-      return;
-    }
-    const normalized = segment || 'panel';
-    this.activeKey.set(normalized);
+    const parts = url.split('/');
+    const dashboardIndex = parts.indexOf('dashboard');
+    const segment = dashboardIndex >= 0 && parts[dashboardIndex + 1] ? parts[dashboardIndex + 1] : 'panel';
+    this.activeKey.set(segment);
   }
 
   private navigate(route: string, key: string): void {
@@ -136,40 +134,40 @@ export class DashboardShellComponent implements OnInit {
         key: 'panel',
         label: 'Principal',
         icon: 'pi pi-chart-pie',
-        command: () => this.navigate('/dashboard/panel', 'panel')
+        command: () => this.navigate('/contribuyentes/dashboard/panel', 'panel')
       },
       {
         key: 'contribuciones',
         label: 'Contribuciones',
         icon: 'pi pi-file-edit',
         indicator: 'warning',
-        command: () => this.navigate('/dashboard/contribuciones', 'contribuciones')
+        command: () => this.navigate('/contribuyentes/dashboard/contribuciones', 'contribuciones')
       },
       {
         key: 'citas',
         label: 'Agendar citas',
         icon: 'pi pi-calendar',
         indicator: 'success',
-        command: () => this.navigate('/dashboard/citas', 'citas')
+        command: () => this.navigate('/contribuyentes/dashboard/citas', 'citas')
       },
       {
         key: 'archivos',
         label: 'Mis documentos',
         icon: 'pi pi-folder-open',
-        command: () => this.navigate('/dashboard/archivos', 'archivos')
+        command: () => this.navigate('/contribuyentes/dashboard/archivos', 'archivos')
       },
       {
         key: 'cuenta',
         label: 'Mi perfil',
         icon: 'pi pi-id-card',
-        command: () => this.navigate('/dashboard/cuenta', 'cuenta')
+        command: () => this.navigate('/contribuyentes/dashboard/cuenta', 'cuenta')
       },
       {
         key: 'notificaciones',
         label: 'Notificaciones',
         icon: 'pi pi-bell',
         indicator: 'danger',
-        command: () => this.navigate('/dashboard/notificaciones', 'notificaciones')
+        command: () => this.navigate('/contribuyentes/dashboard/notificaciones', 'notificaciones')
       },
       {
         separator: true,
@@ -179,7 +177,7 @@ export class DashboardShellComponent implements OnInit {
         key: 'inscripcion',
         label: 'Inscripción al REC',
         icon: 'pi pi-shield',
-        command: () => this.navigate('/dashboard/inscripcion', 'inscripcion')
+        command: () => this.navigate('/contribuyentes/dashboard/inscripcion', 'inscripcion')
       }
     ];
   }

@@ -92,10 +92,10 @@ export class DashboardComponent implements OnInit {
   private notificationsService = inject(DashboardNotificationsService);
   private siatecBotService = inject(SiatecBotService);
   private readonly anchorRouteMap: Record<string, string> = {
-    profilePanel: '/dashboard/cuenta',
-    activityPanel: '/dashboard/archivos',
-    alertsPanel: '/dashboard/notificaciones',
-    actionsPanel: '/dashboard/operaciones'
+    profilePanel: '/contribuyentes/dashboard/cuenta',
+    activityPanel: '/contribuyentes/dashboard/archivos',
+    alertsPanel: '/contribuyentes/dashboard/notificaciones',
+    actionsPanel: '/contribuyentes/dashboard/operaciones'
   };
 
   readonly documentSummary = signal<{ total: number; lastUpdated?: Date }>({ total: 0 });
@@ -109,7 +109,7 @@ export class DashboardComponent implements OnInit {
       severity: 'info',
       actionLabel: 'Ver perfil',
       anchor: 'profilePanel',
-      route: '/dashboard/cuenta'
+      route: '/contribuyentes/dashboard/cuenta'
     },
     {
       label: 'Citas',
@@ -119,7 +119,7 @@ export class DashboardComponent implements OnInit {
       severity: 'primary',
       actionLabel: 'Agendar',
       anchor: 'actionsPanel',
-      route: '/dashboard/operaciones',
+      route: '/contribuyentes/dashboard/operaciones',
       hint: 'Agenda abierta'
     },
     {
@@ -139,7 +139,7 @@ export class DashboardComponent implements OnInit {
       severity: 'success',
       actionLabel: 'Ver archivos',
       anchor: 'activityPanel',
-      route: '/dashboard/archivos'
+      route: '/contribuyentes/dashboard/archivos'
     }
   ];
 
@@ -193,19 +193,19 @@ export class DashboardComponent implements OnInit {
       label: 'Agendar cita',
       icon: 'pi pi-calendar-plus',
       description: 'Coordina una visita presencial',
-      route: '/dashboard/operaciones'
+      route: '/contribuyentes/dashboard/operaciones'
     },
     {
       label: 'Subir archivos',
       icon: 'pi pi-upload',
       description: 'Entrega comprobantes y anexos',
-      route: '/dashboard/archivos'
+      route: '/contribuyentes/dashboard/archivos'
     },
     {
       label: 'Generar determinación',
       icon: 'pi pi-calculator',
       description: 'Calcula contribuciones estatales',
-      route: '/dashboard/operaciones'
+      route: '/contribuyentes/dashboard/operaciones'
     }
   ];
 
@@ -316,11 +316,11 @@ export class DashboardComponent implements OnInit {
   }
 
   handleSettings(): void {
-    this.router.navigate(['/dashboard/cuenta'], { queryParams: { tab: 'settings' } });
+    this.router.navigate(['/contribuyentes/dashboard/cuenta'], { queryParams: { tab: 'settings' } });
   }
 
   handleNotificationsClick(): void {
-    this.router.navigateByUrl('/dashboard/notificaciones');
+    this.router.navigateByUrl('/contribuyentes/dashboard/notificaciones');
   }
 
   handleSiatecBotClick(): void {
@@ -359,27 +359,27 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Principal',
         icon: 'pi pi-home',
-        command: () => this.router.navigateByUrl('/dashboard')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard')
       },
       {
         label: 'Cuenta',
         icon: 'pi pi-id-card',
-        command: () => this.router.navigateByUrl('/dashboard/cuenta')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard/cuenta')
       },
       {
         label: 'Archivos',
         icon: 'pi pi-folder',
-        command: () => this.router.navigateByUrl('/dashboard/archivos')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard/archivos')
       },
       {
         label: 'Notificaciones',
         icon: 'pi pi-bell',
-        command: () => this.router.navigateByUrl('/dashboard/notificaciones')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard/notificaciones')
       },
       {
         label: 'Operaciones',
         icon: 'pi pi-briefcase',
-        command: () => this.router.navigateByUrl('/dashboard/operaciones')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard/operaciones')
       },
       {
         label: 'Contribuciones',
