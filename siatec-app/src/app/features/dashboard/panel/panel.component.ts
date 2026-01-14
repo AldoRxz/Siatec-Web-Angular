@@ -58,7 +58,7 @@ export class PanelComponent implements OnInit {
       key: 'cuenta',
       icon: 'pi pi-user',
       title: 'Cuenta',
-      value: 'Usuario activo',
+      value: 'Usuario inactivo',
       action: 'Ver perfil',
       route: '/contribuyentes/dashboard/cuenta',
       accent: 'blue'
@@ -67,7 +67,7 @@ export class PanelComponent implements OnInit {
       key: 'citas',
       icon: 'pi pi-calendar',
       title: 'Citas',
-      value: '2 próximas',
+      value: 'Sin citas',
       action: 'Agendar',
       route: '/contribuyentes/dashboard/citas',
       accent: 'purple'
@@ -76,7 +76,7 @@ export class PanelComponent implements OnInit {
       key: 'contribuciones',
       icon: 'pi pi-file-edit',
       title: 'Determinaciones',
-      value: '3 pendientes',
+      value: 'Sin determinaciones',
       action: 'Revisar',
       route: '/contribuyentes/dashboard/contribuciones',
       accent: 'emerald'
@@ -85,33 +85,14 @@ export class PanelComponent implements OnInit {
       key: 'archivos',
       icon: 'pi pi-folder-open',
       title: 'Archivos',
-      value: '0 asignados',
+      value: 'Sin archivos',
       action: 'Gestionar',
       route: '/contribuyentes/dashboard/archivos',
       accent: 'amber'
     }
   ]);
 
-  readonly activity: ActivityItem[] = [
-    {
-      icon: 'pi pi-file-pdf',
-      title: 'Archivo subido',
-      detail: 'declaracion_anual.pdf',
-      accent: 'emerald'
-    },
-    {
-      icon: 'pi pi-check-circle',
-      title: 'Determinación completada',
-      detail: 'Impuesto sobre nómina',
-      accent: 'blue'
-    },
-    {
-      icon: 'pi pi-calendar-plus',
-      title: 'Cita confirmada',
-      detail: '22 de julio · Módulo Centro',
-      accent: 'purple'
-    }
-  ];
+  readonly activity: ActivityItem[] = [];
 
   readonly quickActions = [
     {
