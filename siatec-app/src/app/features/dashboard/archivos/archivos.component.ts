@@ -360,7 +360,7 @@ export class ArchivosComponent implements OnInit {
     }
     this.loading.set(true);
     this.contribuyentesService
-      .getArchivosContribuyente(contribuyenteId, 1, 200)
+      .getArchivosContribuyente(contribuyenteId)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (response) => {

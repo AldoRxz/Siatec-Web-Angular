@@ -37,11 +37,11 @@ export class DashboardDocumentsService {
     this.loadingSignal.set(true);
 
     this.contribuyentesService
-      .getArchivosContribuyente(contribuyenteId, 1, 1)
+      .getArchivosContribuyente(contribuyenteId)
       .pipe(take(1))
       .subscribe({
         next: (response) => {
-          const total = response?.totalItems ?? response?.items?.length ?? 0;
+          const total = response?.length ?? 0;
           this.summarySignal.set({ total, updatedAt: new Date() });
           this.loaded = true;
           this.loadingSignal.set(false);
