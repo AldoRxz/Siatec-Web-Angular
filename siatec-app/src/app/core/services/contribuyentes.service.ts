@@ -45,7 +45,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene el dashboard con estadísticas del contribuyente
    */
   getDashboard(id: number | string): Observable<ContribuyenteDashboard> {
-    const url = this.buildUrl(this.baseUrl, 'dashboard', id);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'dashboard', id);
     return this.get<ContribuyenteDashboard>(url);
   }
 
@@ -94,23 +94,18 @@ export class ContribuyentesService extends BaseApiService {
   // ============================================
 
   /**
-   * Obtiene archivos de un contribuyente con paginación
+   * Obtiene archivos de un contribuyente
    */
-  getArchivosContribuyente(
-    contribuyenteId: number, 
-    page: number = 1, 
-    pageSize: number = 20
-  ): Observable<PaginatedResponse<ArchivoContribuyente>> {
-    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId);
-    const params = { page: page.toString(), pageSize: pageSize.toString() };
-    return this.getWithParams<PaginatedResponse<ArchivoContribuyente>>(url, params);
+  getArchivosContribuyente(contribuyenteId: number): Observable<ArchivoContribuyente[]> {
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId);
+    return this.get<ArchivoContribuyente[]>(url);
   }
 
   /**
    * Sube un archivo para un contribuyente
    */
   subirArchivo(contribuyenteId: number, formData: FormData): Observable<ArchivoContribuyente> {
-    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId, 'upload');
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId, 'upload');
     return this.upload<ArchivoContribuyente>(url, formData);
   }
 
@@ -118,7 +113,7 @@ export class ContribuyentesService extends BaseApiService {
    * Descarga un archivo
    */
   descargarArchivo(contribuyenteId: number, archivoId: number): Observable<Blob> {
-    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId, 'download', archivoId);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId, 'download', archivoId);
     return this.download(url);
   }
 
@@ -126,7 +121,7 @@ export class ContribuyentesService extends BaseApiService {
    * Elimina un archivo
    */
   eliminarArchivo(contribuyenteId: number, archivoId: number): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId, archivoId);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId, archivoId);
     return this.delete<any>(url);
   }
 
@@ -134,7 +129,7 @@ export class ContribuyentesService extends BaseApiService {
    * Renombra un archivo
    */
   renombrarArchivo(contribuyenteId: number, archivoId: number, nuevoNombre: string): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId, archivoId);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId, archivoId);
     return this.patch<any>(url, { nombre: nuevoNombre });
   }
 
@@ -147,7 +142,7 @@ export class ContribuyentesService extends BaseApiService {
    */
   getInscripcionDocumentos(tipoPersona: 'fisica' | 'moral'): Observable<DocumentType[]> {
     const segment = tipoPersona === 'moral' ? 'moral' : 'fisica';
-    const url = this.buildUrl(this.baseUrl, 'InscripcionDocumentos', segment);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'InscripcionDocumentos', segment);
     return this.get<DocumentType[]>(url);
   }
 
@@ -156,7 +151,7 @@ export class ContribuyentesService extends BaseApiService {
    */
   addInscripcionDocumento(tipoPersona: 'fisica' | 'moral', contribuyenteId: number): Observable<any> {
     const segment = tipoPersona === 'moral' ? 'moral' : 'fisica';
-    const url = this.buildUrl(this.baseUrl, 'InscripcionDocumentos', segment, contribuyenteId);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'InscripcionDocumentos', segment, contribuyenteId);
     return this.post<any>(url, {});
   }
 
@@ -168,7 +163,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene tipos de documentos asignados a un contribuyente
    */
   getContribuyenteDocumentTypes(contribuyenteId: number): Observable<ContribuyenteDocumentType[]> {
-    const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId);
     return this.get<ContribuyenteDocumentType[]>(url);
   }
 
@@ -176,7 +171,7 @@ export class ContribuyentesService extends BaseApiService {
    * Asigna un tipo de documento a un contribuyente
    */
   assignContribuyenteDocumentType(contribuyenteId: number, documentTypeId: number): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId);
     return this.post<any>(url, { documentTypeId });
   }
 
@@ -184,7 +179,7 @@ export class ContribuyentesService extends BaseApiService {
    * Desasigna un tipo de documento de un contribuyente
    */
   unassignContribuyenteDocumentType(contribuyenteId: number, documentTypeId: number): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId, documentTypeId);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId, documentTypeId);
     return this.delete<any>(url);
   }
 
@@ -196,7 +191,7 @@ export class ContribuyentesService extends BaseApiService {
     documentTypeId: number, 
     body: any
   ): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId, documentTypeId);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId, documentTypeId);
     return this.patch<any>(url, body);
   }
 
@@ -212,7 +207,7 @@ export class ContribuyentesService extends BaseApiService {
     contribucionIds?: number[]; 
     observaciones?: string 
   }): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, 'solicitudes-inscripcion');
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'solicitudes-inscripcion');
     return this.post<any>(url, {
       contribuyenteId: payload.contribuyenteId,
       contribucionIds: payload.contribucionIds || [],
