@@ -43,8 +43,8 @@ LABEL org.opencontainers.image.title="siatec-angular-app" \
 # URLs públicas a través del Gateway:
 ENV DEPLOYMENT_MODE="kubernetes" \
     AUTH_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/auth" \
-    CONTRIBUYENTES_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/contribuyentes" \
-    CONTRIBUCIONES_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/contribuciones" \
+    CONTRIBUYENTES_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1" \
+    CONTRIBUCIONES_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1" \
     TESORERIA_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/tesoreria" \
     NOTIFICACIONES_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/notificaciones" \
     CAJA_API_BASE_URL="http://dev.192.168.1.223.sslip.io/api/v1/ordenes-pago" \
