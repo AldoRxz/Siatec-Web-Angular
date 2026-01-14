@@ -32,6 +32,13 @@ $header-height: 4rem;
     padding-left: 0.5rem;
   }
 
+  .siatec-logo {
+    height: 2.5rem;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
   .brand-mark {
     font-size: 1.4rem;
     font-weight: 700;
@@ -86,6 +93,63 @@ $header-height: 4rem;
 
   .menu-toggle-label {
     white-space: nowrap;
+  }
+
+  .siatecbot-button {
+    position: relative;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem;
+    transition: all 0.3s ease;
+    overflow: hidden;
+
+    .bot-icon {
+      width: 120%;
+      height: 120%;
+      object-fit: cover;
+      border-radius: 4px;
+      position: absolute;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .bot-icon-normal {
+      opacity: 1;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .bot-icon-hover {
+      opacity: 0;
+      transform: scale(1.1);
+      filter: drop-shadow(0 2px 6px rgba(255, 105, 180, 0.4));
+    }
+
+    &:hover {
+      background: rgba(29, 78, 216, 0.2);
+      border-color: rgba(29, 78, 216, 0.5);
+      transform: scale(1.05);
+
+      .bot-icon-normal {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      .bot-icon-hover {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
   }
 
   .notification-button {

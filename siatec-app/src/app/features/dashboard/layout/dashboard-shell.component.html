@@ -13,6 +13,7 @@
       (logout)="onLogout()"
       (notificationsClick)="onNotificationsClick()"
       (menuToggle)="toggleMobileSidebar()"
+      (siatecBotClick)="onSiatecBotClick()"
     ></app-portal-header>
   </header>
 
@@ -54,4 +55,7 @@
       (select)="onSidebarSelect($event)"
     ></app-sidebar-nav>
   </ng-template>
+
+  <!-- Modal del SiatecBot -->
+  <app-siatec-bot-modal></app-siatec-bot-modal>
 </div>

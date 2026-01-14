@@ -30,6 +30,7 @@ export class PortalHeaderComponent implements OnChanges {
   @Output() logout = new EventEmitter<void>();
   @Output() notificationsClick = new EventEmitter<void>();
   @Output() menuToggle = new EventEmitter<void>();
+  @Output() siatecBotClick = new EventEmitter<void>();
 
   internalMenu: MenuItem[] = [];
 
@@ -55,7 +56,11 @@ export class PortalHeaderComponent implements OnChanges {
   onMenuToggle(): void {
     this.menuToggle.emit();
   }
+onSiatecBotClick(): void {
+    this.siatecBotClick.emit();
+  }
 
+  
   private buildMenu(): void {
     if (this.menuItems && this.menuItems.length) {
       this.internalMenu = this.menuItems;

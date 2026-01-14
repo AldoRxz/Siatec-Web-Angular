@@ -12,12 +12,25 @@
       <i class="pi pi-bars"></i>
       <span class="menu-toggle-label">Menú</span>
     </button>
+    <img src="assets/img/Siatec-removebg-preview.png" alt="SIATEC Logo" class="siatec-logo" />
     <span class="brand-mark">{{ title }}</span>
     <span class="brand-tag">{{ subtitle }}</span>
   </div>
 
   <!-- Right: Actions -->
   <div class="header-right">
+    <button
+      id="header-siatecbot-btn"
+      pButton
+      type="button"
+      class="siatecbot-button"
+      (click)="onSiatecBotClick()"
+      aria-label="SiatecBot - Asistente Virtual"
+    >
+      <img src="assets/img/SiatecBot.png" alt="SiatecBot" class="bot-icon bot-icon-normal" />
+      <img src="assets/img/SiatecBotLove.png" alt="SiatecBot Love" class="bot-icon bot-icon-hover" />
+    </button>
+
     <button
       id="header-notifications-btn"
       pButton

@@ -12,6 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, ContribuyentesService } from '../../core/services';
 import { DashboardNotificationsService } from './services/dashboard-notifications.service';
 import { PortalHeaderComponent, SidebarNavComponent, MetricCardComponent } from '../../shared';
+import { SiatecBotService, SiatecBotModalComponent } from '../siatec-bot';
 
 interface MetricCard {
   label: string;
@@ -76,7 +77,8 @@ interface InscriptionState {
     SkeletonModule,
     PortalHeaderComponent,
     SidebarNavComponent,
-    MetricCardComponent
+    MetricCardComponent,
+    SiatecBotModalComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -88,6 +90,7 @@ export class DashboardComponent implements OnInit {
   private document = inject(DOCUMENT);
   private destroyRef = inject(DestroyRef);
   private notificationsService = inject(DashboardNotificationsService);
+  private siatecBotService = inject(SiatecBotService);
   private readonly anchorRouteMap: Record<string, string> = {
     profilePanel: '/dashboard/cuenta',
     activityPanel: '/dashboard/archivos',
@@ -318,6 +321,10 @@ export class DashboardComponent implements OnInit {
 
   handleNotificationsClick(): void {
     this.router.navigateByUrl('/dashboard/notificaciones');
+  }
+
+  handleSiatecBotClick(): void {
+    this.siatecBotService.toggleChat();
   }
 
   trackActivity(_: number, item: ActivityItem): string {

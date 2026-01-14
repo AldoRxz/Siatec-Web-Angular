@@ -10,6 +10,7 @@
     (settings)="handleSettings()"
     (logout)="handleLogout()"
     (notificationsClick)="handleNotificationsClick()"
+    (siatecBotClick)="handleSiatecBotClick()"
   ></app-portal-header>
 
   <div class="dashboard-body">
@@ -156,4 +157,7 @@
       </p-card>
     </section>
   </div>
+
+  <!-- Modal del SiatecBot -->
+  <app-siatec-bot-modal></app-siatec-bot-modal>
 </div>
