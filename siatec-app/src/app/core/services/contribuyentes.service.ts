@@ -45,7 +45,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene el dashboard con estadísticas del contribuyente
    */
   getDashboard(id: number | string): Observable<ContribuyenteDashboard> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'dashboard', id);
+    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'contribuyentes', 'dashboard', id);
     return this.get<ContribuyenteDashboard>(url);
   }
 
