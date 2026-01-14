@@ -627,6 +627,19 @@ $radius-xl: 1.5rem;
 }
 
 // ============================================
+// Status Tags
+// ============================================
+:host ::ng-deep {
+  .p-tag {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    letter-spacing: 0.02em;
+  }
+}
+
+// ============================================
 // Detail Dialog
 // ============================================
 :host ::ng-deep .detail-dialog {
