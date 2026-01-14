@@ -26,7 +26,7 @@ export const routes: Routes = [
     canActivate: [guestGuard]
   },
   {
-    path: 'dashboard',
+    path: 'contribuyentes/dashboard',
     loadComponent: () => import('./features/dashboard/layout/dashboard-shell.component').then(m => m.DashboardShellComponent),
     canActivate: [authGuard],
     children: [

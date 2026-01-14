@@ -81,7 +81,7 @@ export class LoginComponent implements OnDestroy {
       if (token) {
         console.log('[LoginComponent] Token encontrado, mostrando diálogo...');
         // Obtener URL de retorno o usar dashboard por defecto
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/contribuyentes/dashboard';
         
         this.openStatusDialog(
           {

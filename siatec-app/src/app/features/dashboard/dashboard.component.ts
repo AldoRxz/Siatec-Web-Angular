@@ -92,10 +92,10 @@ export class DashboardComponent implements OnInit {
   private notificationsService = inject(DashboardNotificationsService);
   private siatecBotService = inject(SiatecBotService);
   private readonly anchorRouteMap: Record<string, string> = {
-    profilePanel: '/dashboard/cuenta',
-    activityPanel: '/dashboard/archivos',
-    alertsPanel: '/dashboard/notificaciones',
-    actionsPanel: '/dashboard/operaciones'
+    profilePanel: '/contribuyentes/dashboard/cuenta',
+    activityPanel: '/contribuyentes/dashboard/archivos',
+    alertsPanel: '/contribuyentes/dashboard/notificaciones',
+    actionsPanel: '/contribuyentes/dashboard/operaciones'
   };
 
   readonly documentSummary = signal<{ total: number; lastUpdated?: Date }>({ total: 0 });
@@ -103,28 +103,28 @@ export class DashboardComponent implements OnInit {
   readonly metricCards: MetricCard[] = [
     {
       label: 'Cuenta',
-      value: 'Usuario activo',
+      value: 'Usuario inactivo',
       description: 'Completa tu perfil y verifica identidad',
       icon: 'pi pi-id-card',
       severity: 'info',
       actionLabel: 'Ver perfil',
       anchor: 'profilePanel',
-      route: '/dashboard/cuenta'
+      route: '/contribuyentes/dashboard/cuenta'
     },
     {
       label: 'Citas',
-      value: '2 próximas',
+      value: 'Sin citas',
       description: 'Administra tus atenciones presenciales',
       icon: 'pi pi-calendar',
       severity: 'primary',
       actionLabel: 'Agendar',
       anchor: 'actionsPanel',
-      route: '/dashboard/operaciones',
+      route: '/contribuyentes/dashboard/operaciones',
       hint: 'Agenda abierta'
     },
     {
       label: 'Contribuciones',
-      value: '3 pendientes',
+      value: 'Sin determinaciones',
       description: 'Determina y paga tus obligaciones',
       icon: 'pi pi-file-edit',
       severity: 'warn',
@@ -133,79 +133,38 @@ export class DashboardComponent implements OnInit {
     },
     {
       label: 'Archivos',
-      value: '0 documentos',
+      value: 'Sin archivos',
       description: 'Sube requisitos y comprobantes',
       icon: 'pi pi-folder',
       severity: 'success',
       actionLabel: 'Ver archivos',
       anchor: 'activityPanel',
-      route: '/dashboard/archivos'
+      route: '/contribuyentes/dashboard/archivos'
     }
   ];
 
-  readonly recentActivity: ActivityItem[] = [
-    {
-      icon: 'pi pi-file-pdf',
-      label: 'Archivo subido',
-      detail: 'declaracion_anual.pdf',
-      timestamp: 'Hace 10 minutos',
-      severity: 'success'
-    },
-    {
-      icon: 'pi pi-check-circle',
-      label: 'Determinación completada',
-      detail: 'Impuesto sobre nómina',
-      timestamp: 'Ayer 17:34',
-      severity: 'info'
-    },
-    {
-      icon: 'pi pi-calendar',
-      label: 'Cita confirmada',
-      detail: '22 de julio · Módulo Centro',
-      timestamp: 'Hace 2 días',
-      severity: 'warn'
-    }
-  ];
+  readonly recentActivity: ActivityItem[] = [];
 
-  readonly timeline: TimelineItem[] = [
-    {
-      status: 'Solicitud enviada',
-      detail: 'Inscripción al registro estatal recibida',
-      date: '12 mayo · 09:41',
-      severity: 'success'
-    },
-    {
-      status: 'Documentos validados',
-      detail: 'Tus archivos cumplen los requisitos',
-      date: '16 mayo · 11:05',
-      severity: 'info'
-    },
-    {
-      status: 'Autorización pendiente',
-      detail: 'Tesorería revisa tu información',
-      date: 'Actualmente',
-      severity: 'warn'
-    }
-  ];
+  readonly timeline: TimelineItem[] = [];
 
   readonly quickActions: QuickAction[] = [
     {
       label: 'Agendar cita',
       icon: 'pi pi-calendar-plus',
       description: 'Coordina una visita presencial',
-      route: '/dashboard/operaciones'
+      route: '/contribuyentes/dashboard/operaciones'
     },
     {
       label: 'Subir archivos',
       icon: 'pi pi-upload',
       description: 'Entrega comprobantes y anexos',
-      route: '/dashboard/archivos'
+      route: '/contribuyentes/dashboard/archivos'
     },
     {
       label: 'Generar determinación',
       icon: 'pi pi-calculator',
       description: 'Calcula contribuciones estatales',
-      route: '/dashboard/operaciones'
+      route: '/contribuyentes/dashboard/operaciones'
     }
   ];
 
@@ -316,11 +275,11 @@ export class DashboardComponent implements OnInit {
   }
 
   handleSettings(): void {
-    this.router.navigate(['/dashboard/cuenta'], { queryParams: { tab: 'settings' } });
+    this.router.navigate(['/contribuyentes/dashboard/cuenta'], { queryParams: { tab: 'settings' } });
   }
 
   handleNotificationsClick(): void {
-    this.router.navigateByUrl('/dashboard/notificaciones');
+    this.router.navigateByUrl('/contribuyentes/dashboard/notificaciones');
   }
 
   handleSiatecBotClick(): void {
@@ -359,27 +318,27 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Principal',
         icon: 'pi pi-home',
-        command: () => this.router.navigateByUrl('/dashboard')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard')
       },
       {
         label: 'Cuenta',
         icon: 'pi pi-id-card',
-        command: () => this.router.navigateByUrl('/dashboard/cuenta')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard/cuenta')
       },
       {
         label: 'Archivos',
         icon: 'pi pi-folder',
-        command: () => this.router.navigateByUrl('/dashboard/archivos')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard/archivos')
       },
       {
         label: 'Notificaciones',
         icon: 'pi pi-bell',
-        command: () => this.router.navigateByUrl('/dashboard/notificaciones')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard/notificaciones')
       },
       {
         label: 'Operaciones',
         icon: 'pi pi-briefcase',
-        command: () => this.router.navigateByUrl('/dashboard/operaciones')
+        command: () => this.router.navigateByUrl('/contribuyentes/dashboard/operaciones')
       },
       {
         label: 'Contribuciones',

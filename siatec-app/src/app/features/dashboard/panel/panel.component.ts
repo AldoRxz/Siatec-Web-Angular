@@ -58,79 +58,60 @@ export class PanelComponent implements OnInit {
       key: 'cuenta',
       icon: 'pi pi-user',
       title: 'Cuenta',
-      value: 'Usuario activo',
+      value: 'Usuario inactivo',
       action: 'Ver perfil',
-      route: '/dashboard/cuenta',
+      route: '/contribuyentes/dashboard/cuenta',
       accent: 'blue'
     },
     {
       key: 'citas',
       icon: 'pi pi-calendar',
       title: 'Citas',
-      value: '2 próximas',
+      value: 'Sin citas',
       action: 'Agendar',
-      route: '/dashboard/citas',
+      route: '/contribuyentes/dashboard/citas',
       accent: 'purple'
     },
     {
       key: 'contribuciones',
       icon: 'pi pi-file-edit',
       title: 'Determinaciones',
-      value: '3 pendientes',
+      value: 'Sin determinaciones',
       action: 'Revisar',
-      route: '/dashboard/contribuciones',
+      route: '/contribuyentes/dashboard/contribuciones',
       accent: 'emerald'
     },
     {
       key: 'archivos',
       icon: 'pi pi-folder-open',
       title: 'Archivos',
-      value: '0 asignados',
+      value: 'Sin archivos',
       action: 'Gestionar',
-      route: '/dashboard/archivos',
+      route: '/contribuyentes/dashboard/archivos',
       accent: 'amber'
     }
   ]);
 
-  readonly activity: ActivityItem[] = [
-    {
-      icon: 'pi pi-file-pdf',
-      title: 'Archivo subido',
-      detail: 'declaracion_anual.pdf',
-      accent: 'emerald'
-    },
-    {
-      icon: 'pi pi-check-circle',
-      title: 'Determinación completada',
-      detail: 'Impuesto sobre nómina',
-      accent: 'blue'
-    },
-    {
-      icon: 'pi pi-calendar-plus',
-      title: 'Cita confirmada',
-      detail: '22 de julio · Módulo Centro',
-      accent: 'purple'
-    }
-  ];
+  readonly activity: ActivityItem[] = [];
 
   readonly quickActions = [
     {
       label: 'Iniciar inscripción',
       description: 'Completa tu registro estatal',
       icon: 'pi pi-shield',
-      route: '/dashboard/inscripcion'
+      route: '/contribuyentes/dashboard/inscripcion'
     },
     {
       label: 'Subir documentos',
       description: 'Entrega comprobantes y anexos',
       icon: 'pi pi-upload',
-      route: '/dashboard/archivos'
+      route: '/contribuyentes/dashboard/archivos'
     },
     {
       label: 'Explorar contribuciones',
       description: 'Calcula determinaciones',
       icon: 'pi pi-calculator',
-      route: '/dashboard/contribuciones'
+      route: '/contribuyentes/dashboard/contribuciones'
     }
   ];
 
@@ -169,7 +150,7 @@ export class PanelComponent implements OnInit {
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        filter(event => event.urlAfterRedirects.includes('/dashboard/panel')),
+        filter(event => event.urlAfterRedirects.includes('/contribuyentes/dashboard/panel')),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {

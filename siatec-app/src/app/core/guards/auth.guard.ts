@@ -39,7 +39,7 @@ export const guestGuard: CanActivateFn = (route, state) => {
 
   // Si ya está autenticado, redirigir al dashboard
   console.warn('[GuestGuard] Usuario ya autenticado, redirigiendo a dashboard');
-  router.navigate(['/dashboard']);
+  router.navigate(['/contribuyentes/dashboard'});
   
   return false;
 };
