@@ -994,7 +994,7 @@ export class InscripcionComponent implements OnInit {
       formulario: this.contribuyentesService.actualizarContribuyenteFormulario(contribuyenteId, payload),
       solicitud: this.contribuyentesService.crearSolicitudInscripcion({
         contribuyenteId,
-        contribucionIds: [], // Se pueden agregar los IDs de contribuciones si aplica
+        contribucionIds: this.contribucionIds(), // Usar los IDs seleccionados por el usuario
         observaciones: 'Solicitud de inscripción generada desde el formulario'
       })
     })
