@@ -994,7 +994,7 @@ export class InscripcionComponent implements OnInit {
       formulario: this.contribuyentesService.actualizarContribuyenteFormulario(contribuyenteId, payload),
       solicitud: this.contribuyentesService.crearSolicitudInscripcion({
         contribuyenteId,
-        contribucionIds: [], // Se pueden agregar los IDs de contribuciones si aplica
+        contribucionIds: this.contribucionIds(), // Usar los IDs seleccionados por el usuario
         observaciones: 'Solicitud de inscripción generada desde el formulario'
       })
     })
@@ -1010,6 +1010,9 @@ export class InscripcionComponent implements OnInit {
           });
           console.log('Formulario actualizado:', results.formulario);
           console.log('Solicitud creada:', results.solicitud);
+          
+          // Recargar el dashboard para mostrar el estado "procesando"
+          this.loadDashboardData();
         },
         error: (error) => {
           this.messageService.add({ 

@@ -962,7 +962,242 @@
                 </div>
                 <div class="step-actions">
                   <button id="inscripcion-step6-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(5)" type="button" class="step-button-secondary"></button>
-                  <button id="inscripcion-submit-btn" pButton type="submit" label="Enviar Solicitud" icon="pi pi-check" severity="success" [disabled]="loading()"></button>
+                  <button id="inscripcion-step6-continuar-btn" pButton label="Continuar" icon="pi pi-arrow-right" iconPos="right" (click)="activateCallback(7)" type="button" class="step-button-primary"></button>
+                </div>
+              </div>
+            </ng-template>
+          </p-step-panel>
+
+          <!-- Step 7: Resumen PF -->
+          <p-step-panel [value]="7">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="step-content resumen-step">
+                <h3 class="step-title">
+                  <i class="pi pi-list-check"></i>
+                  Resumen de tu Solicitud de Inscripción
+                </h3>
+                
+                <p class="resumen-subtitle">
+                  Revisa que toda la información sea correcta antes de enviar tu solicitud
+                </p>
+                
+                <!-- Resumen de Identificación -->
+                <div class="resumen-section">
+                  <h4 class="resumen-section-title">
+                    <i class="pi pi-user"></i>
+                    Datos Generales
+                  </h4>
+                  <div class="resumen-grid">
+                    <div class="resumen-item">
+                      <span class="resumen-label">RFC:</span>
+                      <span class="resumen-value">{{ form.controls.identificacion.value.rfc }}</span>
+                    </div>
+                    @if (tipoPersona() === 'fisica') {
+                      <div class="resumen-item">
+                        <span class="resumen-label">Nombre:</span>
+                        <span class="resumen-value">
+                          {{ form.controls.identificacion.value.nombres }} 
+                          {{ form.controls.identificacion.value.primerApellido }} 
+                          {{ form.controls.identificacion.value.segundoApellido }}
+                        </span>
+                      </div>
+                    } @else {
+                      <div class="resumen-item">
+                        <span class="resumen-label">Razón Social:</span>
+                        <span class="resumen-value">{{ form.controls.identificacion.value.razonSocial }}</span>
+                      </div>
+                    }
+                    <div class="resumen-item">
+                      <span class="resumen-label">CURP:</span>
+                      <span class="resumen-value">{{ form.controls.identificacion.value.curp || 'No especificada' }}</span>
+                    </div>
+                    <div class="resumen-item">
+                      <span class="resumen-label">Email:</span>
+                      <span class="resumen-value">{{ form.controls.identificacion.value.email }}</span>
+                    </div>
+                    <div class="resumen-item">
+                      <span class="resumen-label">Teléfono:</span>
+                      <span class="resumen-value">{{ form.controls.identificacion.value.telefono || 'No especificado' }}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Resumen de Domicilio -->
+                <div class="resumen-section">
+                  <h4 class="resumen-section-title">
+                    <i class="pi pi-map-marker"></i>
+                    Domicilio Fiscal
+                  </h4>
+                  <div class="resumen-grid">
+                    <div class="resumen-item resumen-item--full">
+                      <span class="resumen-label">Dirección:</span>
+                      <span class="resumen-value">
+                        {{ form.controls.domicilio.value.calle }} 
+                        {{ form.controls.domicilio.value.numeroExterior }}
+                        @if (form.controls.domicilio.value.numeroInterior) {
+                          Int. {{ form.controls.domicilio.value.numeroInterior }}
+                        }
+                      </span>
+                    </div>
+                    <div class="resumen-item">
+                      <span class="resumen-label">Colonia:</span>
+                      <span class="resumen-value">{{ form.controls.domicilio.value.colonia }}</span>
+                    </div>
+                    <div class="resumen-item">
+                      <span class="resumen-label">Código Postal:</span>
+                      <span class="resumen-value">{{ form.controls.domicilio.value.cp }}</span>
+                    </div>
+                    <div class="resumen-item">
+                      <span class="resumen-label">Municipio:</span>
+                      <span class="resumen-value">{{ form.controls.domicilio.value.municipio }}</span>
+                    </div>
+                    <div class="resumen-item">
+                      <span class="resumen-label">Estado:</span>
+                      <span class="resumen-value">{{ form.controls.domicilio.value.estado }}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Resumen de Régimen y Actividades -->
+                <div class="resumen-section">
+                  <h4 class="resumen-section-title">
+                    <i class="pi pi-briefcase"></i>
+                    Régimen Fiscal y Actividades
+                  </h4>
+                  <div class="resumen-grid">
+                    <div class="resumen-item resumen-item--full">
+                      <span class="resumen-label">Regímenes:</span>
+                      <div class="resumen-chips">
+                        @for (regimen of regimenes(); track regimen) {
+                          <span class="resumen-chip">{{ regimen }}</span>
+                        }
+                        @if (regimenes().length === 0) {
+                          <span class="resumen-value">Sin registros</span>
+                        }
+                      </div>
+                    </div>
+                    <div class="resumen-item resumen-item--full">
+                      <span class="resumen-label">Actividades:</span>
+                      <div class="resumen-chips">
+                        @for (actividad of actividades(); track actividad) {
+                          <span class="resumen-chip">{{ actividad }}</span>
+                        }
+                        @if (actividades().length === 0) {
+                          <span class="resumen-value">Sin registros</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Resumen de Contribuciones -->
+                <div class="resumen-section">
+                  <h4 class="resumen-section-title">
+                    <i class="pi pi-dollar"></i>
+                    Contribuciones Seleccionadas
+                  </h4>
+                  <div class="resumen-grid">
+                    <div class="resumen-item resumen-item--full">
+                      <div class="resumen-chips">
+                        @for (contrib of contribucionesSeleccionadasDetalle(); track contrib.id) {
+                          <span class="resumen-chip resumen-chip--contribucion">
+                            {{ contrib.nombre }}
+                          </span>
+                        }
+                        @if (contribucionesSeleccionadasDetalle().length === 0) {
+                          <span class="resumen-value">Sin contribuciones seleccionadas</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Resumen de Representante -->
+                @if (form.controls.representante.value.nombres || form.controls.representante.value.rfc) {
+                <div class="resumen-section">
+                  <h4 class="resumen-section-title">
+                    <i class="pi pi-user-edit"></i>
+                    Representante Legal
+                  </h4>
+                  <div class="resumen-grid">
+                    @if (form.controls.representante.value.nombres) {
+                      <div class="resumen-item">
+                        <span class="resumen-label">Nombre:</span>
+                        <span class="resumen-value">
+                          {{ form.controls.representante.value.nombres }} 
+                          {{ form.controls.representante.value.primerApellido }} 
+                          {{ form.controls.representante.value.segundoApellido }}
+                        </span>
+                      </div>
+                    }
+                    @if (form.controls.representante.value.rfc) {
+                      <div class="resumen-item">
+                        <span class="resumen-label">RFC:</span>
+                        <span class="resumen-value">{{ form.controls.representante.value.rfc }}</span>
+                      </div>
+                    }
+                    @if (form.controls.representante.value.curp) {
+                      <div class="resumen-item">
+                        <span class="resumen-label">CURP:</span>
+                        <span class="resumen-value">{{ form.controls.representante.value.curp }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+                }
+                
+                <!-- Resumen de Persona que efectuará pagos -->
+                @if (form.controls.pagos.value.nombre || form.controls.pagos.value.correo) {
+                <div class="resumen-section">
+                  <h4 class="resumen-section-title">
+                    <i class="pi pi-wallet"></i>
+                    Persona que Efectuará Pagos
+                  </h4>
+                  <div class="resumen-grid">
+                    @if (form.controls.pagos.value.nombre) {
+                      <div class="resumen-item">
+                        <span class="resumen-label">Nombre:</span>
+                        <span class="resumen-value">{{ form.controls.pagos.value.nombre }}</span>
+                      </div>
+                    }
+                    @if (form.controls.pagos.value.correo) {
+                      <div class="resumen-item">
+                        <span class="resumen-label">Correo:</span>
+                        <span class="resumen-value">{{ form.controls.pagos.value.correo }}</span>
+                      </div>
+                    }
+                    @if (form.controls.pagos.value.telefono) {
+                      <div class="resumen-item">
+                        <span class="resumen-label">Teléfono:</span>
+                        <span class="resumen-value">{{ form.controls.pagos.value.telefono }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+                }
+                
+                <!-- Mensaje de confirmación -->
+                <div class="resumen-confirmacion">
+                  <i class="pi pi-info-circle"></i>
+                  <p>
+                    Al enviar esta solicitud, tu información será revisada por el área de Tesorería. 
+                    Recibirás una notificación sobre el estado de tu solicitud.
+                  </p>
+                </div>
+                
+                <div class="step-actions">
+                  <button id="inscripcion-step7-atras-btn" pButton label="Atrás" icon="pi pi-arrow-left" (click)="activateCallback(6)" type="button" class="step-button-secondary"></button>
+                  <button 
+                    id="inscripcion-submit-btn" 
+                    pButton 
+                    type="submit" 
+                    label="Enviar Solicitud" 
+                    icon="pi pi-send" 
+                    iconPos="right"
+                    class="step-button-submit"
+                    [disabled]="loading()"
+                    [loading]="loading()"
+                  ></button>
                 </div>
               </div>
             </ng-template>
