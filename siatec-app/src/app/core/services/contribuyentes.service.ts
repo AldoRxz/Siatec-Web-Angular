@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseApiService } from './base-api.service';
-import { 
-  Contribuyente, 
-  ArchivoContribuyente, 
-  PaginatedResponse, 
+import {
+  Contribuyente,
+  ArchivoContribuyente,
+  PaginatedResponse,
   DocumentType,
   ContribuyenteDocumentType,
   ContribuyenteDashboard
@@ -45,7 +45,8 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene el dashboard con estadísticas del contribuyente
    */
   getDashboard(id: number | string): Observable<ContribuyenteDashboard> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'contribuyentes', 'dashboard', id);
+    //    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'contribuyentes', 'dashboard', id);
+    const url = 'http://dev.192.168.1.223.sslip.io/api/v1/contribuyentes/dashboard/' + id;
     return this.get<ContribuyenteDashboard>(url);
   }
 
@@ -187,8 +188,8 @@ export class ContribuyentesService extends BaseApiService {
    * Actualiza un tipo de documento asignado
    */
   updateContribuyenteDocumentType(
-    contribuyenteId: number, 
-    documentTypeId: number, 
+    contribuyenteId: number,
+    documentTypeId: number,
     body: any
   ): Observable<any> {
     const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId, documentTypeId);
@@ -202,10 +203,10 @@ export class ContribuyentesService extends BaseApiService {
   /**
    * Crea una solicitud de inscripción
    */
-  crearSolicitudInscripcion(payload: { 
-    contribuyenteId: number; 
-    contribucionIds?: number[]; 
-    observaciones?: string 
+  crearSolicitudInscripcion(payload: {
+    contribuyenteId: number;
+    contribucionIds?: number[];
+    observaciones?: string
   }): Observable<any> {
     const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'solicitudes-inscripcion');
     return this.post<any>(url, {
