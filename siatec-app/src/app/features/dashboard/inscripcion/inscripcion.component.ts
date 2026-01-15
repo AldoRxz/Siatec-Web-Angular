@@ -1010,6 +1010,9 @@ export class InscripcionComponent implements OnInit {
           });
           console.log('Formulario actualizado:', results.formulario);
           console.log('Solicitud creada:', results.solicitud);
+          
+          // Recargar el dashboard para mostrar el estado "procesando"
+          this.loadDashboardData();
         },
         error: (error) => {
           this.messageService.add({ 
