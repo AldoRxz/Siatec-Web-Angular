@@ -69,7 +69,7 @@ export class ContribuyentesService extends BaseApiService {
    * Actualiza un contribuyente mediante formulario
    */
   actualizarContribuyenteFormulario(id: number, data: any): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, id, 'formulario');
+    const url = this.buildUrl(this.baseUrl, 'contribuyentes', 'formulario', id);
     return this.post<any>(url, data);
   }
 
