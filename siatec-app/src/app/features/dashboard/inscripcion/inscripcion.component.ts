@@ -976,10 +976,6 @@ export class InscripcionComponent implements OnInit {
   }
 
   submitSolicitud(): void {
-    if (!this.validateStep(this.currentStep()) || !this.form.valid) {
-      this.messageService.add({ severity: 'warn', summary: 'Formulario incompleto', detail: 'Revisa los campos requeridos antes de enviar.' });
-      return;
-    }
     const contribuyenteId = this.authService.getContribuyenteId();
     if (!contribuyenteId) {
       this.messageService.add({ severity: 'error', summary: 'Sesión', detail: 'No se pudo identificar al contribuyente.' });
