@@ -29,7 +29,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene todos los contribuyentes
    */
   getContribuyentes(): Observable<Contribuyente[]> {
-    const url = this.baseUrl;
+    const url = this.buildUrl(this.baseUrl, 'contribuyentes');
     return this.get<Contribuyente[]>(url);
   }
 
@@ -37,7 +37,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene un contribuyente por ID
    */
   getContribuyente(id: number): Observable<Contribuyente> {
-    const url = this.buildUrl(this.baseUrl, id);
+    const url = this.buildUrl(this.baseUrl, 'contribuyentes', id);
     return this.get<Contribuyente>(url);
   }
 
@@ -54,7 +54,7 @@ export class ContribuyentesService extends BaseApiService {
    * Crea un nuevo contribuyente
    */
   crearContribuyente(data: Partial<Contribuyente>): Observable<Contribuyente> {
-    const url = this.baseUrl;
+    const url = this.buildUrl(this.baseUrl, 'contribuyentes');
     return this.post<Contribuyente>(url, data);
   }
 
@@ -62,7 +62,7 @@ export class ContribuyentesService extends BaseApiService {
    * Actualiza un contribuyente
    */
   actualizarContribuyente(id: number, data: Partial<Contribuyente>): Observable<Contribuyente> {
-    const url = this.buildUrl(this.baseUrl, id);
+    const url = this.buildUrl(this.baseUrl, 'contribuyentes', id);
     return this.put<Contribuyente>(url, data);
   }
 
@@ -70,7 +70,7 @@ export class ContribuyentesService extends BaseApiService {
    * Actualiza un contribuyente mediante formulario
    */
   actualizarContribuyenteFormulario(id: number, data: any): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, id, 'formulario');
+    const url = this.buildUrl(this.baseUrl, 'contribuyentes', 'formulario', id);
     return this.post<any>(url, data);
   }
 
@@ -78,7 +78,7 @@ export class ContribuyentesService extends BaseApiService {
    * Activa un contribuyente
    */
   activarContribuyente(id: number): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, id, 'activar');
+    const url = this.buildUrl(this.baseUrl, 'contribuyentes', id, 'activar');
     return this.put<any>(url, {});
   }
 
@@ -86,7 +86,7 @@ export class ContribuyentesService extends BaseApiService {
    * Elimina un contribuyente
    */
   eliminarContribuyente(id: number): Observable<any> {
-    const url = this.buildUrl(this.baseUrl, id);
+    const url = this.buildUrl(this.baseUrl, 'contribuyentes', id);
     return this.delete<any>(url);
   }
 
@@ -98,7 +98,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene archivos de un contribuyente
    */
   getArchivosContribuyente(contribuyenteId: number): Observable<ArchivoContribuyente[]> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId);
+    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId);
     return this.get<ArchivoContribuyente[]>(url);
   }
 
@@ -106,7 +106,7 @@ export class ContribuyentesService extends BaseApiService {
    * Sube un archivo para un contribuyente
    */
   subirArchivo(contribuyenteId: number, formData: FormData): Observable<ArchivoContribuyente> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId, 'upload');
+    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId, 'upload');
     return this.upload<ArchivoContribuyente>(url, formData);
   }
 
@@ -114,7 +114,7 @@ export class ContribuyentesService extends BaseApiService {
    * Descarga un archivo
    */
   descargarArchivo(contribuyenteId: number, archivoId: number): Observable<Blob> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId, 'download', archivoId);
+    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId, 'download', archivoId);
     return this.download(url);
   }
 
@@ -122,7 +122,7 @@ export class ContribuyentesService extends BaseApiService {
    * Elimina un archivo
    */
   eliminarArchivo(contribuyenteId: number, archivoId: number): Observable<any> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId, archivoId);
+    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId, archivoId);
     return this.delete<any>(url);
   }
 
@@ -130,7 +130,7 @@ export class ContribuyentesService extends BaseApiService {
    * Renombra un archivo
    */
   renombrarArchivo(contribuyenteId: number, archivoId: number, nuevoNombre: string): Observable<any> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'archivos', contribuyenteId, archivoId);
+    const url = this.buildUrl(this.baseUrl, 'archivos', contribuyenteId, archivoId);
     return this.patch<any>(url, { nombre: nuevoNombre });
   }
 
@@ -143,7 +143,7 @@ export class ContribuyentesService extends BaseApiService {
    */
   getInscripcionDocumentos(tipoPersona: 'fisica' | 'moral'): Observable<DocumentType[]> {
     const segment = tipoPersona === 'moral' ? 'moral' : 'fisica';
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'InscripcionDocumentos', segment);
+    const url = this.buildUrl(this.baseUrl, 'InscripcionDocumentos', segment);
     return this.get<DocumentType[]>(url);
   }
 
@@ -152,7 +152,7 @@ export class ContribuyentesService extends BaseApiService {
    */
   addInscripcionDocumento(tipoPersona: 'fisica' | 'moral', contribuyenteId: number): Observable<any> {
     const segment = tipoPersona === 'moral' ? 'moral' : 'fisica';
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'InscripcionDocumentos', segment, contribuyenteId);
+    const url = this.buildUrl(this.baseUrl, 'InscripcionDocumentos', segment, contribuyenteId);
     return this.post<any>(url, {});
   }
 
@@ -164,7 +164,7 @@ export class ContribuyentesService extends BaseApiService {
    * Obtiene tipos de documentos asignados a un contribuyente
    */
   getContribuyenteDocumentTypes(contribuyenteId: number): Observable<ContribuyenteDocumentType[]> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId);
+    const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId);
     return this.get<ContribuyenteDocumentType[]>(url);
   }
 
@@ -172,7 +172,7 @@ export class ContribuyentesService extends BaseApiService {
    * Asigna un tipo de documento a un contribuyente
    */
   assignContribuyenteDocumentType(contribuyenteId: number, documentTypeId: number): Observable<any> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId);
+    const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId);
     return this.post<any>(url, { documentTypeId });
   }
 
@@ -180,7 +180,7 @@ export class ContribuyentesService extends BaseApiService {
    * Desasigna un tipo de documento de un contribuyente
    */
   unassignContribuyenteDocumentType(contribuyenteId: number, documentTypeId: number): Observable<any> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId, documentTypeId);
+    const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId, documentTypeId);
     return this.delete<any>(url);
   }
 
@@ -192,7 +192,7 @@ export class ContribuyentesService extends BaseApiService {
     documentTypeId: number,
     body: any
   ): Observable<any> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'AsignarDocumentos', contribuyenteId, documentTypeId);
+    const url = this.buildUrl(this.baseUrl, 'AsignarDocumentos', contribuyenteId, documentTypeId);
     return this.patch<any>(url, body);
   }
 
@@ -208,7 +208,7 @@ export class ContribuyentesService extends BaseApiService {
     contribucionIds?: number[];
     observaciones?: string
   }): Observable<any> {
-    const url = this.buildUrl(this.config.getApiUrl('contribuyentes'), 'solicitudes-inscripcion');
+    const url = this.buildUrl(this.baseUrl, 'solicitudes-inscripcion');
     return this.post<any>(url, {
       contribuyenteId: payload.contribuyenteId,
       contribucionIds: payload.contribucionIds || [],
